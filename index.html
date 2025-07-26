@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casal Mel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+        .section-background {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+        .section-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+        /* Ajustes no section-content para responsividade */
+        .section-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1200px; /* Largura máxima para o conteúdo */
+            margin: 0 auto; /* Centraliza o conteúdo na página */
+            padding: 2rem 1rem; /* Padding em volta do conteúdo para não encostar nas bordas */
+            box-sizing: border-box; /* Garante que padding e borda não aumentem a largura total */
+            display: flex; /* Adiciona flexbox para facilitar o alinhamento dos itens internos */
+            flex-direction: column; /* Padrão em mobile: itens empilhados */
+            align-items: center; /* Centraliza itens em mobile */
+            justify-content: center; /* Centraliza o conteúdo principal */
+            text-align: center; /* Padrão para textos em mobile */
+        }
+
+        /* Quebra para layout horizontal em telas maiores */
+        @media (min-width: 768px) {
+            .section-content {
+                flex-direction: row; /* Em desktop: itens lado a lado */
+                justify-content: center; /* Centraliza os blocos de conteúdo */
+                align-items: center; /* Alinha itens verticalmente no centro */
+                text-align: left; /* Alinha o texto à esquerda nos blocos */
+            }
+        }
+
+        /* Backgrounds das seções */
+        #sessao1.section-background {
+            background-image: url('img/bacgrfaude primeira seçao (1).png');
+        }
+        #sessao2.section-background {
+            background-image: url('img/Rectangle 2.png');
+        }
+        #sessao3.section-background {
+            background-image: url('img/bacgroud-eventos.png');
+        }
+        #sessao4.section-background {
+            background-image: url('img/background-convite especial.png');
+        }
+        #sessao5.section-background {
+            background-image: url('img/bacgroud-eventos.png'); /* Exemplo, troque pela sua imagem */
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-overlay {
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(-100%);
+        }
+        .mobile-menu-overlay.open {
+            transform: translateX(0);
+        }
+
+        /* Modals (mantidos) */
+        .custom-modal {
+            display: flex;
+        }
+        .custom-modal.hidden {
+            display: none;
+        }
+
+        /* Adiciona scroll e altura máxima aos modais APENAS para mobile */
+        @media (max-width: 767px) { /* Aplica APENAS em telas menores que 768px */
+            .custom-modal > div { /* Aplica ao container interno do modal */
+                max-height: 90vh; /* Limita a altura máxima a 90% da altura da viewport */
+                overflow-y: auto; /* Adiciona scroll vertical se o conteúdo for maior */
+                -webkit-overflow-scrolling: touch; /* Melhora o scroll em iOS */
+                box-sizing: border-box; /* Inclui padding e borda na altura */
+                padding-bottom: 3rem; /* Espaço para o botão de fechar, se necessário */
+            }
+            /* Ajustes para a imagem dentro do modal de evento em mobile para não ser muito grande */
+            #modal-imagem-evento {
+                max-height: 250px; /* Altura máxima para a imagem em mobile */
+                width: auto; /* Ajusta a largura proporcionalmente */
+            }
+            /* Ajustes para as imagens dentro do modal de contato em mobile */
+            .contato-modal-img {
+                max-width: 100%;
+                height: auto;
+                max-height: 150px; /* Limita a altura das imagens de contato em mobile */
+                object-fit: contain; /* Garante que a imagem se ajuste sem cortar */
+            }
+            /* Ajuste para garantir padding suficiente no conteúdo dos modais em mobile */
+            #evento-modal .bg-white,
+            #contato-modal .bg-white {
+                padding: 1.5rem; /* Padding geral para os modais em mobile */
+            }
+        }
+
+
+        /* --- SESSÃO 3 (EVENTOS - SLIDER) --- */
+        #sessao3 .section-content {
+            /* Remove o flex-direction: row e text-align: left que viriam do .section-content padrão para desktop */
+            /* Pois o slider tem um layout específico */
+            flex-direction: column; /* Sempre em coluna para o título e o slider */
+            align-items: center; /* Centraliza o título e o slider */
+            text-align: center; /* Centraliza o texto do título */
+        }
+
+        #sessao3 .relative.w-full.max-w-6xl {
+            width: 100%; /* Garante que o container do slider ocupe a largura total disponível */
+            max-width: 90%; /* Limita a largura para mobile */
+            margin: 0 auto; /* Centraliza o container do slider */
+            overflow: hidden; /* Esconde o que transborda, para o slider funcionar */
+            position: relative; /* Para posicionar as setas */
+            padding: 1rem; /* Padding interno para os cards do slider */
+        }
+
+        #slideshow-container {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            width: 100%; /* Garante que o container interno use 100% */
+            /* Altura mínima para o container do slideshow */
+            min-height: 500px; /* Ajuste conforme a altura dos seus cards de evento */
+        }
+
+        #slideshow-container .flex-shrink-0 {
+            width: 100%; /* Em mobile, cada slide ocupa 100% da largura */
+            flex-shrink: 0; /* Impede que os slides encolham */
+            box-sizing: border-box; /* Inclui padding na largura */
+            padding: 0.5rem; /* Padding para espaçar os cards */
+        }
+
+        @media (min-width: 768px) {
+            #sessao3 .relative.w-full.max-w-6xl {
+                max-width: 1000px; /* Largura maior para desktop */
+            }
+            #slideshow-container .flex-shrink-0 {
+                width: calc(100% / 3); /* Em desktop, 3 slides por vez */
+            }
+        }
+
+        .event-image {
+            width: 326px; /* Largura fixa */
+            height: 406px; /* Altura fixa */
+            object-fit: cover;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .slideshow-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            padding: 1rem;
+            background-color: #4b5563;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+
+        /* Botões de navegação do slider */
+        #prev-slide-button, #next-slide-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10; /* Garante que as setas fiquem acima dos slides */
+            background-color: rgba(0, 0, 0, 0.6); /* Fundo semi-transparente */
+            border-radius: 50%; /* Botões redondos */
+            padding: 0.75rem; /* Padding para o ícone */
+            cursor: pointer;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            transition: background-color 0.3s ease;
+        }
+        #prev-slide-button:hover, #next-slide-button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        #prev-slide-button { left: 1rem; }
+        #next-slide-button { right: 1rem; }
+
+        /* Dots do slider */
+        #slide-dots-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 1.5rem;
+            gap: 0.5rem;
+        }
+        #slide-dots-container span {
+            width: 10px;
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        #slide-dots-container span.bg-yellow-400 {
+            background-color: #ffc107;
+            transform: scale(1.2);
+        }
+
+        /* --- FIM SESSÃO 3 --- */
+
+        /* Sessão 5 - Ajustes para alinhamento e responsividade */
+        #sessao5 .section-content {
+            flex-direction: column; /* Padrão em mobile: colunas */
+            justify-content: center;
+            align-items: center;
+            text-align: center; /* Centraliza o texto em mobile */
+            gap: 2rem; /* Espaçamento entre as duas colunas em mobile */
+        }
+        #sessao5 .md\:w-1\/2 {
+            width: 100%; /* Em mobile, cada "metade" ocupa a largura total */
+            max-width: 450px; /* Limita a largura das colunas em mobile para não ficarem muito grandes */
+            padding: 1rem; /* Padding interno */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centraliza o conteúdo dentro da coluna em mobile */
+        }
+        #sessao5 .sessao5-card {
+            width: 100%;
+            display: flex; /* Adicionado para permitir controle de alinhamento interno */
+            flex-direction: column; /* Conteúdo do card em coluna */
+            align-items: center; /* Centraliza o conteúdo do card em mobile */
+            text-align: center; /* Centraliza o texto do card em mobile */
+        }
+        #sessao5 .sessao5-card h3,
+        #sessao5 .sessao5-card p,
+        #sessao5 .sessao5-card .sub-title {
+            text-align: center; /* Centraliza o texto em mobile */
+            width: 100%; /* Garante que o texto ocupe a largura total do card */
+        }
+
+        @media (min-width: 768px) {
+            #sessao5 .section-content {
+                flex-direction: row; /* Em desktop: volta para linha */
+                align-items: stretch; /* Estica as colunas para terem a mesma altura */
+                gap: 3rem; /* Espaçamento maior entre as colunas em desktop */
+            }
+            #sessao5 .md\:w-1\/2 {
+                width: 50%; /* Cada "metade" ocupa 50% em desktop */
+                max-width: none; /* Remove a largura máxima */
+                align-items: flex-start; /* Alinha o conteúdo da coluna à esquerda em desktop */
+            }
+            #sessao5 .sessao5-card {
+                align-items: flex-start; /* MODIFICADO: Alinha o conteúdo do card à esquerda em desktop */
+                text-align: left; /* MODIFICADO: Alinha o texto do card à esquerda em desktop */
+            }
+            #sessao5 .sessao5-card h3,
+            #sessao5 .sessao5-card p,
+            #sessao5 .sessao5-card .sub-title {
+                text-align: left; /* MODIFICADO: Alinha o texto à esquerda em desktop */
+            }
+            .sessao5-img {
+                align-self: flex-start; /* MODIFICADO: Alinha a imagem à esquerda em desktop */
+            }
+            .sessao5-card button {
+                align-self: flex-start; /* MODIFICADO: Alinha o botão à esquerda em desktop */
+            }
+        }
+        .sessao5-img {
+            width: 336px;
+            height: 406px;
+            object-fit: contain;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            box-shadow: none;
+        }
+
+        /* --- FIM SESSÃO 5 --- */
+
+        /* --- Estilos para o FOOTER (RESPONSIVO FINAL) --- */
+        footer {
+            background-color: #1a1a1a;
+            padding: 2rem 1rem;
+            color: #ffffff;
+            position: relative;
+            display: flex;
+            flex-direction: column; /* Padrão: empilhado para mobile */
+            align-items: center; /* Centraliza horizontalmente em mobile */
+            justify-content: center;
+            min-height: 150px;
+            text-align: center; /* Alinha o texto centralmente em mobile */
+        }
+
+        .footer-content-wrapper {
+            display: flex;
+            flex-direction: column; /* Padrão: empilhado para mobile */
+            align-items: center; /* Centraliza os itens em mobile */
+            justify-content: center;
+            width: 100%;
+            max-width: 600px; /* Largura máxima para o conteúdo do footer em mobile */
+            margin-bottom: 1rem;
+            gap: 1.5rem; /* Espaçamento entre contato e social em mobile */
+        }
+
+        .footer-contact {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centraliza o bloco de contato em mobile */
+            text-align: center; /* Garante que o texto dentro do contato esteja centralizado em mobile */
+        }
+        .footer-contact p {
+            margin: 0.25rem 0;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        .footer-contact .numbers-container {
+            display: flex;
+            flex-direction: column; /* Empilhado em mobile */
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            align-items: center; /* Centraliza os números */
+        }
+        .footer-contact a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer-contact a:hover {
+            color: #ffc107;
+            text-decoration: underline;
+        }
+
+        .footer-social {
+            display: flex;
+            justify-content: center; /* Centraliza os ícones em mobile */
+            gap: 1.5rem;
+            align-items: center;
+            margin-top: 1rem; /* Espaço acima em mobile */
+        }
+        .footer-social a {
+            color: #ffffff;
+            font-size: 1.75rem;
+            transition: color 0.3s ease;
+        }
+        .footer-social a:hover {
+            color: #ffc107;
+        }
+
+        .footer-copyright {
+            width: 100%;
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            footer {
+                flex-direction: column; /* Mantém como coluna principal para centralizar tudo */
+                justify-content: center;
+                align-items: center; /* Centraliza o wrapper horizontalmente */
+                text-align: center; /* Centraliza o texto do copyright */
+                padding-bottom: 3rem; /* Espaço para o copyright fixo */
+            }
+
+            .footer-content-wrapper {
+                flex-direction: row; /* Lado a lado em desktop */
+                justify-content: center; /* Centraliza os blocos de contato e social */
+                align-items: center; /* Alinha os blocos de contato e social no centro verticalmente */
+                max-width: 1000px; /* Largura máxima para os blocos */
+                margin-bottom: 0;
+                gap: 2rem; /* Espaçamento entre Contato e Social em desktop */
+                padding-bottom: 1rem; /* Padding para separar do copyright */
+            }
+
+            .footer-contact {
+                align-items: center; /* Centraliza o bloco de contato em desktop */
+                text-align: center; /* Centraliza o texto do contato em desktop */
+                flex-direction: row; /* MODIFICADO: Para que "Contato" e os números fiquem lado a lado */
+                gap: 1rem; /* Espaçamento entre "Contato" e os números */
+            }
+            .footer-contact p.text-xl { /* Seletor para o título "Contato" */
+                flex-shrink: 0; /* Impede que o título encolha */
+                margin-bottom: 0; /* Remove a margem inferior em desktop */
+            }
+            .footer-contact .numbers-container {
+                display: flex; /* Garante que seja flex */
+                flex-direction: row; /* MODIFICADO: Para que os números fiquem lado a lado */
+                gap: 1.5rem; /* Espaçamento entre os números */
+                margin-top: 0; /* Remove margem superior em desktop */
+                align-items: center; /* Alinha os números pela linha de base */
+            }
+            /* Adicionado para os parágrafos de número individual ficarem flex e alinharem o ícone */
+            .footer-contact .numbers-container p {
+                display: flex;
+                align-items: center;
+                white-space: nowrap; /* Evita que o número quebre */
+            }
+
+            .footer-social {
+                margin-top: 0;
+                justify-content: center; /* Centraliza os ícones sociais em desktop */
+                padding-left: 1.5rem; /* Adiciona um padding à esquerda para separar do último número */
+                border-left: 1px solid rgba(255, 255, 255, 0.1); /* Linha divisória sutil */
+            }
+
+            .footer-copyright {
+                position: absolute; /* Posição absoluta para fixar na parte inferior */
+                bottom: 1rem; /* Distância da parte inferior */
+                left: 50%; /* Centraliza horizontalmente */
+                transform: translateX(-50%); /* Ajuste para centralização perfeita */
+                border-top: none; /* Remove a borda superior em desktop */
+                padding-top: 0;
+                width: auto; /* Ajusta a largura para o conteúdo */
+                white-space: nowrap; /* Impede que o texto quebre */
+            }
+        }
+        /* --- FIM dos Estilos para o FOOTER --- */
+
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+
+    <header class="bg-gray-800 p-4 shadow-lg fixed top-0 left-0 w-full z-50">
+        <nav class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="img/logo primeira seçao (1).png" alt="Logo Casal Mel" class="h-10 w-auto rounded-md">
+            </div>
+
+            <div class="hidden md:flex space-x-8">
+                <a href="#sessao2" class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2">Nossa História</a>
+                <a href="#sessao3" class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2">Eventos</a>
+                <a href="#sessao4" class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2">Contato</a>
+                <a href="#sessao5" class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2">Convidar</a>
+            </div>
+
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-white focus:outline-none p-2 rounded-md hover:bg-gray-700">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay fixed top-0 left-0 h-full w-64 bg-gray-800 shadow-xl z-50 md:hidden flex flex-col pt-20">
+        <button id="close-mobile-menu" class="absolute top-4 right-4 text-white focus:outline-none p-2 rounded-md hover:bg-gray-700">
+            <i class="fas fa-times text-2xl"></i>
+        </button>
+        <nav class="flex flex-col p-4 space-y-4">
+            <a href="#sessao2" class="text-white hover:text-yellow-400 text-xl font-semibold transition duration-300 rounded-md p-2" onclick="closeMobileMenu()">Nossa História</a>
+            <a href="#sessao3" class="text-white hover:text-yellow-400 text-xl font-semibold transition duration-300 rounded-md p-2" onclick="closeMobileMenu()">Eventos</a>
+            <a href="#sessao4" class="text-white hover:text-yellow-400 text-xl font-semibold transition duration-300 rounded-md p-2" onclick="closeMobileMenu()">Contato</a>
+            <a href="#sessao5" class="text-white hover:text-yellow-400 text-xl font-semibold transition duration-300 rounded-md p-2" onclick="closeMobileMenu()">Convidar</a>
+        </nav>
+    </div>
+
+    <section id="sessao1" class="section-background min-h-screen flex items-center justify-center p-8 pt-20">
+        <div class="section-content flex-col md:flex-row items-center justify-center">
+            <div class="md:w-1/2 flex justify-center md:justify-start mb-8 md:mb-0">
+                <img src="img/logo primeira seçao (1).png" alt="Logo Casal Mel Grande" class="max-w-full h-auto rounded-lg shadow-lg">
+            </div>
+
+            <div class="md:w-1/2 text-center md:text-left p-4">
+                <h1 class="text-4xl md:text-6xl font-extrabold leading-tight text-white drop-shadow-lg">
+                    Quando o mel<br> é bom, a abelha sempre volta.
+                </h1>
+            </div>
+        </div>
+    </section>
+
+    <section id="sessao2" class="section-background min-h-screen flex items-center justify-center p-8">
+        <div class="section-content flex-col md:flex-row items-center justify-center gap-8">
+            <div class="md:w-1/2 text-center md:text-left order-first md:order-none">
+                <h2 class="text-5xl md:text-7xl font-bold mb-4 text-yellow-400">Nossa História</h2>
+                <p class="text-lg md:text-3xl max-w-3xl mx-auto mb-8">
+                    Somos o casal Mel, swingueiros. Eu sou a Sra. <br> mel, uma hotwife. Amo meu marido, temos <br>cumplicidade e respeito. <br> Juntos, somos parceiros para viver nossos <br> desejos e fantasias.
+                </p>
+
+                <button class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300">
+                    Saiba Mais
+                </button>
+            </div>
+            <div class="md:w-1/2 flex justify-center order-last md:order-none">
+                <img src="img/foto-casal-mel (1).png" alt="Foto da Sessão 2" class="rounded-lg shadow-xl" style="height: 450px; object-fit: cover;">
+            </div>
+        </div>
+    </section>
+
+    <section id="sessao3" class="section-background min-h-screen flex flex-col items-center justify-center p-8">
+        <div class="section-content relative mb-8">
+            <img src="img/logo-eventos.png" alt="Pequena Logo" class="absolute top-0 left-0 opacity-50 rounded-full hidden md:block h-12 w-auto">
+            <img src="img/logo-eventos.png" alt="Pequena Logo" class="absolute top-0 right-0 opacity-50 rounded-full hidden md:block h-12 w-auto">
+
+            <h2 class="text-5xl font-bold mb-8 text-yellow-400">EVENTOS CASAL MEL</h2>
+            <p class="text-lg max-w-3xl mx-auto mb-8">
+                Confira nossos próximos eventos e não perca a chance de participar!
+            </p>
+
+            <div class="relative w-full max-w-6xl mx-auto bg-gray-800 p-4 rounded-lg shadow-xl overflow-hidden">
+                <div id="slideshow-container">
+                    <div class="flex-shrink-0">
+                        <div class="slideshow-card">
+                            <img src="img/evento-01.jpeg" alt="Evento 1" class="event-image">
+                            <p class="text-lg font-semibold mb-2" data-event-id="1">Festa do Prazer</p>
+                            <button class="saiba-mais bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300 w-full md:w-auto">
+                                Saiba Mais
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <div class="slideshow-card">
+                            <img src="img/evento-02.jpeg" alt="Evento 2" class="event-image">
+                            <p class="text-lg font-semibold mb-2" data-event-id="2">Noite do Fetiche</p>
+                            <button class="saiba-mais bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300 w-full md:w-auto">
+                                Saiba Mais
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <div class="slideshow-card">
+                            <img src="img/evento-03.jpeg" alt="Evento 3" class="event-image">
+                            <p class="text-lg font-semibold mb-2" data-event-id="3">Jantar Secreto</p>
+                            <button class="saiba-mais bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300 w-full md:w-auto">
+                                Saiba Mais
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <div class="slideshow-card">
+                            <img src="img/evento-04.jpeg" alt="Evento 4" class="event-image">
+                            <p class="text-lg font-semibold mb-2" data-event-id="4">Baile de Máscaras</p>
+                            <button class="saiba-mais bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300 w-full md:w-auto">
+                                Saiba Mais
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <div class="slideshow-card">
+                            <img src="img/evento-05.jpeg" alt="Evento 5" class="event-image">
+                            <p class="text-lg font-semibold mb-2" data-event-id="5">Pool Party Hot</p>
+                            <button class="saiba-mais bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300 w-full md:w-auto">
+                                Saiba Mais
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <div class="slideshow-card">
+                            <img src="img/evento-06.jpeg" alt="Evento 6" class="event-image">
+                            <p class="text-lg font-semibold mb-2" data-event-id="6">Noite dos Segredos</p>
+                            <button class="saiba-mais bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300 w-full md:w-auto">
+                                Saiba Mais
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <div class="slideshow-card">
+                            <img src="https://placehold.co/326x406/cccccc/ffffff?text=Evento+7" alt="Evento 7" class="event-image">
+                            <p class="text-lg font-semibold mb-2" data-event-id="7">Encontro Casual</p>
+                            <button class="saiba-mais bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300 w-full md:w-auto">
+                                Saiba Mais
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <div class="slideshow-card">
+                            <img src="https://placehold.co/326x406/dddddd/ffffff?text=Evento+8" alt="Evento 8" class="event-image">
+                            <p class="text-lg font-semibold mb-2" data-event-id="8">Sunset Hot</p>
+                            <button class="saiba-mais bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300 w-full md:w-auto">
+                                Saiba Mais
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="prev-slide-button">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button id="next-slide-button">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+
+                <div id="slide-dots-container">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="sessao4" class="section-background min-h-screen flex items-center justify-center p-8">
+        <div class="section-content flex-col md:flex-row items-center justify-center gap-8">
+            <div class="md:w-1/2 flex justify-center order-first md:order-none">
+                <img src="img/foto-sra-mel (1).png" alt="Foto da Sessão 4" class="rounded-lg shadow-xl" style="width: 340px;">
+            </div>
+            <div class="md:w-1/2 text-center md:text-left order-last md:order-none">
+                <h2 class="text-5xl font-bold mb-4 text-yellow-400">🍯 Convite Especial 🍯</h2>
+                <p class="text-lg max-w-3xl mx-auto mb-8">
+                    Você está pronto para uma noite inesquecível?
+                    Sou Sra. Mel, e te convido para assistir de pertinho os meus shows de strip — um espetáculo envolvente, sensual e
+                    cheio de atitude.
+                </p>
+                <p class="mb-4">
+                    Cada apresentação é feita com muito charme, mistério e provocação… para quem sabe apreciar o prazer com classe.
+                </p>
+                <button id="fale-conosco-button" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300">
+                    Fale Conosco
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section id="sessao5" class="section-background min-h-screen flex items-center justify-center p-8">
+        <div class="section-content flex-col md:flex-row items-stretch justify-center gap-12">
+            <div class="md:w-1/2 flex flex-col items-center justify-center p-4">
+                <div class="sessao5-card">
+                    <img src="img/conexao-sw.png" alt="Imagem Detalhe" class="sessao5-img">
+                    <h4 class="sub-title text-lg font-semibold text-yellow-400">Conexão e Desejos</h4>
+                    <h3 class="text-2xl font-bold mb-2 text-yellow-400">Saiba mais sobre eventos </h3>
+                    <button class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300">
+                        Quero Saber Mais
+                    </button>
+                </div>
+            </div>
+
+            <div class="md:w-1/2 flex flex-col items-center justify-center p-4">
+                <div class="sessao5-card">
+                    <img src="img/evento-05.jpeg" alt="Banner Grande" class="sessao5-img">
+                    <h3 class="text-2xl font-bold mb-2 text-yellow-400">Seja Um Convidado Especial</h3>
+                    <p class="text-lg mb-4 max-w-md">
+                        Receba informações exclusivas sobre nossos eventos e convites personalizados.
+                    </p>
+                    <button id="saiba-mais-convidado-button" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300">
+                        Saiba Mais
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900">
+        <div class="footer-content-wrapper">
+            <div class="footer-contact">
+                <p class="text-white font-bold text-xl mb-2 md:mb-0">Contato</p>
+                <div class="numbers-container">
+                    <p><a href="https://wa.me/5511999999999" target="_blank" class="hover:text-yellow-400"><i class="fab fa-whatsapp mr-2"></i>(11) 99999-9999</a></p>
+                    <p><a href="https://wa.me/5511888888888" target="_blank" class="hover:text-yellow-400"><i class="fab fa-whatsapp mr-2"></i>(11) 88888-8888</a></p>
+                </div>
+            </div>
+
+            <div class="footer-social">
+                <a href="https://www.instagram.com/seuperfil" target="_blank" class="hover:text-yellow-400" aria-label="Instagram Casal Mel"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.tiktok.com/@seuperfil" target="_blank" class="hover:text-yellow-400" aria-label="TikTok Casal Mel"><i class="fab fa-tiktok"></i></a>
+                <a href="https://twitter.com/seuperfil" target="_blank" class="hover:text-yellow-400" aria-label="Twitter Casal Mel"><i class="fab fa-twitter"></i></a>
+                <a href="https://t.me/seucanal" target="_blank" class="hover:text-yellow-400" aria-label="Telegram Casal Mel"><i class="fab fa-telegram-plane"></i></a>
+            </div>
+        </div>
+
+        <div class="footer-copyright">
+            <p>&copy; 2024 Casal Mel. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <div id="evento-modal" class="fixed inset-0 bg-black bg-opacity-50 custom-modal hidden items-center justify-center z-50 p-4">
+        <div class="bg-white text-black rounded-lg p-6 max-w-4xl w-full mx-auto relative flex flex-col md:flex-row shadow-lg">
+            <button id="fechar-evento-modal" class="absolute top-2 right-2 text-gray-600 hover:text-gray-800 text-2xl font-bold">
+                &times;
+            </button>
+            <div class="md:w-1/2 p-2 flex justify-center items-center">
+                <img id="modal-imagem-evento" src="" alt="Imagem do Evento" class="rounded-lg">
+            </div>
+            <div class="md:w-1/2 p-2 md:pl-6 text-left flex flex-col justify-center">
+                <h3 class="text-2xl font-bold mb-4" id="modal-titulo">Detalhes do Evento</h3>
+                <p id="modal-conteudo" class="text-gray-800 leading-relaxed"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="contato-modal" class="fixed inset-0 bg-black bg-opacity-50 custom-modal hidden items-center justify-center z-50 p-4">
+        <div class="bg-white text-black rounded-lg p-6 max-w-4xl w-full mx-auto relative shadow-lg">
+            <button id="fechar-contato-modal" class="absolute top-2 right-2 text-gray-600 hover:text-gray-800 text-2xl font-bold">
+                &times;
+            </button>
+            <div class="text-center mb-6 flex items-center justify-center"> <span class="text-3xl mr-3">🍯</span> <h3 class="text-3xl font-bold text-yellow-600 inline-block">Convite Especial da Sra. Mel</h3> <span class="text-3xl ml-3">🍯</span> </div>
+            <p class="text-center text-gray-800 mb-6">
+                Estamos aqui para te atender. Veja algumas de nossas inspirações e entre em contato!
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="flex flex-col items-center">
+                    <img id="contato-img-1" src="img/sra.mel.jpg" alt="Imagem de Contato 1" class="contato-modal-img">
+                    <p class="text-center text-sm mt-2">Um show exclusivo</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <img id="contato-img-2" src="img/sra.mel.jpg" alt="Imagem de Contato 2" class="contato-modal-img">
+                    <p class="text-center text-sm mt-2">Um evento íntimo</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <img id="contato-img-3" src="img/sra.mel.jpg" alt="Imagem de Contato 3" class="contato-modal-img">
+                    <p class="text-center text-sm mt-2">Uma surpresa especial</p>
+                </div>
+            </div>
+            <div class="flex flex-col items-center">
+                <p class="text-lg font-bold mb-2">Fale Conosco:</p>
+                <div class="flex space-x-4">
+                    <a href="https://wa.me/5511999999999" target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full flex items-center">
+                        <i class="fab fa-whatsapp mr-2"></i> WhatsApp (1)
+                    </a>
+                    <a href="https://wa.me/5511888888888" target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full flex items-center">
+                        <i class="fab fa-whatsapp mr-2"></i> WhatsApp (2)
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Smooth scrolling para os links da navegação
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const closeMobileMenuButton = document.getElementById('close-mobile-menu');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenuOverlay.classList.add('open');
+        });
+
+        closeMobileMenuButton.addEventListener('click', () => {
+            mobileMenuOverlay.classList.remove('open');
+        });
+
+        function closeMobileMenu() {
+            mobileMenuOverlay.classList.remove('open');
+        }
+
+        // Slideshow para Sessão 3
+        const slideshowContainer = document.getElementById('slideshow-container');
+        const prevSlideButton = document.getElementById('prev-slide-button');
+        const nextSlideButton = document.getElementById('next-slide-button');
+        const slideDotsContainer = document.getElementById('slide-dots-container');
+        const slides = Array.from(slideshowContainer.children);
+        let currentIndex = 0;
+        let slidesToShow = 1; // Padrão para mobile
+
+        function updateSlidesToShow() {
+            if (window.innerWidth >= 768) {
+                slidesToShow = 3;
+            } else {
+                slidesToShow = 1;
+            }
+            updateSlides();
+            createDots();
+            updateDots();
+        }
+
+        function updateSlides() {
+            const totalSlides = slides.length;
+            const maxIndex = Math.ceil(totalSlides / slidesToShow) - 1;
+
+            if (currentIndex > maxIndex) {
+                currentIndex = maxIndex;
+            }
+            if (currentIndex < 0) {
+                currentIndex = 0;
+            }
+
+            const offset = -currentIndex * (100 / slidesToShow);
+            slideshowContainer.style.transform = `translateX(${offset}%)`;
+            updateDots();
+        }
+
+        function createDots() {
+            slideDotsContainer.innerHTML = '';
+            const totalDots = Math.ceil(slides.length / slidesToShow);
+            for (let i = 0; i < totalDots; i++) {
+                const dot = document.createElement('span');
+                dot.addEventListener('click', () => {
+                    currentIndex = i;
+                    updateSlides();
+                });
+                slideDotsContainer.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            Array.from(slideDotsContainer.children).forEach((dot, index) => {
+                if (index === currentIndex) {
+                    dot.classList.add('bg-yellow-400');
+                } else {
+                    dot.classList.remove('bg-yellow-400');
+                }
+            });
+        }
+
+        prevSlideButton.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+            } else {
+                currentIndex = Math.ceil(slides.length / slidesToShow) - 1; // Volta para o final
+            }
+            updateSlides();
+        });
+
+        nextSlideButton.addEventListener('click', () => {
+            if (currentIndex < Math.ceil(slides.length / slidesToShow) - 1) {
+                currentIndex++;
+            } else {
+                currentIndex = 0; // Volta para o início
+            }
+            updateSlides();
+        });
+
+        // Inicializa o slideshow e atualiza ao redimensionar
+        window.addEventListener('resize', updateSlidesToShow);
+        updateSlidesToShow(); // Chamada inicial para configurar corretamente
+
+        // Modals para Eventos (Sessão 3)
+        const eventoModal = document.getElementById('evento-modal');
+        const fecharEventoModal = document.getElementById('fechar-evento-modal');
+        const modalTitulo = document.getElementById('modal-titulo');
+        const modalConteudo = document.getElementById('modal-conteudo');
+        const modalImagemEvento = document.getElementById('modal-imagem-evento');
+
+        document.querySelectorAll('.saiba-mais').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const card = event.target.closest('.slideshow-card');
+                const eventId = card.querySelector('p').dataset.eventId;
+                const eventTitle = card.querySelector('p').textContent;
+                const eventImageSrc = card.querySelector('img').src;
+
+                let content = '';
+                switch (eventId) {
+                    case '1':
+                        content = 'Prepare-se para uma noite de pura diversão e liberdade! A Festa do Prazer é o nosso evento mais aguardado, onde você pode explorar seus desejos em um ambiente seguro e vibrante. Com música envolvente, performances exclusivas e um público seleto, garantimos uma experiência inesquecível. Vista-se para impressionar e junte-se a nós para celebrar o prazer em todas as suas formas.';
+                        break;
+                    case '2':
+                        content = 'Embarque em uma jornada de descobertas e fantasias na Noite do Fetiche. Este evento é dedicado àqueles que ousam ir além, explorando os limites da sensualidade e do excêntrico. Prepare-se para um ambiente temático, com apresentações ousadas e a oportunidade de vivenciar suas fantasias mais secretas. Desperte seus sentidos e liberte-se de tabus em uma noite de pura intensidade.';
+                        break;
+                    case '3':
+                        content = 'Um convite para um Jantar Secreto que promete mistério e sedução. Em um local exclusivo e revelado apenas aos convidados, desfrute de uma culinária requintada e de conversas provocantes em um ambiente íntimo. Esta é a oportunidade perfeita para fazer novas conexões e descobrir prazeres inesperados, tudo isso sob o véu do anonimato e da exclusividade.';
+                        break;
+                    case '4':
+                        content = 'Deslumbre-se com a elegância e o mistério do Baile de Máscaras. Vista sua máscara mais intrigante e mergulhe em uma noite de dança, intriga e sedução. Com música clássica e contemporânea, performances artísticas e convidados mascarados, este evento te transportará para um mundo de fantasia onde a identidade é um jogo e a paixão se revela em cada olhar.';
+                        break;
+                    case '5':
+                        content = 'Refresque-se e divirta-se na Pool Party Hot! Um dia de sol, água, música e muita gente bonita em um ambiente descontraído e sensual. Prepare seu traje de banho mais ousado e venha curtir à beira da piscina, com drinks refrescantes, DJs e a companhia do Casal Mel. A temperatura vai subir e a diversão é garantida!';
+                        break;
+                    case '6':
+                        content = 'Desvende os segredos da Noite dos Segredos, um evento onde a discrição e a ousadia andam de mãos dadas. Neste encontro seleto, você terá a chance de compartilhar e descobrir fantasias em um ambiente de total confiança e liberdade. Prepare-se para jogos, conversas profundas e a oportunidade de explorar seus desejos mais íntimos em uma atmosfera de cumplicidade.';
+                        break;
+                    case '7':
+                        content = 'Um Encontro Casual para quem busca conexões leves e prazerosas. Este evento é ideal para conhecer novas pessoas, trocar experiências e desfrutar de um ambiente amigável e descontraído, sem compromissos. Venha como você é e descubra novas amizades e possibilidades em uma noite agradável e cheia de boas energias.';
+                        break;
+                    case '8':
+                        content = 'Aproveite o pôr do sol mais sensual da cidade no Sunset Hot! Com uma vista deslumbrante e um clima de romance e paixão, este evento é perfeito para casais e solteiros que buscam um final de tarde inesquecível. Drinks especiais, música ambiente e a beleza do entardecer se unem para criar uma atmosfera de pura sedução e relaxamento.';
+                        break;
+                    default:
+                        content = 'Conteúdo detalhado para o evento selecionado.';
+                }
+
+                modalTitulo.textContent = eventTitle;
+                modalConteudo.textContent = content;
+                modalImagemEvento.src = eventImageSrc;
+                eventoModal.classList.remove('hidden');
+            });
+        });
+
+        fecharEventoModal.addEventListener('click', () => {
+            eventoModal.classList.add('hidden');
+        });
+
+        // Fechar modal ao clicar fora
+        eventoModal.addEventListener('click', (e) => {
+            if (e.target === eventoModal) {
+                eventoModal.classList.add('hidden');
+            }
+        });
+
+
+        // Modal de Contato (Sessão 4 e 5)
+        const contatoModal = document.getElementById('contato-modal');
+        const fecharContatoModal = document.getElementById('fechar-contato-modal');
+        const faleConoscoButton = document.getElementById('fale-conosco-button');
+        const saibaMaisConvidadoButton = document.getElementById('saiba-mais-convidado-button');
+
+
+        faleConoscoButton.addEventListener('click', () => {
+            contatoModal.classList.remove('hidden');
+        });
+
+        saibaMaisConvidadoButton.addEventListener('click', () => {
+            contatoModal.classList.remove('hidden');
+        });
+
+        fecharContatoModal.addEventListener('click', () => {
+            contatoModal.classList.add('hidden');
+        });
+
+        // Fechar modal ao clicar fora
+        contatoModal.addEventListener('click', (e) => {
+            if (e.target === contatoModal) {
+                contatoModal.classList.add('hidden');
+            }
+        });
+
+    </script>
+</body>
+</html>
