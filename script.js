@@ -1,251 +1,277 @@
-// Dados dos eventos (para os modais)
-const eventos = [
-    {
-        id: 1,
-        titulo: "Festa do Prazer",
-        descricao: "Uma noite de diversão e prazer com música, drinks e surpresas. Venha e sinta a energia!",
-        data: "25 de Setembro de 2024",
-        local: "Clube da Colmeia",
-        imagem: "https://drive.google.com/file/d/1-er9WzlbYbXxQQhOnyZ6GkJld9s6rrF3/view?usp=drive_link"
-    },
-    {
-        id: 2,
-        titulo: "Noite do Fetiche",
-        descricao: "Explore seus desejos mais profundos em um ambiente seguro e cheio de mistério. Use sua melhor fantasia!",
-        data: "10 de Outubro de 2024",
-        local: "Mansão Secreta",
-        imagem: "img/evento-02.jpeg"
-    },
-    {
-        id: 3,
-        titulo: "Jantar Secreto",
-        descricao: "Um jantar exclusivo e sensual para casais que buscam uma experiência gastronômica e erótica única.",
-        data: "05 de Novembro de 2024",
-        local: "Restaurante Privado",
-        imagem: "img/evento-03.jpeg"
-    },
-    {
-        id: 4,
-        titulo: "Baile de Máscaras",
-        descricao: "Misteriosos e sensuais, atrás das máscaras a noite ganha um novo significado. Ouse revelar o seu eu!",
-        data: "20 de Dezembro de 2024",
-        local: "Salão de Eventos",
-        imagem: "img/evento-04.jpeg"
-    },
-    {
-        id: 5,
-        titulo: "Pool Party Hot",
-        descricao: "O verão nunca foi tão quente! Mergulhe em uma festa à beira da piscina com muita música e diversão.",
-        data: "15 de Janeiro de 2025",
-        local: "Resort Exclusivo",
-        imagem: "img/evento-05.jpeg"
-    },
-    {
-        id: 6,
-        titulo: "Noite dos Segredos",
-        descricao: "Compartilhe seus segredos e descubra novas fantasias em uma noite de jogos e revelações.",
-        data: "28 de Fevereiro de 2025",
-        local: "Lounge Bar",
-        imagem: "img/evento-06.jpeg"
-    },
-    {
-        id: 7,
-        titulo: "Encontro Casual",
-        descricao: "Um encontro descontraído para conhecer novas pessoas e explorar novas conexões. Venha e relaxe!",
-        data: "10 de Março de 2025",
-        local: "Local a ser revelado",
-        imagem: "https://placehold.co/326x406/cccccc/ffffff?text=Evento+7"
-    },
-    {
-        id: 8,
-        titulo: "Sunset Hot",
-        descricao: "Uma festa na cobertura para apreciar o pôr do sol e aquecer a noite com a melhor companhia.",
-        data: "05 de Abril de 2025",
-        local: "Cobertura Secreta",
-        imagem: "https://placehold.co/326x406/dddddd/ffffff?text=Evento+8"
-    }
-];
+// Busca os dados dos eventos de uma planilha Google Sheets
+let eventos = [];
+
+async function buscarEventosPlanilha() {
+  // Substitua pelos seus dados:
+  const sheetId = "1IWXCq4sMT9e83tv_rHkwjNLwKmCfb-tmO-VWUSsfcxw"; // Exemplo: '1aBcD...'
+  const sheetName = "Eventos"; // Ou o nome da sua aba
+  const key = "AIzaSyD0W_Pco6cq3w9mmoGkx_poOrzVWpe09pw";
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${key}`;
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Erro ao buscar planilha");
+    const data = await res.json();
+    const linhas = data.values;
+    if (!linhas || linhas.length < 2) return;
+    // Assume que a primeira linha é o cabeçalho
+    eventos = linhas.slice(1).map((linha, idx) => ({
+      id: idx + 1,
+      titulo: linha[0] || "",
+      descricao: linha[1] || "",
+      data: linha[2] || "",
+      local: linha[3] || "",
+      imagem: linha[4] || "",
+    }));
+    // Aqui você pode chamar funções que dependem de eventos já carregados
+    console.log("Eventos carregados da planilha:", eventos);
+  } catch (e) {
+    console.error("Erro ao buscar eventos da planilha:", e);
+  }
+}
+
+// Chame esta função ao iniciar
+buscarEventosPlanilha();
 
 // --- Menu Mobile ---
-const mobileMenuButton = document.getElementById('mobile-menu-button');
-const closeMobileMenuButton = document.getElementById('close-mobile-menu');
-const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+const mobileMenuButton = document.getElementById("mobile-menu-button");
+const closeMobileMenuButton = document.getElementById("close-mobile-menu");
+const mobileMenuOverlay = document.getElementById("mobile-menu-overlay");
 
 function openMobileMenu() {
-    mobileMenuOverlay.classList.add('open');
+  mobileMenuOverlay.classList.add("open");
 }
 
 function closeMobileMenu() {
-    mobileMenuOverlay.classList.remove('open');
+  mobileMenuOverlay.classList.remove("open");
 }
 
-mobileMenuButton.addEventListener('click', openMobileMenu);
-closeMobileMenuButton.addEventListener('click', closeMobileMenu);
+mobileMenuButton.addEventListener("click", openMobileMenu);
+closeMobileMenuButton.addEventListener("click", closeMobileMenu);
 
 // Fechar menu ao clicar em um link
-const mobileMenuLinks = mobileMenuOverlay.querySelectorAll('a');
-mobileMenuLinks.forEach(link => {
-    link.addEventListener('click', closeMobileMenu);
+const mobileMenuLinks = mobileMenuOverlay.querySelectorAll("a");
+mobileMenuLinks.forEach((link) => {
+  link.addEventListener("click", closeMobileMenu);
 });
 
-
-// --- Slider de Eventos ---
-const slideshowContainer = document.getElementById('slideshow-container');
-const prevButton = document.getElementById('prev-slide-button');
-const nextButton = document.getElementById('next-slide-button');
-const dotsContainer = document.getElementById('slide-dots-container');
-const cards = slideshowContainer.querySelectorAll('.flex-shrink-0');
-
-let currentIndex = 0;
-let slidesPerView = window.innerWidth >= 768 ? 3 : 1;
-const totalSlides = cards.length;
-const totalPages = Math.ceil(totalSlides / slidesPerView);
-let currentSlidePage = 0;
-
-function createDots() {
-    dotsContainer.innerHTML = '';
-    for (let i = 0; i < totalPages; i++) {
-        const dot = document.createElement('span');
-        dotsContainer.appendChild(dot);
-        dot.addEventListener('click', () => {
-            currentSlidePage = i;
-            updateSlider();
-        });
+// --- Slider de Eventos dinâmico ---
+function renderizarCardsEventos() {
+  const slideshowContainer = document.getElementById("slideshow-container");
+  slideshowContainer.innerHTML = "";
+  eventos.forEach((evento) => {
+    const card = document.createElement("div");
+    card.className = "flex-shrink-0";
+    // Ajusta o link da imagem do Google Drive, se necessário
+    let imgSrc = evento.imagem;
+    // Suporte para links do tipo /file/d/ID/view ou compartilhamento direto
+    let driveId = null;
+    // /file/d/ID/
+    let match = imgSrc.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
+    if (match) driveId = match[1];
+    // ?id=ID
+    if (!driveId) {
+      match = imgSrc.match(/[?&]id=([\w-]+)/);
+      if (match) driveId = match[1];
     }
+    if (driveId) {
+      imgSrc = `https://drive.google.com/thumbnail?id=${driveId}`;
+    }
+    // Renderização manual dos elementos para evitar problemas de parsing
+    const cardDiv = document.createElement('div');
+    cardDiv.className = 'slideshow-card';
+    if (imgSrc) {
+      const img = document.createElement('img');
+      img.src = imgSrc;
+      img.alt = evento.titulo;
+      img.className = 'event-image';
+      cardDiv.appendChild(img);
+    }
+    const p = document.createElement('p');
+    p.className = 'text-sm font-semibold mb-2';
+    p.setAttribute('data-event-id', evento.id);
+    p.innerHTML = `${evento.titulo}<br>`;
+    cardDiv.appendChild(p);
+    const btn = document.createElement('button');
+    btn.className = 'saiba-mais bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300 w-full md:w-auto';
+    btn.textContent = 'Saiba Mais';
+    cardDiv.appendChild(btn);
+    card.appendChild(cardDiv);
+    slideshowContainer.appendChild(card);
+  });
 }
 
-function updateSlider() {
+function inicializarSlider() {
+  const slideshowContainer = document.getElementById("slideshow-container");
+  const prevButton = document.getElementById("prev-slide-button");
+  const nextButton = document.getElementById("next-slide-button");
+  const dotsContainer = document.getElementById("slide-dots-container");
+  let slidesPerView = window.innerWidth >= 768 ? 3 : 1;
+  let totalSlides = eventos.length;
+  let totalPages = Math.ceil(totalSlides / slidesPerView);
+  let currentSlidePage = 0;
+
+  function createDots() {
+    dotsContainer.innerHTML = "";
+    for (let i = 0; i < totalPages; i++) {
+      const dot = document.createElement("span");
+      dotsContainer.appendChild(dot);
+      dot.addEventListener("click", () => {
+        currentSlidePage = i;
+        updateSlider();
+      });
+    }
+  }
+
+  function updateSlider() {
     const offset = -currentSlidePage * 100;
     slideshowContainer.style.transform = `translateX(${offset}%)`;
-
-    // Atualiza os dots
-    const dots = dotsContainer.querySelectorAll('span');
+    const dots = dotsContainer.querySelectorAll("span");
     dots.forEach((dot, index) => {
-        if (index === currentSlidePage) {
-            dot.classList.add('bg-yellow-400');
-        } else {
-            dot.classList.remove('bg-yellow-400');
-        }
+      if (index === currentSlidePage) {
+        dot.classList.add("bg-yellow-400");
+      } else {
+        dot.classList.remove("bg-yellow-400");
+      }
     });
-
-    // Desativa/ativa botões de navegação
     prevButton.disabled = currentSlidePage === 0;
     nextButton.disabled = currentSlidePage === totalPages - 1;
-}
+  }
 
-prevButton.addEventListener('click', () => {
+  prevButton.onclick = () => {
     if (currentSlidePage > 0) {
-        currentSlidePage--;
-        updateSlider();
+      currentSlidePage--;
+      updateSlider();
     }
-});
-
-nextButton.addEventListener('click', () => {
+  };
+  nextButton.onclick = () => {
     if (currentSlidePage < totalPages - 1) {
-        currentSlidePage++;
-        updateSlider();
+      currentSlidePage++;
+      updateSlider();
     }
-});
+  };
 
-window.addEventListener('resize', () => {
+  window.addEventListener("resize", () => {
     const newSlidesPerView = window.innerWidth >= 768 ? 3 : 1;
     if (newSlidesPerView !== slidesPerView) {
-        slidesPerView = newSlidesPerView;
-        const newTotalPages = Math.ceil(totalSlides / slidesPerView);
-        if (currentSlidePage >= newTotalPages) {
-            currentSlidePage = newTotalPages - 1;
-        }
-        createDots();
-        updateSlider();
+      slidesPerView = newSlidesPerView;
+      totalPages = Math.ceil(totalSlides / slidesPerView);
+      if (currentSlidePage >= totalPages) {
+        currentSlidePage = totalPages - 1;
+      }
+      createDots();
+      updateSlider();
     }
-});
+  });
 
-// Inicialização
-createDots();
-updateSlider();
-
-
-// --- Modais de Eventos ---
-const eventoModal = document.getElementById('evento-modal');
-const closeEventoModal = document.getElementById('close-evento-modal');
-const saibaMaisButtons = document.querySelectorAll('.saiba-mais');
-
-saibaMaisButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        const eventId = button.previousElementSibling.dataset.eventId;
-        const evento = eventos.find(e => e.id == eventId);
-
-        if (evento) {
-            document.getElementById('modal-titulo-evento').textContent = evento.titulo;
-            document.getElementById('modal-descricao-evento').textContent = evento.descricao;
-            document.getElementById('modal-data-evento').textContent = `Data: ${evento.data}`;
-            document.getElementById('modal-local-evento').textContent = `Local: ${evento.local}`;
-            document.getElementById('modal-imagem-evento').src = evento.imagem;
-            eventoModal.classList.remove('hidden');
-        }
-    });
-});
-
-closeEventoModal.addEventListener('click', () => {
-    eventoModal.classList.add('hidden');
-});
-
-// Fechar modal ao clicar fora
-eventoModal.addEventListener('click', (e) => {
-    if (e.target === eventoModal) {
-        eventoModal.classList.add('hidden');
-    }
-});
-
-
-// --- Modal de Contato ---
-const contatoModal = document.getElementById('contato-modal');
-const closeContatoModal = document.getElementById('close-contato-modal');
-const faleConoscoButton = document.getElementById('fale-conosco-button');
-
-faleConoscoButton.addEventListener('click', () => {
-    contatoModal.classList.remove('hidden');
-});
-
-closeContatoModal.addEventListener('click', () => {
-    contatoModal.classList.add('hidden');
-});
-
-contatoModal.addEventListener('click', (e) => {
-    if (e.target === contatoModal) {
-        contatoModal.classList.add('hidden');
-    }
-});
-
-async function buscarImagensDrive() {
-    const folderId = '1kfzpHonZIOM5Dt7qt_0HQ7_oFrNbo8Wa';
-    const key = 'AIzaSyDhriirBqdbCFomhDG-8KVWoelVPv5_xPs';
-
-    try {
-        const res = await fetch(
-            `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents&key=${key}&fields=files(id,name,mimeType,webContentLink)`
-        );
-        
-        if (!res.ok) {
-            throw new Error('Erro ao buscar arquivos do Drive');
-        }
-
-        const data = await res.json();
-        
-        if (data.files && data.files.length > 0) {
-            // Processa cada arquivo encontrado
-            data.files.forEach(file => {
-                if (file.mimeType.startsWith('image/')) {
-                    const imageUrl = `https://drive.google.com/uc?export=view&id=${file.id}`;
-                    console.log('Imagem encontrada:', file.name, imageUrl);
-                    // Aqui você pode usar a imageUrl para exibir a imagem
-                }
-            });
-        }
-    } catch (error) {
-        console.error('Erro ao buscar imagens:', error);
-    }
+  createDots();
+  updateSlider();
 }
 
-// Chama a função quando necessário
-buscarImagensDrive();
+// Após buscar os eventos, renderize e inicialize o slider
+async function buscarEventosPlanilhaEDepois() {
+  await buscarEventosPlanilha();
+  renderizarCardsEventos();
+  inicializarSlider();
+  inicializarModais();
+}
+
+buscarEventosPlanilhaEDepois();
+
+// --- Modais de Eventos ---
+function inicializarModais() {
+  const eventoModal = document.getElementById("evento-modal");
+  const closeEventoModal = document.getElementById("close-evento-modal");
+  // Seleciona novamente pois os botões são renderizados dinamicamente
+  const saibaMaisButtons = document.querySelectorAll(".saiba-mais");
+
+  saibaMaisButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      // Busca o card mais próximo e pega o data-event-id
+      let eventId;
+      const p = button.parentElement.querySelector("p[data-event-id]");
+      if (p) {
+        eventId = p.dataset.eventId;
+      }
+      const evento = eventos.find((e) => e.id == eventId);
+      if (evento) {
+        // Ajusta o link da imagem do Google Drive, se necessário (igual aos cards)
+        let imgSrc = evento.imagem;
+        let driveId = null;
+        let match = imgSrc.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
+        if (match) driveId = match[1];
+        if (!driveId) {
+          match = imgSrc.match(/[?&]id=([\w-]+)/);
+          if (match) driveId = match[1];
+        }
+        if (driveId) {
+          imgSrc = `https://drive.google.com/thumbnail?id=${driveId}`;
+        }
+        document.getElementById("modal-titulo-evento").textContent = evento.titulo;
+        document.getElementById("modal-descricao-evento").textContent = evento.descricao;
+        document.getElementById("modal-data-evento").textContent = `Data: ${evento.data}`;
+        document.getElementById("modal-local-evento").textContent = `Local: ${evento.local}`;
+        const imgEl = document.getElementById("modal-imagem-evento");
+        imgEl.src = imgSrc;
+        imgEl.alt = evento.titulo;
+        imgEl.className = 'event-image rounded-lg shadow-xl';
+        // Centraliza o modal na tela e define altura máxima
+        eventoModal.style.display = 'flex';
+        eventoModal.style.alignItems = 'center';
+        eventoModal.style.justifyContent = 'center';
+        eventoModal.style.top = '0';
+        eventoModal.style.left = '0';
+        eventoModal.style.width = '100vw';
+        eventoModal.style.height = '100vh';
+        eventoModal.style.maxHeight = 'none';
+        // O conteúdo do modal (primeiro filho) recebe o maxHeight
+        const modalContent = eventoModal.querySelector('div');
+        if (modalContent) {
+          modalContent.style.maxHeight = '80vh';
+          modalContent.style.overflowY = 'auto';
+          modalContent.style.scrollbarWidth = 'none'; // Firefox
+          modalContent.style.msOverflowStyle = 'none'; // IE/Edge
+          modalContent.style.overscrollBehavior = 'contain';
+          // Para Chrome, Safari e outros navegadores baseados em Webkit
+          modalContent.style.setProperty('scrollbar-width', 'none');
+          modalContent.style.setProperty('-ms-overflow-style', 'none');
+          // Esconde a barra de rolagem no Webkit
+          modalContent.style.setProperty('overflow', 'auto');
+          modalContent.classList.add('hide-scrollbar');
+        }
+        eventoModal.classList.remove("hidden");
+      }
+    });
+  });
+
+  closeEventoModal.addEventListener("click", function (e) {
+    // Garante que o modal será fechado ao clicar no X
+    eventoModal.classList.add("hidden");
+    // Remove o display flex para evitar conflitos de exibição futura
+    eventoModal.style.display = '';
+  });
+  eventoModal.addEventListener("click", (e) => {
+    if (e.target === eventoModal) {
+      eventoModal.classList.add("hidden");
+    }
+  });
+}
+
+// --- Modal de Contato ---
+const contatoModal = document.getElementById("contato-modal");
+const closeContatoModal = document.getElementById("close-contato-modal");
+const faleConoscoButton = document.getElementById("fale-conosco-button");
+
+faleConoscoButton.addEventListener("click", () => {
+  contatoModal.classList.remove("hidden");
+});
+
+closeContatoModal.addEventListener("click", () => {
+  contatoModal.classList.add("hidden");
+});
+
+contatoModal.addEventListener("click", (e) => {
+  if (e.target === contatoModal) {
+    contatoModal.classList.add("hidden");
+  }
+});

@@ -1,302 +1,440 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Casal Mel</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body class="bg-gray-900 text-white">
-
+    <link rel="shortcut icon" href="./img/logo primeira seçao.png" type="image/x-icon">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="bg-gray-900 text-white">
     <header class="bg-gray-800 p-4 shadow-lg fixed top-0 left-0 w-full z-50">
-        <nav class="container mx-auto flex justify-between items-center">
-            <div class="flex items-center">
-                <img src="img/logo primeira seçao (1).png" alt="Logo Casal Mel" class="h-10 w-auto rounded-md">
-            </div>
+      <nav class="container mx-auto flex justify-between items-center">
+        <div class="flex items-center">
+          <img
+            src="img/logo primeira seçao (1).png"
+            alt="Logo Casal Mel"
+            class="h-10 w-auto rounded-md"
+          />
+        </div>
 
-            <div class="hidden md:flex space-x-8">
-                <a href="#sessao2" class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2">Nossa História</a>
-                <a href="#sessao3" class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2">Eventos</a>
-                <a href="#sessao4" class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2">Contato</a>
-                <a href="#sessao5" class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2">Convidar</a>
-            </div>
+        <div class="hidden md:flex space-x-8">
+          <a
+            href="#sessao2"
+            class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2"
+            >Nossa História</a
+          >
+          <a
+            href="#sessao3"
+            class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2"
+            >Eventos</a
+          >
+          <a
+            href="#sessao4"
+            class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2"
+            >Contato</a
+          >
+          <a
+            href="#sessao5"
+            class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2"
+            >Convidar</a
+          >
+        </div>
 
-            <div class="md:hidden">
-                <button id="mobile-menu-button" class="text-white focus:outline-none p-2 rounded-md hover:bg-gray-700">
-                    <i class="fas fa-bars text-2xl"></i>
-                </button>
-            </div>
-        </nav>
+        <div class="md:hidden">
+          <button
+            id="mobile-menu-button"
+            class="text-white focus:outline-none p-2 rounded-md hover:bg-gray-700"
+          >
+            <i class="fas fa-bars text-2xl"></i>
+          </button>
+        </div>
+      </nav>
     </header>
 
-    <div id="mobile-menu-overlay" class="mobile-menu-overlay fixed top-0 left-0 h-full w-64 bg-gray-800 shadow-xl z-50 md:hidden flex flex-col pt-20">
-        <button id="close-mobile-menu" class="absolute top-4 right-4 text-white focus:outline-none p-2 rounded-md hover:bg-gray-700">
-            <i class="fas fa-times text-2xl"></i>
-        </button>
-        <nav class="flex flex-col p-4 space-y-4">
-            <a href="#sessao2" class="text-white hover:text-yellow-400 text-xl font-semibold transition duration-300 rounded-md p-2" onclick="closeMobileMenu()">Nossa História</a>
-            <a href="#sessao3" class="text-white hover:text-yellow-400 text-xl font-semibold transition duration-300 rounded-md p-2" onclick="closeMobileMenu()">Eventos</a>
-            <a href="#sessao4" class="text-white hover:text-yellow-400 text-xl font-semibold transition duration-300 rounded-md p-2" onclick="closeMobileMenu()">Contato</a>
-            <a href="#sessao5" class="text-white hover:text-yellow-400 text-xl font-semibold transition duration-300 rounded-md p-2" onclick="closeMobileMenu()">Convidar</a>
-        </nav>
+    <div
+      id="mobile-menu-overlay"
+      class="mobile-menu-overlay fixed top-0 left-0 h-full w-64 bg-gray-800 shadow-xl z-50 md:hidden flex flex-col pt-20"
+    >
+      <button
+        id="close-mobile-menu"
+        class="absolute top-4 right-4 text-white focus:outline-none p-2 rounded-md hover:bg-gray-700"
+      >
+        <i class="fas fa-times text-2xl"></i>
+      </button>
+      <nav class="flex flex-col p-4 space-y-4">
+        <a
+          href="#sessao2"
+          class="text-white hover:text-yellow-400 text-xl font-semibold transition duration-300 rounded-md p-2"
+          onclick="closeMobileMenu()"
+          >Nossa História</a
+        >
+        <a
+          href="#sessao3"
+          class="text-white hover:text-yellow-400 text-xl font-semibold transition duration-300 rounded-md p-2"
+          onclick="closeMobileMenu()"
+          >Eventos</a
+        >
+        <a
+          href="#sessao4"
+          class="text-white hover:text-yellow-400 text-xl font-semibold transition duration-300 rounded-md p-2"
+          onclick="closeMobileMenu()"
+          >Contato</a
+        >
+        <a
+          href="#sessao5"
+          class="text-white hover:text-yellow-400 text-xl font-semibold transition duration-300 rounded-md p-2"
+          onclick="closeMobileMenu()"
+          >Convidar</a
+        >
+      </nav>
     </div>
 
-    <section id="sessao1" class="section-background min-h-screen flex items-center justify-center p-8 pt-20">
-        <div class="section-content flex-col md:flex-row items-center justify-center">
-            <div class="md:w-1/2 flex justify-center md:justify-start mb-8 md:mb-0">
-                <img src="img/logo primeira seçao (1).png" alt="Logo Casal Mel Grande" class="max-w-full h-auto rounded-lg shadow-lg">
-            </div>
-
-            <div class="md:w-1/2 text-center md:text-left p-4">
-                <h1 class="text-4xl md:text-6xl font-extrabold leading-tight text-white drop-shadow-lg">
-                    Quando o mel<br> é bom, a abelha sempre volta.
-                </h1>
-            </div>
+    <section
+      id="sessao1"
+      class="section-background min-h-screen flex items-center justify-center p-8 pt-20"
+    >
+      <div
+        class="section-content flex-col md:flex-row items-center justify-center"
+      >
+        <div class="md:w-1/2 flex justify-center md:justify-start mb-8 md:mb-0">
+          <img
+            src="img/logo primeira seçao (1).png"
+            alt="Logo Casal Mel Grande"
+            class="max-w-full h-auto rounded-lg shadow-lg"
+          />
         </div>
+
+        <div class="md:w-1/2 text-center md:text-left p-4">
+          <h1
+            class="text-4xl md:text-6xl font-extrabold leading-tight text-white drop-shadow-lg"
+          >
+            Quando o mel<br />
+            é bom, a abelha sempre volta.
+          </h1>
+        </div>
+      </div>
     </section>
 
-    <section id="sessao2" class="section-background min-h-screen flex items-center justify-center p-8">
-        <div class="section-content flex-col md:flex-row items-center justify-center gap-8">
-            <div class="md:w-1/2 text-center md:text-left order-first md:order-none">
-                <h2 class="text-5xl md:text-7xl font-bold mb-4 text-yellow-400">Nossa História</h2>
-                <p class="text-lg md:text-3xl max-w-3xl mx-auto mb-8">
-                    Somos o casal Mel, swingueiros. Eu sou a Sra. <br> mel, uma hotwife. Amo meu marido, temos <br>cumplicidade e respeito. <br> Juntos, somos parceiros para viver nossos <br> desejos e fantasias.
-                </p>
+    <section
+      id="sessao2"
+      class="section-background min-h-screen flex items-center justify-center p-8"
+    >
+      <div
+        class="section-content flex-col md:flex-row items-center justify-center gap-8"
+      >
+        <div
+          class="md:w-1/2 text-center md:text-left order-first md:order-none"
+        >
+          <h2 class="text-5xl md:text-7xl font-bold mb-4 text-yellow-400">
+            Nossa História
+          </h2>
+          <p class="text-lg md:text-3xl max-w-3xl mx-auto mb-8">
+            Somos o casal Mel, swingueiros. Eu sou a Sra. <br />
+            mel, uma hotwife. Amo meu marido, temos <br />cumplicidade e
+            respeito. <br />
+            Juntos, somos parceiros para viver nossos <br />
+            desejos e fantasias.
+          </p>
 
-                <button class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300">
-                    Saiba Mais
-                </button>
-            </div>
-            <div class="md:w-1/2 flex justify-center order-last md:order-none">
-                <img src="img/foto-casal-mel (1).png" alt="Foto da Sessão 2" class="rounded-lg shadow-xl" style="height: 450px; object-fit: cover;">
-            </div>
+          <button
+            class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300"
+          >
+            Saiba Mais
+          </button>
         </div>
+        <div class="md:w-1/2 flex justify-center order-last md:order-none">
+          <img
+            src="img/foto-casal-mel (1).png"
+            alt="Foto da Sessão 2"
+            class="rounded-lg shadow-xl"
+            style="height: 450px; object-fit: cover"
+          />
+        </div>
+      </div>
     </section>
 
-    <section id="sessao3" class="section-background min-h-screen flex flex-col items-center justify-center p-8">
-        <div class="section-content relative mb-8">
-            <img src="img/logo-eventos.png" alt="Pequena Logo" class="absolute top-0 left-0 opacity-50 rounded-full hidden md:block h-12 w-auto">
-            <img src="img/logo-eventos.png" alt="Pequena Logo" class="absolute top-0 right-0 opacity-50 rounded-full hidden md:block h-12 w-auto">
+    <section
+      id="sessao3"
+      class="section-background min-h-screen flex flex-col items-center justify-center p-8"
+    >
+      <div class="section-content relative mb-8">
+        <img
+          src="img/logo-eventos.png"
+          alt="Pequena Logo"
+          class="absolute top-0 left-0 opacity-50 rounded-full hidden md:block h-12 w-auto"
+        />
+        <img
+          src="img/logo-eventos.png"
+          alt="Pequena Logo"
+          class="absolute top-0 right-0 opacity-50 rounded-full hidden md:block h-12 w-auto"
+        />
 
-            <h2 class="text-5xl font-bold mb-8 text-yellow-400">EVENTOS CASAL MEL</h2>
-            <p class="text-lg max-w-3xl mx-auto mb-8">
-                Confira nossos próximos eventos e não perca a chance de participar!
+        <h2 class="text-5xl font-bold mb-8 text-yellow-400">
+          EVENTOS CASAL MEL
+        </h2>
+        <p class="text-lg max-w-3xl mx-auto mb-8">
+          Confira nossos próximos eventos e não perca a chance de participar!
+        </p>
+
+        <div
+          class="relative w-full max-w-6xl mx-auto bg-gray-800 p-4 rounded-lg shadow-xl overflow-hidden"
+        >
+          <div id="slideshow-container">
+            <!-- Os cards dos eventos serão inseridos dinamicamente pelo JavaScript -->
+          </div>
+
+          <button id="prev-slide-button">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button id="next-slide-button">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+
+          <div id="slide-dots-container"></div>
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="sessao4"
+      class="section-background min-h-screen flex items-center justify-center p-8"
+    >
+      <div
+        class="section-content flex-col md:flex-row items-center justify-center gap-8"
+      >
+        <div class="md:w-1/2 flex justify-center order-first md:order-none">
+          <img
+            src="img/foto-sra-mel (1).png"
+            alt="Foto da Sessão 4"
+            class="rounded-lg shadow-xl"
+            style="width: 340px"
+          />
+        </div>
+        <div class="md:w-1/2 text-center md:text-left order-last md:order-none">
+          <h2 class="text-5xl font-bold mb-4 text-yellow-400">
+            🍯 Convite Especial 🍯
+          </h2>
+          <p class="text-lg max-w-3xl mx-auto mb-8">
+            Você está pronto para uma noite inesquecível? Sou Sra. Mel, e te
+            convido para assistir de pertinho os meus shows de strip — um
+            espetáculo envolvente, sensual e cheio de atitude.
+          </p>
+          <p class="mb-4">
+            Cada apresentação é feita com muito charme, mistério e provocação…
+            para quem sabe apreciar o prazer com classe.
+          </p>
+          <button
+            id="fale-conosco-button"
+            class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300"
+          >
+            Fale Conosco
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="sessao5"
+      class="section-background min-h-screen flex items-center justify-center p-8"
+    >
+      <div
+        class="section-content flex-col md:flex-row items-stretch justify-center gap-12"
+      >
+        <div class="md:w-1/2 flex flex-col items-center justify-center p-4">
+          <div class="sessao5-card">
+            <img
+              src="img/conexao-sw.png"
+              alt="Imagem Detalhe"
+              class="sessao5-img"
+            />
+            <h4 class="sub-title text-lg font-semibold text-yellow-400">
+              Conexão e Desejos
+            </h4>
+            <h3 class="text-2xl font-bold mb-2 text-yellow-400">
+              Saiba mais sobre eventos
+            </h3>
+            <button
+              class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300"
+            >
+              Quero Saber Mais
+            </button>
+          </div>
+        </div>
+
+        <div class="md:w-1/2 flex flex-col items-center justify-center p-4">
+          <div class="sessao5-card">
+            <img
+              src="img/evento-05.jpeg"
+              alt="Banner Grande"
+              class="sessao5-img"
+            />
+            <h3 class="text-2xl font-bold mb-2 text-yellow-400">
+              Seja Um Convidado Especial
+            </h3>
+            <p class="text-lg mb-4 max-w-md">
+              Venha fazer parte da nossa experiência. Preencha o formulário e
+              faça parte da nossa comunidade secreta!
             </p>
-
-            <div class="relative w-full max-w-6xl mx-auto bg-gray-800 p-4 rounded-lg shadow-xl overflow-hidden">
-                <div id="slideshow-container">
-                    <div class="flex-shrink-0">
-                        <div class="slideshow-card">
-                            <img src="https://drive.google.com/file/d/1-er9WzlbYbXxQQhOnyZ6GkJld9s6rrF3/view?usp=drive_link" alt="Evento 1" class="event-image">
-                            <p class="text-lg font-semibold mb-2" data-event-id="1">Festa do Prazer</p>
-                            <button class="saiba-mais bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300 w-full md:w-auto">
-                                Saiba Mais
-                            </button>
-                        </div>
-                    </div>
-                    <div class="flex-shrink-0">
-                        <div class="slideshow-card">
-                            <img src="img/evento-02.jpeg" alt="Evento 2" class="event-image">
-                            <p class="text-lg font-semibold mb-2" data-event-id="2">Noite do Fetiche</p>
-                            <button class="saiba-mais bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300 w-full md:w-auto">
-                                Saiba Mais
-                            </button>
-                        </div>
-                    </div>
-                    <div class="flex-shrink-0">
-                        <div class="slideshow-card">
-                            <img src="img/evento-03.jpeg" alt="Evento 3" class="event-image">
-                            <p class="text-lg font-semibold mb-2" data-event-id="3">Jantar Secreto</p>
-                            <button class="saiba-mais bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300 w-full md:w-auto">
-                                Saiba Mais
-                            </button>
-                        </div>
-                    </div>
-                    <div class="flex-shrink-0">
-                        <div class="slideshow-card">
-                            <img src="img/evento-04.jpeg" alt="Evento 4" class="event-image">
-                            <p class="text-lg font-semibold mb-2" data-event-id="4">Baile de Máscaras</p>
-                            <button class="saiba-mais bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300 w-full md:w-auto">
-                                Saiba Mais
-                            </button>
-                        </div>
-                    </div>
-                    <div class="flex-shrink-0">
-                        <div class="slideshow-card">
-                            <img src="img/evento-05.jpeg" alt="Evento 5" class="event-image">
-                            <p class="text-lg font-semibold mb-2" data-event-id="5">Pool Party Hot</p>
-                            <button class="saiba-mais bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300 w-full md:w-auto">
-                                Saiba Mais
-                            </button>
-                        </div>
-                    </div>
-                    <div class="flex-shrink-0">
-                        <div class="slideshow-card">
-                            <img src="img/evento-06.jpeg" alt="Evento 6" class="event-image">
-                            <p class="text-lg font-semibold mb-2" data-event-id="6">Noite dos Segredos</p>
-                            <button class="saiba-mais bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300 w-full md:w-auto">
-                                Saiba Mais
-                            </button>
-                        </div>
-                    </div>
-                    <div class="flex-shrink-0">
-                        <div class="slideshow-card">
-                            <img src="img/evento-07.jpeg" alt="Evento 7" class="event-image">
-                            <p class="text-lg font-semibold mb-2" data-event-id="7">Encontro Casual</p>
-                            <button class="saiba-mais bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300 w-full md:w-auto">
-                                Saiba Mais
-                            </button>
-                        </div>
-                    </div>
-                    <div class="flex-shrink-0">
-                        <div class="slideshow-card">
-                            <img src="img/evento-02.jpeg" alt="Evento 8" class="event-image">
-                            <p class="text-lg font-semibold mb-2" data-event-id="8">Sunset Hot</p>
-                            <button class="saiba-mais bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300 w-full md:w-auto">
-                                Saiba Mais
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <button id="prev-slide-button">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <button id="next-slide-button">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-
-                <div id="slide-dots-container">
-                </div>
-            </div>
+            <button
+              id="quero-ser-convidado"
+              class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300"
+            >
+              Quero ser Convidado
+            </button>
+          </div>
         </div>
-    </section>
-
-    <section id="sessao4" class="section-background min-h-screen flex items-center justify-center p-8">
-        <div class="section-content flex-col md:flex-row items-center justify-center gap-8">
-            <div class="md:w-1/2 flex justify-center order-first md:order-none">
-                <img src="img/foto-sra-mel (1).png" alt="Foto da Sessão 4" class="rounded-lg shadow-xl" style="width: 340px;">
-            </div>
-            <div class="md:w-1/2 text-center md:text-left order-last md:order-none">
-                <h2 class="text-5xl font-bold mb-4 text-yellow-400">🍯 Convite Especial 🍯</h2>
-                <p class="text-lg max-w-3xl mx-auto mb-8">
-                    Você está pronto para uma noite inesquecível?
-                    Sou Sra. Mel, e te convido para assistir de pertinho os meus shows de strip — um espetáculo envolvente, sensual e
-                    cheio de atitude.
-                </p>
-                <p class="mb-4">
-                    Cada apresentação é feita com muito charme, mistério e provocação… para quem sabe apreciar o prazer com classe.
-                </p>
-                <button id="fale-conosco-button" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300">
-                    Fale Conosco
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <section id="sessao5" class="section-background min-h-screen flex items-center justify-center p-8">
-        <div class="section-content flex-col md:flex-row items-stretch justify-center gap-12">
-            <div class="md:w-1/2 flex flex-col items-center justify-center p-4">
-                <div class="sessao5-card">
-                    <img src="img/conexao-sw.png" alt="Imagem Detalhe" class="sessao5-img">
-                    <h4 class="sub-title text-lg font-semibold text-yellow-400">Conexão e Desejos</h4>
-                    <h3 class="text-2xl font-bold mb-2 text-yellow-400">Saiba mais sobre eventos </h3>
-                    <button class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300">
-                        Quero Saber Mais
-                    </button>
-                </div>
-            </div>
-
-            <div class="md:w-1/2 flex flex-col items-center justify-center p-4">
-                <div class="sessao5-card">
-                    <img src="img/evento-05.jpeg" alt="Banner Grande" class="sessao5-img">
-                    <h3 class="text-2xl font-bold mb-2 text-yellow-400">Seja Um Convidado Especial</h3>
-                    <p class="text-lg mb-4 max-w-md">
-                        Venha fazer parte da nossa experiência. Preencha o formulário e faça parte da nossa comunidade secreta!
-                    </p>
-                    <button id="quero-ser-convidado" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300">
-                        Quero ser Convidado
-                    </button>
-                </div>
-            </div>
-        </div>
+      </div>
     </section>
 
     <footer class="bg-gray-800 text-gray-300 py-8 px-4 relative">
-        <div class="container mx-auto flex flex-col items-center justify-center text-center relative z-10">
-            <div class="footer-content-wrapper mb-4 md:mb-0 md:flex md:items-center">
-                <div class="footer-contact">
-                    <p class="text-xl font-bold mb-2">Contato</p>
-                    <div class="numbers-container flex flex-col md:flex-row md:items-center gap-4">
-                        <p><i class="fas fa-phone-alt text-yellow-400 mr-2"></i><a href="tel:+5521999999999" class="hover:text-yellow-400">21 99999-9999</a></p>
-                        <p><i class="fas fa-envelope text-yellow-400 mr-2"></i><a href="mailto:contato@casalmel.com" class="hover:text-yellow-400">contato@casalmel.com</a></p>
-                    </div>
-                </div>
-                <div class="footer-social mt-4 md:mt-0">
-                    <p class="text-xl font-bold mb-2 md:hidden">Siga-nos</p>
-                    <a href="#" class="hover:text-yellow-400" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="hover:text-yellow-400" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="hover:text-yellow-400" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="hover:text-yellow-400" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
-                </div>
+      <div
+        class="container mx-auto flex flex-col items-center justify-center text-center relative z-10"
+      >
+        <div
+          class="footer-content-wrapper mb-4 md:mb-0 md:flex md:items-center"
+        >
+          <div class="footer-contact">
+            <p class="text-xl font-bold mb-2">Contato</p>
+            <div
+              class="numbers-container flex flex-col md:flex-row md:items-center gap-4"
+            >
+              <p>
+                <i class="fas fa-phone-alt text-yellow-400 mr-2"></i
+                ><a href="tel:+5521999999999" class="hover:text-yellow-400"
+                  >21 99999-9999</a
+                >
+              </p>
+              <p>
+                <i class="fas fa-envelope text-yellow-400 mr-2"></i
+                ><a
+                  href="mailto:contato@casalmel.com"
+                  class="hover:text-yellow-400"
+                  >contato@casalmel.com</a
+                >
+              </p>
             </div>
-            <div class="footer-copyright mt-4 md:mt-0">
-                <p>&copy; 2024 Casal Mel. Todos os direitos reservados.</p>
-            </div>
+          </div>
+          <div class="footer-social mt-4 md:mt-0">
+            <p class="text-xl font-bold mb-2 md:hidden">Siga-nos</p>
+            <a href="#" class="hover:text-yellow-400" aria-label="Instagram"
+              ><i class="fab fa-instagram"></i
+            ></a>
+            <a href="#" class="hover:text-yellow-400" aria-label="Twitter"
+              ><i class="fab fa-twitter"></i
+            ></a>
+            <a href="#" class="hover:text-yellow-400" aria-label="Facebook"
+              ><i class="fab fa-facebook"></i
+            ></a>
+            <a href="#" class="hover:text-yellow-400" aria-label="Telegram"
+              ><i class="fab fa-telegram-plane"></i
+            ></a>
+          </div>
         </div>
+        <div class="footer-copyright mt-4 md:mt-0">
+          <p>&copy; 2024 Casal Mel. Todos os direitos reservados.</p>
+        </div>
+      </div>
     </footer>
 
-    <div id="evento-modal" class="custom-modal hidden fixed inset-0 bg-black bg-opacity-75 items-center justify-center p-4 z-50">
-        <div class="bg-gray-800 rounded-lg max-w-2xl w-full p-6 text-white relative">
-            <button id="close-evento-modal" class="absolute top-4 right-4 text-white hover:text-gray-300 text-2xl">
-                <i class="fas fa-times"></i>
+    <div
+      id="evento-modal"
+      class="custom-modal hidden fixed inset-0 bg-black bg-opacity-75 items-center justify-center p-4 z-50"
+    >
+      <div
+        class="bg-gray-800 rounded-lg max-w-2xl w-full p-6 text-white relative"
+      >
+        <button
+          id="close-evento-modal"
+          class="absolute top-4 right-4 text-white hover:text-gray-300 text-2xl"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+        <div class="flex flex-col md:flex-row items-center gap-6">
+          <img
+            id="modal-imagem-evento"
+            src=""
+            alt="Imagem do Evento"
+            class="rounded-lg max-w-full md:max-w-xs"
+          />
+          <div class="text-center md:text-left">
+            <h3
+              id="modal-titulo-evento"
+              class="text-3xl font-bold text-yellow-400 mb-2"
+            ></h3>
+            <p id="modal-descricao-evento" class="text-lg mb-4"></p>
+            <p id="modal-data-evento" class="text-md font-semibold mb-2"></p>
+            <p id="modal-local-evento" class="text-md font-semibold mb-4"></p>
+            <button
+              class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300"
+            >
+              Quero
             </button>
-            <div class="flex flex-col md:flex-row items-center gap-6">
-                <img id="modal-imagem-evento" src="" alt="Imagem do Evento" class="rounded-lg max-w-full md:max-w-xs">
-                <div class="text-center md:text-left">
-                    <h3 id="modal-titulo-evento" class="text-3xl font-bold text-yellow-400 mb-2"></h3>
-                    <p id="modal-descricao-evento" class="text-lg mb-4"></p>
-                    <p id="modal-data-evento" class="text-md font-semibold mb-2"></p>
-                    <p id="modal-local-evento" class="text-md font-semibold mb-4"></p>
-                    <button class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300">
-                        Quero
-                    </button>
-                </div>
-            </div>
+          </div>
         </div>
+      </div>
     </div>
 
-    <div id="contato-modal" class="custom-modal hidden fixed inset-0 bg-black bg-opacity-75 items-center justify-center p-4 z-50">
-        <div class="bg-gray-800 rounded-lg max-w-2xl w-full p-6 text-white relative">
-            <button id="close-contato-modal" class="absolute top-4 right-4 text-white hover:text-gray-300 text-2xl">
-                <i class="fas fa-times"></i>
-            </button>
-            <div class="flex flex-col items-center text-center">
-                <h3 class="text-3xl font-bold text-yellow-400 mb-4">Fale Conosco</h3>
-                <p class="text-lg mb-6">Entre em contato para saber mais sobre nossos shows de strip e eventos.</p>
-                <div class="flex flex-col md:flex-row items-center gap-4">
-                    <div class="flex flex-col items-center">
-                        <p class="text-xl font-semibold text-yellow-400 mb-2">Sra. Mel</p>
-                        <img src="img/sra_mel_contato.jpg" alt="Sra. Mel" class="contato-modal-img rounded-lg shadow-md mb-2">
-                        <a href="https://wa.me/5521999999999?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20os%20shows%20de%20strip%20da%20Sra.%20Mel." target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full flex items-center">
-                            <i class="fab fa-whatsapp mr-2"></i> WhatsApp
-                        </a>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <p class="text-xl font-semibold text-yellow-400 mb-2">Sr. Mel</p>
-                        <img src="img/sr_mel_contato.jpg" alt="Sr. Mel" class="contato-modal-img rounded-lg shadow-md mb-2">
-                        <a href="https://wa.me/5521999999999?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20os%20eventos%20e%20parcerias." target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full flex items-center">
-                            <i class="fab fa-whatsapp mr-2"></i> WhatsApp
-                        </a>
-                    </div>
-                </div>
+    <div
+      id="contato-modal"
+      class="custom-modal hidden fixed inset-0 bg-black bg-opacity-75 items-center justify-center p-4 z-50"
+    >
+      <div
+        class="bg-gray-800 rounded-lg max-w-2xl w-full p-6 text-white relative"
+      >
+        <button
+          id="close-contato-modal"
+          class="absolute top-4 right-4 text-white hover:text-gray-300 text-2xl"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+        <div class="flex flex-col items-center text-center">
+          <h3 class="text-3xl font-bold text-yellow-400 mb-4">Fale Conosco</h3>
+          <p class="text-lg mb-6">
+            Entre em contato para saber mais sobre nossos shows de strip e
+            eventos.
+          </p>
+          <div class="flex flex-col md:flex-row items-center gap-4">
+            <div class="flex flex-col items-center">
+              <p class="text-xl font-semibold text-yellow-400 mb-2">Sra. Mel</p>
+              <img
+                src="img/sra_mel_contato.jpg"
+                alt="Sra. Mel"
+                class="contato-modal-img rounded-lg shadow-md mb-2"
+              />
+              <a
+                href="https://wa.me/5521999999999?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20os%20shows%20de%20strip%20da%20Sra.%20Mel."
+                target="_blank"
+                class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full flex items-center"
+              >
+                <i class="fab fa-whatsapp mr-2"></i> WhatsApp
+              </a>
             </div>
+            <div class="flex flex-col items-center">
+              <p class="text-xl font-semibold text-yellow-400 mb-2">Sr. Mel</p>
+              <img
+                src="img/sr_mel_contato.jpg"
+                alt="Sr. Mel"
+                class="contato-modal-img rounded-lg shadow-md mb-2"
+              />
+              <a
+                href="https://wa.me/5521999999999?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20os%20eventos%20e%20parcerias."
+                target="_blank"
+                class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full flex items-center"
+              >
+                <i class="fab fa-whatsapp mr-2"></i> WhatsApp
+              </a>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
 
     <script src="script.js"></script>
-
-</body>
+  </body>
 </html>
