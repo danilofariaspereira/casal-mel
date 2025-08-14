@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Casal Mel</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="shortcut icon" href="./img/logo primeira seçao.png" type="image/x-icon">
+    <link
+      rel="shortcut icon"
+      href="./img/logo primeira seçao.png"
+      type="image/x-icon"
+    />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -367,7 +371,7 @@
               id="modal-titulo-evento"
               class="text-3xl font-bold text-yellow-400 mb-2"
             ></h3>
-            <p id="modal-descricao-evento" class="text-lg mb-4"></p>
+            <p id="modal-descricao-evento" class="text-sm mb-4" style="white-space: pre-line;"></p>
             <p id="modal-data-evento" class="text-md font-semibold mb-2"></p>
             <p id="modal-local-evento" class="text-md font-semibold mb-4"></p>
             <button
@@ -399,38 +403,9 @@
             Entre em contato para saber mais sobre nossos shows de strip e
             eventos.
           </p>
-          <div class="flex flex-col md:flex-row items-center gap-4">
-            <div class="flex flex-col items-center">
-              <p class="text-xl font-semibold text-yellow-400 mb-2">Sra. Mel</p>
-              <img
-                src="img/sra_mel_contato.jpg"
-                alt="Sra. Mel"
-                class="contato-modal-img rounded-lg shadow-md mb-2"
-              />
-              <a
-                href="https://wa.me/5521999999999?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20os%20shows%20de%20strip%20da%20Sra.%20Mel."
-                target="_blank"
-                class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full flex items-center"
-              >
-                <i class="fab fa-whatsapp mr-2"></i> WhatsApp
-              </a>
-            </div>
-            <div class="flex flex-col items-center">
-              <p class="text-xl font-semibold text-yellow-400 mb-2">Sr. Mel</p>
-              <img
-                src="img/sr_mel_contato.jpg"
-                alt="Sr. Mel"
-                class="contato-modal-img rounded-lg shadow-md mb-2"
-              />
-              <a
-                href="https://wa.me/5521999999999?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20os%20eventos%20e%20parcerias."
-                target="_blank"
-                class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full flex items-center"
-              >
-                <i class="fab fa-whatsapp mr-2"></i> WhatsApp
-              </a>
-            </div>
-          </div>
+          <div
+            class="contato-cards-wrapper flex flex-col md:flex-row items-center gap-4"
+          ></div>
         </div>
       </div>
     </div>

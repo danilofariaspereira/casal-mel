@@ -22,9 +22,9 @@ async function buscarEventosPlanilha() {
       data: linha[2] || "",
       local: linha[3] || "",
       imagem: linha[4] || "",
+      whatsapp: linha[5] || "",
     }));
     // Aqui você pode chamar funções que dependem de eventos já carregados
-    console.log("Eventos carregados da planilha:", eventos);
   } catch (e) {
     console.error("Erro ao buscar eventos da planilha:", e);
   }
@@ -78,23 +78,24 @@ function renderizarCardsEventos() {
       imgSrc = `https://drive.google.com/thumbnail?id=${driveId}`;
     }
     // Renderização manual dos elementos para evitar problemas de parsing
-    const cardDiv = document.createElement('div');
-    cardDiv.className = 'slideshow-card';
+    const cardDiv = document.createElement("div");
+    cardDiv.className = "slideshow-card";
     if (imgSrc) {
-      const img = document.createElement('img');
+      const img = document.createElement("img");
       img.src = imgSrc;
       img.alt = evento.titulo;
-      img.className = 'event-image';
+      img.className = "event-image";
       cardDiv.appendChild(img);
     }
-    const p = document.createElement('p');
-    p.className = 'text-sm font-semibold mb-2';
-    p.setAttribute('data-event-id', evento.id);
+    const p = document.createElement("p");
+    p.className = "text-sm font-semibold mb-2";
+    p.setAttribute("data-event-id", evento.id);
     p.innerHTML = `${evento.titulo}<br>`;
     cardDiv.appendChild(p);
-    const btn = document.createElement('button');
-    btn.className = 'saiba-mais bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300 w-full md:w-auto';
-    btn.textContent = 'Saiba Mais';
+    const btn = document.createElement("button");
+    btn.className =
+      "saiba-mais bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300 w-full md:w-auto";
+    btn.textContent = "Saiba Mais";
     cardDiv.appendChild(btn);
     card.appendChild(cardDiv);
     slideshowContainer.appendChild(card);
@@ -214,30 +215,42 @@ function inicializarModais() {
         const imgEl = document.getElementById("modal-imagem-evento");
         imgEl.src = imgSrc;
         imgEl.alt = evento.titulo;
-        imgEl.className = 'event-image rounded-lg shadow-xl';
+        imgEl.className = "event-image rounded-lg shadow-xl";
+        // Botão WhatsApp (QUERO)
+        const queroBtn = eventoModal.querySelector('button.bg-yellow-500');
+        if (queroBtn) {
+          queroBtn.onclick = function() {
+            const link = `https://wa.me/55${
+              evento.whatsapp
+            }?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20os%20shows%20de%20${encodeURIComponent(
+              evento.titulo
+            )}.`;
+            window.open(link, '_blank');
+          };
+        }
         // Centraliza o modal na tela e define altura máxima
-        eventoModal.style.display = 'flex';
-        eventoModal.style.alignItems = 'center';
-        eventoModal.style.justifyContent = 'center';
-        eventoModal.style.top = '0';
-        eventoModal.style.left = '0';
-        eventoModal.style.width = '100vw';
-        eventoModal.style.height = '100vh';
-        eventoModal.style.maxHeight = 'none';
+        eventoModal.style.display = "flex";
+        eventoModal.style.alignItems = "center";
+        eventoModal.style.justifyContent = "center";
+        eventoModal.style.top = "0";
+        eventoModal.style.left = "0";
+        eventoModal.style.width = "100vw";
+        eventoModal.style.height = "100vh";
+        eventoModal.style.maxHeight = "none";
         // O conteúdo do modal (primeiro filho) recebe o maxHeight
-        const modalContent = eventoModal.querySelector('div');
+        const modalContent = eventoModal.querySelector("div");
         if (modalContent) {
-          modalContent.style.maxHeight = '80vh';
-          modalContent.style.overflowY = 'auto';
-          modalContent.style.scrollbarWidth = 'none'; // Firefox
-          modalContent.style.msOverflowStyle = 'none'; // IE/Edge
-          modalContent.style.overscrollBehavior = 'contain';
+          modalContent.style.maxHeight = "80vh";
+          modalContent.style.overflowY = "auto";
+          modalContent.style.scrollbarWidth = "none"; // Firefox
+          modalContent.style.msOverflowStyle = "none"; // IE/Edge
+          modalContent.style.overscrollBehavior = "contain";
           // Para Chrome, Safari e outros navegadores baseados em Webkit
-          modalContent.style.setProperty('scrollbar-width', 'none');
-          modalContent.style.setProperty('-ms-overflow-style', 'none');
+          modalContent.style.setProperty("scrollbar-width", "none");
+          modalContent.style.setProperty("-ms-overflow-style", "none");
           // Esconde a barra de rolagem no Webkit
-          modalContent.style.setProperty('overflow', 'auto');
-          modalContent.classList.add('hide-scrollbar');
+          modalContent.style.setProperty("overflow", "auto");
+          modalContent.classList.add("hide-scrollbar");
         }
         eventoModal.classList.remove("hidden");
       }
@@ -248,7 +261,7 @@ function inicializarModais() {
     // Garante que o modal será fechado ao clicar no X
     eventoModal.classList.add("hidden");
     // Remove o display flex para evitar conflitos de exibição futura
-    eventoModal.style.display = '';
+    eventoModal.style.display = "";
   });
   eventoModal.addEventListener("click", (e) => {
     if (e.target === eventoModal) {
@@ -257,12 +270,92 @@ function inicializarModais() {
   });
 }
 
-// --- Modal de Contato ---
+// --- Modal de Contato dinâmico (dados da aba Shows da planilha) ---
 const contatoModal = document.getElementById("contato-modal");
 const closeContatoModal = document.getElementById("close-contato-modal");
 const faleConoscoButton = document.getElementById("fale-conosco-button");
 
-faleConoscoButton.addEventListener("click", () => {
+let shows = [];
+
+async function buscarShowsPlanilha() {
+  // Use o mesmo sheetId e key, mas mude o nome da aba
+  const sheetId = "1IWXCq4sMT9e83tv_rHkwjNLwKmCfb-tmO-VWUSsfcxw";
+  const sheetName = "Shows";
+  const key = "AIzaSyD0W_Pco6cq3w9mmoGkx_poOrzVWpe09pw";
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${key}`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Erro ao buscar planilha Shows");
+    const data = await res.json();
+    const linhas = data.values;
+    if (!linhas || linhas.length < 2) return;
+    // Assume que a primeira linha é o cabeçalho: Nome,Imagem
+    shows = linhas.slice(1).map((linha, idx) => ({
+      id: idx + 1,
+      nome: linha[0] || "",
+      imagem: linha[1] || "",
+      whatsapp: linha[2] || "",
+    }));
+  } catch (e) {
+    console.error("Erro ao buscar shows da planilha:", e);
+  }
+}
+
+function atualizarModalContatoComShows() {
+  // Seleciona o container correto pelo id (ajuste aqui se necessário)
+  const contatoCardsWrapper = contatoModal.querySelector(
+    ".contato-cards-wrapper"
+  );
+  if (!contatoCardsWrapper) return;
+  contatoCardsWrapper.innerHTML = "";
+  shows.forEach((show) => {
+    // Cria o card dinamicamente
+    const card = document.createElement("div");
+    card.className = "flex flex-col items-center";
+    // Nome
+    const nomeEl = document.createElement("p");
+    nomeEl.className = "text-xl font-semibold text-yellow-400 mb-2";
+    nomeEl.textContent = show.nome;
+    card.appendChild(nomeEl);
+    // Imagem
+    const imgEl = document.createElement("img");
+    let imgSrc = show.imagem;
+    let driveId = null;
+    let match = imgSrc.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
+    if (match) driveId = match[1];
+    if (!driveId) {
+      match = imgSrc.match(/[?&]id=([\w-]+)/);
+      if (match) driveId = match[1];
+    }
+    if (driveId) {
+      imgSrc = `https://drive.google.com/thumbnail?id=${driveId}`;
+    }
+    imgEl.src = imgSrc;
+    imgEl.alt = show.nome;
+    imgEl.className = "contato-modal-img rounded-lg shadow-md mb-2";
+    imgEl.style.width = "140px";
+    imgEl.style.height = "140px";
+    imgEl.style.objectFit = "cover";
+    card.appendChild(imgEl);
+    // Botão WhatsApp (mantém o mesmo para todos, pode ser customizado se necessário)
+    const link = document.createElement("a");
+    link.href = `https://wa.me/55${
+      show.whatsapp
+    }?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20os%20shows%20de%20${encodeURIComponent(
+      show.nome
+    )}.`;
+    link.target = "_blank";
+    link.className =
+      "bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full flex items-center";
+    link.innerHTML = '<i class="fab fa-whatsapp mr-2"></i> WhatsApp';
+    card.appendChild(link);
+    contatoCardsWrapper.appendChild(card);
+  });
+}
+
+faleConoscoButton.addEventListener("click", async () => {
+  await buscarShowsPlanilha();
+  atualizarModalContatoComShows();
   contatoModal.classList.remove("hidden");
 });
 
