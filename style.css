@@ -1,0 +1,427 @@
+html {
+    scroll-behavior: smooth;
+}
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+.section-background {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+}
+.section-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+/* Ajustes no section-content para responsividade */
+.section-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1200px; /* Largura máxima para o conteúdo */
+    margin: 0 auto; /* Centraliza o conteúdo na página */
+    padding: 2rem 1rem; /* Padding em volta do conteúdo para não encostar nas bordas */
+    box-sizing: border-box; /* Garante que padding e borda não aumentem a largura total */
+    display: flex; /* Adiciona flexbox para facilitar o alinhamento dos itens internos */
+    flex-direction: column; /* Padrão em mobile: itens empilhados */
+    align-items: center; /* Centraliza itens em mobile */
+    justify-content: center; /* Centraliza o conteúdo principal */
+    text-align: center; /* Padrão para textos em mobile */
+}
+
+/* Quebra para layout horizontal em telas maiores */
+@media (min-width: 768px) {
+    .section-content {
+        flex-direction: row; /* Em desktop: itens lado a lado */
+        justify-content: center; /* Centraliza os blocos de conteúdo */
+        align-items: center; /* Alinha itens verticalmente no centro */
+        text-align: left; /* Alinha o texto à esquerda nos blocos */
+    }
+}
+
+/* Backgrounds das seções */
+#sessao1.section-background {
+    background-image: url('img/bacgrfaude primeira seçao (1).png');
+}
+#sessao2.section-background {
+    background-image: url('img/Rectangle 2.png');
+}
+#sessao3.section-background {
+    background-image: url('img/bacgroud-eventos.png');
+}
+#sessao4.section-background {
+    background-image: url('img/background-convite especial.png');
+}
+#sessao5.section-background {
+    background-image: url('img/bacgroud-eventos.png'); /* Exemplo, troque pela sua imagem */
+}
+
+/* Mobile Menu */
+.mobile-menu-overlay {
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(-100%);
+}
+.mobile-menu-overlay.open {
+    transform: translateX(0);
+}
+
+/* Modals (mantidos) */
+.custom-modal {
+    display: flex;
+}
+.custom-modal.hidden {
+    display: none;
+}
+
+/* Adiciona scroll e altura máxima aos modais APENAS para mobile */
+@media (max-width: 767px) { /* Aplica APENAS em telas menores que 768px */
+    .custom-modal > div { /* Aplica ao container interno do modal */
+        max-height: 90vh; /* Limita a altura máxima a 90% da altura da viewport */
+        overflow-y: auto; /* Adiciona scroll vertical se o conteúdo for maior */
+        -webkit-overflow-scrolling: touch; /* Melhora o scroll em iOS */
+        box-sizing: border-box; /* Inclui padding e borda na altura */
+        padding-bottom: 3rem; /* Espaço para o botão de fechar, se necessário */
+    }
+    /* Ajustes para a imagem dentro do modal de evento em mobile para não ser muito grande */
+    #modal-imagem-evento {
+        max-height: 250px; /* Altura máxima para a imagem em mobile */
+        width: auto; /* Ajusta a largura proporcionalmente */
+    }
+    /* Ajustes para as imagens dentro do modal de contato em mobile */
+    .contato-modal-img {
+        max-width: 100%;
+        height: auto;
+        max-height: 150px; /* Limita a altura das imagens de contato em mobile */
+        object-fit: contain; /* Garante que a imagem se ajuste sem cortar */
+    }
+    /* Ajuste para garantir padding suficiente no conteúdo dos modais em mobile */
+    #evento-modal .bg-white,
+    #contato-modal .bg-white {
+        padding: 1.5rem; /* Padding geral para os modais em mobile */
+    }
+}
+
+
+/* --- SESSÃO 3 (EVENTOS - SLIDER) --- */
+#sessao3 .section-content {
+    /* Remove o flex-direction: row e text-align: left que viriam do .section-content padrão para desktop */
+    /* Pois o slider tem um layout específico */
+    flex-direction: column; /* Sempre em coluna para o título e o slider */
+    align-items: center; /* Centraliza o título e o slider */
+    text-align: center; /* Centraliza o texto do título */
+}
+
+#sessao3 .relative.w-full.max-w-6xl {
+    width: 100%; /* Garante que o container do slider ocupe a largura total disponível */
+    max-width: 90%; /* Limita a largura para mobile */
+    margin: 0 auto; /* Centraliza o container do slider */
+    overflow: hidden; /* Esconde o que transborda, para o slider funcionar */
+    position: relative; /* Para posicionar as setas */
+    padding: 1rem; /* Padding interno para os cards do slider */
+}
+
+#slideshow-container {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    width: 100%; /* Garante que o container interno use 100% */
+    /* Altura mínima para o container do slideshow */
+    min-height: 500px; /* Ajuste conforme a altura dos seus cards de evento */
+}
+
+#slideshow-container .flex-shrink-0 {
+    width: 100%; /* Em mobile, cada slide ocupa 100% da largura */
+    flex-shrink: 0; /* Impede que os slides encolham */
+    box-sizing: border-box; /* Inclui padding na largura */
+    padding: 0.5rem; /* Padding para espaçar os cards */
+}
+
+@media (min-width: 768px) {
+    #sessao3 .relative.w-full.max-w-6xl {
+        max-width: 1000px; /* Largura maior para desktop */
+    }
+    #slideshow-container .flex-shrink-0 {
+        width: calc(100% / 3); /* Em desktop, 3 slides por vez */
+    }
+}
+
+.event-image {
+    width: 326px; /* Largura fixa */
+    height: 406px; /* Altura fixa */
+    object-fit: cover;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.slideshow-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    padding: 1rem;
+    background-color: #4b5563;
+    border-radius: 0.5rem;
+    text-align: center;
+}
+
+/* Botões de navegação do slider */
+#prev-slide-button, #next-slide-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10; /* Garante que as setas fiquem acima dos slides */
+    background-color: rgba(0, 0, 0, 0.6); /* Fundo semi-transparente */
+    border-radius: 50%; /* Botões redondos */
+    padding: 0.75rem; /* Padding para o ícone */
+    cursor: pointer;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    transition: background-color 0.3s ease;
+}
+#prev-slide-button:hover, #next-slide-button:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+#prev-slide-button { left: 1rem; }
+#next-slide-button { right: 1rem; }
+
+/* Dots do slider */
+#slide-dots-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+    gap: 0.5rem;
+}
+#slide-dots-container span {
+    width: 10px;
+    height: 10px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+#slide-dots-container span.bg-yellow-400 {
+    background-color: #ffc107;
+    transform: scale(1.2);
+}
+
+/* --- FIM SESSÃO 3 --- */
+
+/* Sessão 5 - Ajustes para alinhamento e responsividade */
+#sessao5 .section-content {
+    flex-direction: column; /* Padrão em mobile: colunas */
+    justify-content: center;
+    align-items: center;
+    text-align: center; /* Centraliza o texto em mobile */
+    gap: 2rem; /* Espaçamento entre as duas colunas em mobile */
+}
+#sessao5 .md\:w-1\/2 {
+    width: 100%; /* Em mobile, cada "metade" ocupa a largura total */
+    max-width: 450px; /* Limita a largura das colunas em mobile para não ficarem muito grandes */
+    padding: 1rem; /* Padding interno */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza o conteúdo dentro da coluna em mobile */
+}
+#sessao5 .sessao5-card {
+    width: 100%;
+    display: flex; /* Adicionado para permitir controle de alinhamento interno */
+    flex-direction: column; /* Conteúdo do card em coluna */
+    align-items: center; /* Centraliza o conteúdo do card em mobile */
+    text-align: center; /* Centraliza o texto do card em mobile */
+}
+#sessao5 .sessao5-card h3,
+#sessao5 .sessao5-card p,
+#sessao5 .sessao5-card .sub-title {
+    text-align: center; /* Centraliza o texto em mobile */
+    width: 100%; /* Garante que o texto ocupe a largura total do card */
+}
+
+@media (min-width: 768px) {
+    #sessao5 .section-content {
+        flex-direction: row; /* Em desktop: volta para linha */
+        align-items: stretch; /* Estica as colunas para terem a mesma altura */
+        gap: 3rem; /* Espaçamento maior entre as colunas em desktop */
+    }
+    #sessao5 .md\:w-1\/2 {
+        width: 50%; /* Cada "metade" ocupa 50% em desktop */
+        max-width: none; /* Remove a largura máxima */
+        align-items: flex-start; /* Alinha o conteúdo da coluna à esquerda em desktop */
+    }
+    #sessao5 .sessao5-card {
+        align-items: flex-start; /* MODIFICADO: Alinha o conteúdo do card à esquerda em desktop */
+        text-align: left; /* MODIFICADO: Alinha o texto do card à esquerda em desktop */
+    }
+    #sessao5 .sessao5-card h3,
+    #sessao5 .sessao5-card p,
+    #sessao5 .sessao5-card .sub-title {
+        text-align: left; /* MODIFICADO: Alinha o texto à esquerda em desktop */
+    }
+    .sessao5-img {
+        align-self: flex-start; /* MODIFICADO: Alinha a imagem à esquerda em desktop */
+    }
+    .sessao5-card button {
+        align-self: flex-start; /* MODIFICADO: Alinha o botão à esquerda em desktop */
+    }
+}
+.sessao5-img {
+    width: 336px;
+    height: 406px;
+    object-fit: contain;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    box-shadow: none;
+}
+
+/* --- FIM SESSÃO 5 --- */
+
+/* --- Estilos para o FOOTER (RESPONSIVO FINAL) --- */
+footer {
+    background-color: #1a1a1a;
+    padding: 2rem 1rem;
+    color: #ffffff;
+    position: relative;
+    display: flex;
+    flex-direction: column; /* Padrão: empilhado para mobile */
+    align-items: center; /* Centraliza horizontalmente em mobile */
+    justify-content: center;
+    min-height: 150px;
+    text-align: center; /* Alinha o texto centralmente em mobile */
+}
+
+.footer-content-wrapper {
+    display: flex;
+    flex-direction: column; /* Padrão: empilhado para mobile */
+    align-items: center; /* Centraliza os itens em mobile */
+    justify-content: center;
+    width: 100%;
+    max-width: 600px; /* Largura máxima para o conteúdo do footer em mobile */
+    margin-bottom: 1rem;
+    gap: 1.5rem; /* Espaçamento entre contato e social em mobile */
+}
+
+.footer-contact {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza o bloco de contato em mobile */
+    text-align: center; /* Garante que o texto dentro do contato esteja centralizado em mobile */
+}
+.footer-contact p {
+    margin: 0.25rem 0;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+}
+.footer-contact .numbers-container {
+    display: flex;
+    flex-direction: column; /* Empilhado em mobile */
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    align-items: center; /* Centraliza os números */
+}
+.footer-contact a {
+    color: #ffffff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+.footer-contact a:hover {
+    color: #ffc107;
+    text-decoration: underline;
+}
+
+.footer-social {
+    display: flex;
+    justify-content: center; /* Centraliza os ícones em mobile */
+    gap: 1.5rem;
+    align-items: center;
+    margin-top: 1rem; /* Espaço acima em mobile */
+}
+.footer-social a {
+    color: #ffffff;
+    font-size: 1.75rem;
+    transition: color 0.3s ease;
+}
+.footer-social a:hover {
+    color: #ffc107;
+}
+
+.footer-copyright {
+    width: 100%;
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+    footer {
+        flex-direction: column; /* Mantém como coluna principal para centralizar tudo */
+        justify-content: center;
+        align-items: center; /* Centraliza o wrapper horizontalmente */
+        text-align: center; /* Centraliza o texto do copyright */
+        padding-bottom: 3rem; /* Espaço para o copyright fixo */
+    }
+
+    .footer-content-wrapper {
+        flex-direction: row; /* Lado a lado em desktop */
+        justify-content: center; /* Centraliza os blocos de contato e social */
+        align-items: center; /* Alinha os blocos de contato e social no centro verticalmente */
+        max-width: 1000px; /* Largura máxima para os blocos */
+        margin-bottom: 0;
+        gap: 2rem; /* Espaçamento entre Contato e Social em desktop */
+        padding-bottom: 1rem; /* Padding para separar do copyright */
+    }
+
+    .footer-contact {
+        align-items: center; /* Centraliza o bloco de contato em desktop */
+        text-align: center; /* Centraliza o texto do contato em desktop */
+        flex-direction: row; /* MODIFICADO: Para que "Contato" e os números fiquem lado a lado */
+        gap: 1rem; /* Espaçamento entre "Contato" e os números */
+    }
+    .footer-contact p.text-xl { /* Seletor para o título "Contato" */
+        flex-shrink: 0; /* Impede que o título encolha */
+        margin-bottom: 0; /* Remove a margem inferior em desktop */
+    }
+    .footer-contact .numbers-container {
+        display: flex; /* Garante que seja flex */
+        flex-direction: row; /* MODIFICADO: Para que os números fiquem lado a lado */
+        gap: 1.5rem; /* Espaçamento entre os números */
+        margin-top: 0; /* Remove margem superior em desktop */
+        align-items: center; /* Alinha os números pela linha de base */
+    }
+    /* Adicionado para os parágrafos de número individual ficarem flex e alinharem o ícone */
+    .footer-contact .numbers-container p {
+        display: flex;
+        align-items: center;
+        white-space: nowrap; /* Evita que o número quebre */
+    }
+
+    .footer-social {
+        margin-top: 0;
+        justify-content: center; /* Centraliza os ícones sociais em desktop */
+        padding-left: 1.5rem; /* Adiciona um padding à esquerda para separar do último número */
+        border-left: 1px solid rgba(255, 255, 255, 0.1); /* Linha divisória sutil */
+    }
+
+    .footer-copyright {
+        position: absolute; /* Posição absoluta para fixar na parte inferior */
+        bottom: 1rem; /* Distância da parte inferior */
+        left: 50%; /* Centraliza horizontalmente */
+        transform: translateX(-50%); /* Ajuste para centralização perfeita */
+        border-top: none; /* Remove a borda superior em desktop */
+        padding-top: 0;
+        width: auto; /* Ajusta a largura para o conteúdo */
+        white-space: nowrap; /* Impede que o texto quebre */
+    }
+}
+/* --- FIM dos Estilos para o FOOTER --- */
