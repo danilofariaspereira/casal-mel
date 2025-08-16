@@ -74,6 +74,56 @@ body {
     transform: translateX(0);
 }
 
+/* Footer Styles */
+.footer-contact .numbers-container {
+    white-space: nowrap;
+}
+
+.footer-contact a {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.footer-contact a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.footer-social {
+    margin-top: 2rem;
+}
+
+.footer-copyright {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.footer-copyright p {
+    margin-bottom: 0.25rem;
+}
+
+.footer-copyright a {
+    display: inline-block;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+@media (min-width: 768px) {
+    .footer-contact .numbers-container {
+        display: flex;
+        gap: 2rem;
+        justify-content: center;
+    }
+    
+    .footer-social {
+        margin-left: 2rem;
+    }
+}
+
 /* Modals (mantidos) */
 .custom-modal {
     display: flex;
@@ -421,7 +471,7 @@ footer {
         border-top: none; /* Remove a borda superior em desktop */
         padding-top: 0;
         width: auto; /* Ajusta a largura para o conteúdo */
-        white-space: nowrap; /* Impede que o texto quebre */
+        white-space: nowrap
     }
 }
 /* --- FIM dos Estilos para o FOOTER --- */

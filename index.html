@@ -1,5 +1,11 @@
 <!DOCTYPE html>
+<!-- 
+  Site Casal Mel
+  Desenvolvido por: Seu Nome
+  Última atualização: Agosto 2025
+-->
 <html lang="pt-BR">
+  <!-- Início do HEAD - Configurações da página -->
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,15 +22,18 @@
     />
     <link rel="stylesheet" href="style.css" />
   </head>
+  <!-- Início do BODY - Conteúdo principal -->
   <body class="bg-gray-900 text-white">
+    <!-- Header - Barra de navegação fixa -->
     <header class="bg-gray-800 p-4 shadow-lg fixed top-0 left-0 w-full z-50">
       <nav class="container mx-auto flex justify-between items-center">
         <div class="flex items-center">
-          <img
-            src="img/logo primeira seçao (1).png"
-            alt="Logo Casal Mel"
-            class="h-10 w-auto rounded-md"
-          />
+          <a href="#sessao1" class="hover:opacity-90 transition-opacity">
+            <img
+              src="img/logo primeira seçao (1).png"
+              alt="Logo Casal Mel"
+              class="h-10 w-auto rounded-md"
+            />
         </div>
 
         <div class="hidden md:flex space-x-8">
@@ -41,12 +50,18 @@
           <a
             href="#sessao4"
             class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2"
-            >Contato</a
+            >Shows</a
           >
           <a
-            href="#sessao5"
+              href="#sessao5"
             class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2"
-            >Convidar</a
+            >SW</a
+          >
+
+                    <a
+            href="#footer"
+            class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2"
+            >Contatos</a
           >
         </div>
 
@@ -60,7 +75,9 @@
         </div>
       </nav>
     </header>
+    <!-- Fim do Header -->
 
+    <!-- Menu Mobile - Aparece apenas em telas pequenas -->
     <div
       id="mobile-menu-overlay"
       class="mobile-menu-overlay fixed top-0 left-0 h-full w-64 bg-gray-800 shadow-xl z-50 md:hidden flex flex-col pt-20"
@@ -85,7 +102,7 @@
           >Eventos</a
         >
         <a
-          href="#sessao4"
+          href="#footer"
           class="text-white hover:text-yellow-400 text-xl font-semibold transition duration-300 rounded-md p-2"
           onclick="closeMobileMenu()"
           >Contato</a
@@ -98,7 +115,9 @@
         >
       </nav>
     </div>
+    <!-- Fim do Menu Mobile -->
 
+    <!-- Seção 1 - Hero Section / Início -->
     <section
       id="sessao1"
       class="section-background min-h-screen flex items-center justify-center p-8 pt-20"
@@ -124,7 +143,9 @@
         </div>
       </div>
     </section>
+    <!-- Fim da Seção 1 -->
 
+    <!-- Seção 2 - Nossa História -->
     <section
       id="sessao2"
       class="section-background min-h-screen flex items-center justify-center p-8"
@@ -138,19 +159,23 @@
           <h2 class="text-5xl md:text-7xl font-bold mb-4 text-yellow-400">
             Nossa História
           </h2>
-          <p class="text-lg md:text-3xl max-w-3xl mx-auto mb-8">
-            Somos o casal Mel, swingueiros. Eu sou a Sra. <br />
-            mel, uma hotwife. Amo meu marido, temos <br />cumplicidade e
-            respeito. <br />
-            Juntos, somos parceiros para viver nossos <br />
-            desejos e fantasias.
-          </p>
+<p class="text-lg md:text-3xl max-w-3xl mx-auto mb-8">
+  Bem-vindos! Somos o Casal Mel, um casal casado
+  e liberal, apaixonado por unir pessoas.
+  <br />
+  Organizadores de festas e encontros de swing no
+  Rio de Janeiro, criamos um ambiente seguro
+  e divertido para casais, solteiras e solteiros.
+</p>
 
-          <button
-            class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300"
-          >
-            Saiba Mais
-          </button>
+<a
+  href="https://wa.me/5521967187138?text=Ol%C3%A1%2C%20Casal%20Mel!%0AAdorei%20o%20que%20vi%20no%20site%20de%20voc%C3%AAs%20e%20gostaria%20de%20saber%20mais%20detalhes%20sobre%20o%20evento%20Conex%C3%A3o%20Swing."
+  target="_blank"
+  class="inline-block bg-yellow-300 hover:bg-yellow-200 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300"
+  style="text-decoration: none;"
+>
+  Quero saber mais
+</a>
         </div>
         <div class="md:w-1/2 flex justify-center order-last md:order-none">
           <img
@@ -162,7 +187,9 @@
         </div>
       </div>
     </section>
+    <!-- Fim da Seção 2 -->
 
+    <!-- Seção 3 - Eventos -->
     <section
       id="sessao3"
       class="section-background min-h-screen flex flex-col items-center justify-center p-8"
@@ -204,7 +231,9 @@
         </div>
       </div>
     </section>
+    <!-- Fim da Seção 3 -->
 
+    <!-- Seção 4 - Convite Especial -->
     <section
       id="sessao4"
       class="section-background min-h-screen flex items-center justify-center p-8"
@@ -242,7 +271,9 @@
         </div>
       </div>
     </section>
+    <!-- Fim da Seção 4 -->
 
+    <!-- Seção 5 - Conexão e Desejos -->
     <section
       id="sessao5"
       class="section-background min-h-screen flex items-center justify-center p-8"
@@ -263,11 +294,14 @@
             <h3 class="text-2xl font-bold mb-2 text-yellow-400">
               Saiba mais sobre eventos
             </h3>
-            <button
-              class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300"
-            >
-              Quero Saber Mais
-            </button>
+  <a
+  href="https://wa.me/5521967187138?text=Ol%C3%A1%2C%20Casal%20Mel!%0AAdorei%20o%20que%20vi%20no%20site%20de%20voc%C3%AAs%20e%20gostaria%20de%20saber%20mais%20detalhes%20sobre%20o%20evento%20Conex%C3%A3o%20Swing."
+  target="_blank"
+  class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 flex items-center justify-center"
+  style="text-decoration: none;"
+>
+  Quero saber mais
+</a>
           </div>
         </div>
 
@@ -279,26 +313,29 @@
               class="sessao5-img"
             />
             <h3 class="text-2xl font-bold mb-2 text-yellow-400">
-              Seja Um Convidado Especial
+              Temos Um Convidado Especial para você
             </h3>
             <p class="text-lg mb-4 max-w-md">
-              Venha fazer parte da nossa experiência. Preencha o formulário e
-              faça parte da nossa comunidade secreta!
+              Venha fazer parte de uma experiência gostosa no Conexão Swing.
             </p>
-            <button
-              id="quero-ser-convidado"
-              class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300"
-            >
-              Quero ser Convidado
-            </button>
+ <a
+  href="https://wa.me/5521967187138?text=Ol%C3%A1%2C%20Casal%20Mel!%0AAdorei%20o%20que%20vi%20no%20site%20de%20voc%C3%AAs%20e%20gostaria%20de%20saber%20mais%20detalhes%20sobre%20o%20evento%20Conex%C3%A3o%20Swing."
+  target="_blank"
+  class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 flex items-center justify-center"
+  style="text-decoration: none;"
+>
+  Quero saber mais
+</a>
           </div>
         </div>
       </div>
     </section>
+    <!-- Fim da Seção 5 -->
 
-    <footer class="bg-gray-800 text-gray-300 py-8 px-4 relative">
+    <!-- Footer - Rodapé com Contatos -->
+    <footer id="footer" class="bg-gray-800 text-gray-300 py-12 px-4 relative">
       <div
-        class="container mx-auto flex flex-col items-center justify-center text-center relative z-10"
+        class="container mx-auto flex flex-col items-center justify-between min-h-[200px] text-center relative z-10"
       >
         <div
           class="footer-content-wrapper mb-4 md:mb-0 md:flex md:items-center"
@@ -308,44 +345,42 @@
             <div
               class="numbers-container flex flex-col md:flex-row md:items-center gap-4"
             >
-              <p>
-                <i class="fas fa-phone-alt text-yellow-400 mr-2"></i
-                ><a href="tel:+5521999999999" class="hover:text-yellow-400"
-                  >21 99999-9999</a
-                >
-              </p>
-              <p>
-                <i class="fas fa-envelope text-yellow-400 mr-2"></i
-                ><a
-                  href="mailto:contato@casalmel.com"
-                  class="hover:text-yellow-400"
-                  >contato@casalmel.com</a
-                >
-              </p>
+              <a href="https://wa.me/5521967187138" target="_blank" class="hover:text-yellow-400 inline-flex items-center">
+                <i class="fab fa-whatsapp text-yellow-400 mr-2 text-2xl"></i>
+                <span>21 96718-7138</span>
+              </a>
+              <a href="https://wa.me/5521967187138" target="_blank" class="hover:text-yellow-400 inline-flex items-center">
+                <i class="fab fa-whatsapp text-yellow-400 mr-2 text-2xl"></i>
+                <span>21 96718-7138</span>
+              </a>
             </div>
           </div>
-          <div class="footer-social mt-4 md:mt-0">
-            <p class="text-xl font-bold mb-2 md:hidden">Siga-nos</p>
-            <a href="#" class="hover:text-yellow-400" aria-label="Instagram"
-              ><i class="fab fa-instagram"></i
-            ></a>
-            <a href="#" class="hover:text-yellow-400" aria-label="Twitter"
-              ><i class="fab fa-twitter"></i
-            ></a>
-            <a href="#" class="hover:text-yellow-400" aria-label="Facebook"
-              ><i class="fab fa-facebook"></i
-            ></a>
-            <a href="#" class="hover:text-yellow-400" aria-label="Telegram"
-              ><i class="fab fa-telegram-plane"></i
-            ></a>
+          <div class="footer-social mt-4 md:mt-0 space-x-4">
+            <p class="text-xl font-bold mb-2 md:hidden">Redes Sociais</p>
+            <div class="flex items-center justify-center space-x-6">
+              <a href="https://casalreal.com/perfil.php?cod_perfil=191697" target="_blank" class="hover:opacity-80 transition-opacity">
+                <img src="img/casal-real.png" alt="WhatsApp" class="w-8 h-8 object-contain">
+              </a>
+              <a href="https://wa.me/5521967187138" target="_blank" class="hover:opacity-80 transition-opacity">
+                <img src="img/insta.png" alt="WhatsApp" class="w-8 h-8 object-contain">
+              </a>
+              <a href="https://privacy.com.br/profile/CasalMel" target="_blank" class="hover:opacity-80 transition-opacity">
+                <img src="img/privac.png" alt="WhatsApp" class="w-8 h-8 object-contain">
+              </a>
+            </div>
           </div>
         </div>
         <div class="footer-copyright mt-4 md:mt-0">
           <p>&copy; 2024 Casal Mel. Todos os direitos reservados.</p>
+          <a href="https://conexaoswing.com.br" target="_blank" class="text-yellow-400 hover:text-yellow-300">
+            conexaoswing.com.br
+          </a>
         </div>
       </div>
     </footer>
+    <!-- Fim do Footer -->
 
+    <!-- Modal de Eventos - Pop-up com detalhes do evento -->
     <div
       id="evento-modal"
       class="custom-modal hidden fixed inset-0 bg-black bg-opacity-75 items-center justify-center p-4 z-50"
@@ -383,7 +418,9 @@
         </div>
       </div>
     </div>
+    <!-- Fim do Modal de Eventos -->
 
+    <!-- Modal de Contato - Pop-up do formulário de contato -->
     <div
       id="contato-modal"
       class="custom-modal hidden fixed inset-0 bg-black bg-opacity-75 items-center justify-center p-4 z-50"
@@ -409,7 +446,10 @@
         </div>
       </div>
     </div>
+    <!-- Fim do Modal de Contato -->
 
+    <!-- Scripts - JavaScript -->
     <script src="script.js"></script>
   </body>
 </html>
+<!-- Fim do documento HTML -->
