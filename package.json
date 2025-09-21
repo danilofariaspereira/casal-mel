@@ -1,0 +1,27 @@
+{
+  "name": "casal-mel-eventos",
+  "version": "1.0.0",
+  "description": "Site do Casal Mel - Eventos exclusivos e experiências únicas",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server -p 8000",
+    "dev": "npx http-server -p 8000 -o",
+    "build": "echo 'Static site - no build needed'",
+    "deploy": "echo 'Deploy via Vercel/Netlify'"
+  },
+  "keywords": [
+    "eventos",
+    "casal-mel",
+    "shows",
+    "experiencias",
+    "rio-de-janeiro"
+  ],
+  "author": "Casal Mel",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,370 +1,374 @@
-// Busca os dados dos eventos de uma planilha Google Sheets
+// ========================================
+// SISTEMA DE DADOS LOCAL - CASAL MEL
+// ========================================
+
+// Dados iniciais
 let eventos = [];
-
-async function buscarEventosPlanilha() {
-  // Substitua pelos seus dados:
-  const sheetId = "1IWXCq4sMT9e83tv_rHkwjNLwKmCfb-tmO-VWUSsfcxw"; // Exemplo: '1aBcD...'
-  const sheetName = "Eventos"; // Ou o nome da sua aba
-  const key = "AIzaSyD0W_Pco6cq3w9mmoGkx_poOrzVWpe09pw";
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${key}`;
-
-  try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error("Erro ao buscar planilha");
-    const data = await res.json();
-    const linhas = data.values;
-    if (!linhas || linhas.length < 2) return;
-    // Assume que a primeira linha é o cabeçalho
-    eventos = linhas.slice(1).map((linha, idx) => ({
-      id: idx + 1,
-      titulo: linha[0] || "",
-      descricao: linha[1] || "",
-      data: linha[2] || "",
-      local: linha[3] || "",
-      imagem: linha[4] || "",
-      whatsapp: linha[5] || "",
-    }));
-    // Aqui você pode chamar funções que dependem de eventos já carregados
-  } catch (e) {
-    console.error("Erro ao buscar eventos da planilha:", e);
-  }
-}
-
-// Chame esta função ao iniciar
-buscarEventosPlanilha();
-
-// --- Menu Mobile ---
-const mobileMenuButton = document.getElementById("mobile-menu-button");
-const closeMobileMenuButton = document.getElementById("close-mobile-menu");
-const mobileMenuOverlay = document.getElementById("mobile-menu-overlay");
-
-function openMobileMenu() {
-  mobileMenuOverlay.classList.add("open");
-}
-
-function closeMobileMenu() {
-  mobileMenuOverlay.classList.remove("open");
-}
-
-mobileMenuButton.addEventListener("click", openMobileMenu);
-closeMobileMenuButton.addEventListener("click", closeMobileMenu);
-
-// Fechar menu ao clicar em um link
-const mobileMenuLinks = mobileMenuOverlay.querySelectorAll("a");
-mobileMenuLinks.forEach((link) => {
-  link.addEventListener("click", closeMobileMenu);
-});
-
-// --- Slider de Eventos dinâmico ---
-function renderizarCardsEventos() {
-  const slideshowContainer = document.getElementById("slideshow-container");
-  slideshowContainer.innerHTML = "";
-  eventos.forEach((evento) => {
-    const card = document.createElement("div");
-    card.className = "flex-shrink-0";
-    // Ajusta o link da imagem do Google Drive, se necessário
-    let imgSrc = evento.imagem;
-    // Suporte para links do tipo /file/d/ID/view ou compartilhamento direto
-    let driveId = null;
-    // /file/d/ID/
-    let match = imgSrc.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
-    if (match) driveId = match[1];
-    // ?id=ID
-    if (!driveId) {
-      match = imgSrc.match(/[?&]id=([\w-]+)/);
-      if (match) driveId = match[1];
-    }
-    if (driveId) {
-      imgSrc = `https://drive.google.com/thumbnail?id=${driveId}`;
-    }
-    // Renderização manual dos elementos para evitar problemas de parsing
-    const cardDiv = document.createElement("div");
-    cardDiv.className = "slideshow-card";
-    if (imgSrc) {
-      const img = document.createElement("img");
-      img.src = imgSrc;
-      img.alt = evento.titulo;
-      img.className = "event-image";
-      cardDiv.appendChild(img);
-    }
-    const p = document.createElement("p");
-    p.className = "text-sm font-semibold mb-2";
-    p.setAttribute("data-event-id", evento.id);
-    p.innerHTML = `${evento.titulo}<br>`;
-    cardDiv.appendChild(p);
-    const btn = document.createElement("button");
-    btn.className =
-      "saiba-mais bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300 w-full md:w-auto";
-    btn.textContent = "Saiba Mais";
-    cardDiv.appendChild(btn);
-    card.appendChild(cardDiv);
-    slideshowContainer.appendChild(card);
-  });
-}
-
-function inicializarSlider() {
-  const slideshowContainer = document.getElementById("slideshow-container");
-  const prevButton = document.getElementById("prev-slide-button");
-  const nextButton = document.getElementById("next-slide-button");
-  const dotsContainer = document.getElementById("slide-dots-container");
-  let slidesPerView = window.innerWidth >= 768 ? 3 : 1;
-  let totalSlides = eventos.length;
-  let totalPages = Math.ceil(totalSlides / slidesPerView);
-  let currentSlidePage = 0;
-
-  function createDots() {
-    dotsContainer.innerHTML = "";
-    for (let i = 0; i < totalPages; i++) {
-      const dot = document.createElement("span");
-      dotsContainer.appendChild(dot);
-      dot.addEventListener("click", () => {
-        currentSlidePage = i;
-        updateSlider();
-      });
-    }
-  }
-
-  function updateSlider() {
-    const offset = -currentSlidePage * 100;
-    slideshowContainer.style.transform = `translateX(${offset}%)`;
-    const dots = dotsContainer.querySelectorAll("span");
-    dots.forEach((dot, index) => {
-      if (index === currentSlidePage) {
-        dot.classList.add("bg-yellow-400");
-      } else {
-        dot.classList.remove("bg-yellow-400");
-      }
-    });
-    prevButton.disabled = currentSlidePage === 0;
-    nextButton.disabled = currentSlidePage === totalPages - 1;
-  }
-
-  prevButton.onclick = () => {
-    if (currentSlidePage > 0) {
-      currentSlidePage--;
-      updateSlider();
-    }
-  };
-  nextButton.onclick = () => {
-    if (currentSlidePage < totalPages - 1) {
-      currentSlidePage++;
-      updateSlider();
-    }
-  };
-
-  window.addEventListener("resize", () => {
-    const newSlidesPerView = window.innerWidth >= 768 ? 3 : 1;
-    if (newSlidesPerView !== slidesPerView) {
-      slidesPerView = newSlidesPerView;
-      totalPages = Math.ceil(totalSlides / slidesPerView);
-      if (currentSlidePage >= totalPages) {
-        currentSlidePage = totalPages - 1;
-      }
-      createDots();
-      updateSlider();
-    }
-  });
-
-  createDots();
-  updateSlider();
-}
-
-// Após buscar os eventos, renderize e inicialize o slider
-async function buscarEventosPlanilhaEDepois() {
-  await buscarEventosPlanilha();
-  renderizarCardsEventos();
-  inicializarSlider();
-  inicializarModais();
-}
-
-buscarEventosPlanilhaEDepois();
-
-// --- Modais de Eventos ---
-function inicializarModais() {
-  const eventoModal = document.getElementById("evento-modal");
-  const closeEventoModal = document.getElementById("close-evento-modal");
-  // Seleciona novamente pois os botões são renderizados dinamicamente
-  const saibaMaisButtons = document.querySelectorAll(".saiba-mais");
-
-  saibaMaisButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      // Busca o card mais próximo e pega o data-event-id
-      let eventId;
-      const p = button.parentElement.querySelector("p[data-event-id]");
-      if (p) {
-        eventId = p.dataset.eventId;
-      }
-      const evento = eventos.find((e) => e.id == eventId);
-      if (evento) {
-        // Ajusta o link da imagem do Google Drive, se necessário (igual aos cards)
-        let imgSrc = evento.imagem;
-        let driveId = null;
-        let match = imgSrc.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
-        if (match) driveId = match[1];
-        if (!driveId) {
-          match = imgSrc.match(/[?&]id=([\w-]+)/);
-          if (match) driveId = match[1];
-        }
-        if (driveId) {
-          imgSrc = `https://drive.google.com/thumbnail?id=${driveId}`;
-        }
-        document.getElementById("modal-titulo-evento").textContent = evento.titulo;
-        document.getElementById("modal-descricao-evento").textContent = evento.descricao;
-        document.getElementById("modal-data-evento").textContent = `Data: ${evento.data}`;
-        document.getElementById("modal-local-evento").textContent = `Local: ${evento.local}`;
-        const imgEl = document.getElementById("modal-imagem-evento");
-        imgEl.src = imgSrc;
-        imgEl.alt = evento.titulo;
-        imgEl.className = "event-image rounded-lg shadow-xl";
-        // Botão WhatsApp (QUERO)
-        const queroBtn = eventoModal.querySelector('button.bg-yellow-500');
-        if (queroBtn) {
-          queroBtn.onclick = function() {
-            const link = `https://wa.me/55${
-              evento.whatsapp
-            }?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20os%20shows%20de%20${encodeURIComponent(
-              evento.titulo
-            )}.`;
-            window.open(link, '_blank');
-          };
-        }
-        // Centraliza o modal na tela e define altura máxima
-        eventoModal.style.display = "flex";
-        eventoModal.style.alignItems = "center";
-        eventoModal.style.justifyContent = "center";
-        eventoModal.style.top = "0";
-        eventoModal.style.left = "0";
-        eventoModal.style.width = "100vw";
-        eventoModal.style.height = "100vh";
-        eventoModal.style.maxHeight = "none";
-        // O conteúdo do modal (primeiro filho) recebe o maxHeight
-        const modalContent = eventoModal.querySelector("div");
-        if (modalContent) {
-          modalContent.style.maxHeight = "80vh";
-          modalContent.style.overflowY = "auto";
-          modalContent.style.scrollbarWidth = "none"; // Firefox
-          modalContent.style.msOverflowStyle = "none"; // IE/Edge
-          modalContent.style.overscrollBehavior = "contain";
-          // Para Chrome, Safari e outros navegadores baseados em Webkit
-          modalContent.style.setProperty("scrollbar-width", "none");
-          modalContent.style.setProperty("-ms-overflow-style", "none");
-          // Esconde a barra de rolagem no Webkit
-          modalContent.style.setProperty("overflow", "auto");
-          modalContent.classList.add("hide-scrollbar");
-        }
-        eventoModal.classList.remove("hidden");
-      }
-    });
-  });
-
-  closeEventoModal.addEventListener("click", function (e) {
-    // Garante que o modal será fechado ao clicar no X
-    eventoModal.classList.add("hidden");
-    // Remove o display flex para evitar conflitos de exibição futura
-    eventoModal.style.display = "";
-  });
-  eventoModal.addEventListener("click", (e) => {
-    if (e.target === eventoModal) {
-      eventoModal.classList.add("hidden");
-    }
-  });
-}
-
-// --- Modal de Contato dinâmico (dados da aba Shows da planilha) ---
-const contatoModal = document.getElementById("contato-modal");
-const closeContatoModal = document.getElementById("close-contato-modal");
-const faleConoscoButton = document.getElementById("fale-conosco-button");
-
 let shows = [];
 
-async function buscarShowsPlanilha() {
-  // Use o mesmo sheetId e key, mas mude o nome da aba
-  const sheetId = "1IWXCq4sMT9e83tv_rHkwjNLwKmCfb-tmO-VWUSsfcxw";
-  const sheetName = "Shows";
-  const key = "AIzaSyD0W_Pco6cq3w9mmoGkx_poOrzVWpe09pw";
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${key}`;
-  try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error("Erro ao buscar planilha Shows");
-    const data = await res.json();
-    const linhas = data.values;
-    if (!linhas || linhas.length < 2) return;
-    // Assume que a primeira linha é o cabeçalho: Nome,Imagem
-    shows = linhas.slice(1).map((linha, idx) => ({
-      id: idx + 1,
-      nome: linha[0] || "",
-      imagem: linha[1] || "",
-      whatsapp: linha[2] || "",
-    }));
-  } catch (e) {
-    console.error("Erro ao buscar shows da planilha:", e);
-  }
+// ========================================
+// INICIALIZAÇÃO
+// ========================================
+
+function inicializarAplicacao() {
+    console.log('🚀 Inicializando aplicação Casal Mel...');
+    
+    // Carrega dados do localStorage primeiro
+    carregarDadosDoLocalStorage();
+    
+    // Carrega dados padrão se não houver dados salvos
+    if (eventos.length === 0 && shows.length === 0) {
+        carregarDadosPadrao();
+    }
+    
+    // Inicializa componentes
+    renderizarCardsEventos();
+    renderizarCardsShows();
+    
+    // Inicializa menu mobile
+    inicializarMenuMobile();
+    
+    // Inicializa modais
+    inicializarModais();
+    
+    console.log('✅ Aplicação inicializada com sucesso!');
 }
 
-function atualizarModalContatoComShows() {
-  // Seleciona o container correto pelo id (ajuste aqui se necessário)
-  const contatoCardsWrapper = contatoModal.querySelector(
-    ".contato-cards-wrapper"
-  );
-  if (!contatoCardsWrapper) return;
-  contatoCardsWrapper.innerHTML = "";
-  shows.forEach((show) => {
-    // Cria o card dinamicamente
-    const card = document.createElement("div");
-    card.className = "flex flex-col items-center";
-    // Nome
-    const nomeEl = document.createElement("p");
-    nomeEl.className = "text-xl font-semibold text-yellow-400 mb-2";
-    nomeEl.textContent = show.nome;
-    card.appendChild(nomeEl);
-    // Imagem
-    const imgEl = document.createElement("img");
-    let imgSrc = show.imagem;
-    let driveId = null;
-    let match = imgSrc.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
-    if (match) driveId = match[1];
-    if (!driveId) {
-      match = imgSrc.match(/[?&]id=([\w-]+)/);
-      if (match) driveId = match[1];
+// ========================================
+// SISTEMA DE DADOS
+// ========================================
+
+function carregarDadosDoLocalStorage() {
+    try {
+        const dadosSalvos = localStorage.getItem('casal-mel-dados');
+        if (dadosSalvos) {
+            const dados = JSON.parse(dadosSalvos);
+            eventos = dados.eventos || [];
+            shows = dados.shows || [];
+            console.log('📦 Dados carregados do localStorage:', dados);
+        }
+    } catch (error) {
+        console.error('❌ Erro ao carregar dados do localStorage:', error);
     }
-    if (driveId) {
-      imgSrc = `https://drive.google.com/thumbnail?id=${driveId}`;
+}
+
+function salvarDadosNoLocalStorage() {
+    try {
+        const dados = {
+            eventos: eventos,
+            shows: shows,
+            ultimaAtualizacao: Date.now()
+        };
+        localStorage.setItem('casal-mel-dados', JSON.stringify(dados));
+        console.log('💾 Dados salvos no localStorage:', dados);
+    } catch (error) {
+        console.error('❌ Erro ao salvar dados no localStorage:', error);
     }
-    imgEl.src = imgSrc;
-    imgEl.alt = show.nome;
-    imgEl.className = "contato-modal-img rounded-lg shadow-md mb-2";
-    imgEl.style.width = "140px";
-    imgEl.style.height = "140px";
-    imgEl.style.objectFit = "cover";
-    card.appendChild(imgEl);
-    // Botão WhatsApp (mantém o mesmo para todos, pode ser customizado se necessário)
-    const link = document.createElement("a");
-    link.href = `https://wa.me/55${
-      show.whatsapp
-    }?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20os%20shows%20de%20${encodeURIComponent(
-      show.nome
-    )}.`;
-    link.target = "_blank";
-    link.className =
-      "bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full flex items-center";
-    link.innerHTML = '<i class="fab fa-whatsapp mr-2"></i> WhatsApp';
-    card.appendChild(link);
-    contatoCardsWrapper.appendChild(card);
+}
+
+function carregarDadosPadrao() {
+    // Dados padrão usando as imagens existentes
+    eventos = [
+        {
+            id: 1,
+            titulo: "Evento de Exemplo",
+            data: "15 de Janeiro de 2024",
+            local: "Local do Evento",
+            descricao: "Descrição do evento de exemplo",
+            imagem: "img/evento-01.jpeg",
+            whatsapp: "21967187138"
+        },
+        {
+            id: 2,
+            titulo: "Transmissão dos Jogos",
+            data: "20 de Janeiro de 2024",
+            local: "Local Especial",
+            descricao: "TRANSMISSÃO DOS JOGOS\n\nSORTEIOS DE BALDE DE CERVEJAS P/ QUEM ESTIVER C/ CAMISA DE TIME (QUALQUER TIME)\n\nPALPITE PREMIADO\nCHEGUE ANTES DO JOGO COMEÇAR, FAÇA SEU PALPITE PREMIADO, ACERTOU O PLACAR GANHOU R$100\n\nDEGUSTAÇÃO DE CALDO🍵\n\nQUARTO DA SACANAGEM HOTWIFE  SRA.MEL🔥😈\n\nDJ FABYANO🎶🎤\n\nPiscina, Cabines Glory Hole, Quarto de Casal, Quarto Aquário, Quarto Coletivo\n\nValores: 👇🏼\n\n🕺💃 CASAL ENTRADA GRÁTIS A NOITE TODA S/ BEBIDAS E COOLER, C/ COLLER E BEBIDAS R$50,00\n\n💃 SOLTEIRAS ENTRADA GRÁTIS A NOITE TODA S/ COOLER E BEBIDAS, C/ COOLER E BEBIDAS   R$20\n\n🕺 SOLTEIROS R$80 ANTECIPADO NO PIX, NA HORA R$100",
+            imagem: "img/evento-02.jpeg",
+            whatsapp: "21967187138"
+        }
+    ];
+    
+    shows = [
+        {
+            id: 1,
+            titulo: "Show de Exemplo",
+            data: "20 de Janeiro de 2024",
+            local: "Local do Show",
+            descricao: "Descrição do show de exemplo",
+            imagem: "img/evento-03.jpeg",
+            whatsapp: "21967187138"
+        },
+        {
+            id: 2,
+            titulo: "DJ Fabyano",
+            data: "25 de Janeiro de 2024",
+            local: "Local Especial",
+            descricao: "Show exclusivo com DJ Fabyano\n\nMúsica ao vivo e muito mais!\n\nVenha se divertir conosco!",
+            imagem: "img/evento-04.jpeg",
+            whatsapp: "21967187138"
+        }
+    ];
+    
+    console.log('📋 Dados padrão carregados');
+    salvarDadosNoLocalStorage();
+}
+
+// ========================================
+// RENDERIZAÇÃO DE EVENTOS
+// ========================================
+
+function renderizarCardsEventos() {
+    const container = document.getElementById('eventos-container');
+    if (!container) return;
+    
+    if (eventos.length === 0) {
+        container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-2xl text-gray-400">Nenhum evento disponível</p></div>';
+        return;
+    }
+    
+    container.innerHTML = eventos.map(evento => `
+        <div class="event-card card-hover">
+            <img src="${evento.imagem}" alt="${evento.titulo}" class="w-full h-64 object-cover">
+            <div class="content">
+                <h3 class="text-xl font-bold text-yellow-400 mb-2">${evento.titulo}</h3>
+                <p class="text-gray-300 mb-2"><i class="fas fa-calendar mr-2"></i>${evento.data}</p>
+                <p class="text-gray-300 mb-4"><i class="fas fa-map-marker-alt mr-2"></i>${evento.local}</p>
+                <button onclick="abrirModalEvento(${evento.id})" class="btn">
+                    Saiba Mais
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function abrirModalEvento(id) {
+    const evento = eventos.find(e => e.id === id);
+    if (!evento) return;
+    
+    // Esconde o menu
+    const header = document.querySelector('header');
+    if (header) {
+        header.style.display = 'none';
+    }
+    
+    // Preenche modal
+    document.getElementById('modal-titulo-evento').textContent = evento.titulo;
+    document.getElementById('modal-descricao-evento').innerHTML = evento.descricao.replace(/\n/g, '<br>');
+    document.getElementById('modal-data-evento').textContent = `Data: ${evento.data}`;
+    document.getElementById('modal-local-evento').textContent = `Local: ${evento.local}`;
+    document.getElementById('modal-imagem-evento').src = evento.imagem;
+    // Define o número do WhatsApp baseado no tipo de evento
+    const numeroWhatsApp = evento.whatsapp === '21967187138' ? '21967187138' : '21971494252';
+    const mensagemEvento = encodeURIComponent("Olá, vim através do seu site. Gostaria de saber mais informações sobre eventos.");
+    document.getElementById('modal-whatsapp-evento').href = `https://wa.me/55${numeroWhatsApp}?text=${mensagemEvento}`;
+    
+    // Abre modal
+    document.getElementById('evento-modal').classList.remove('hidden');
+    document.getElementById('evento-modal').classList.add('flex');
+}
+
+// ========================================
+// RENDERIZAÇÃO DE SHOWS
+// ========================================
+
+function renderizarCardsShows() {
+    const container = document.getElementById('shows-container');
+    if (!container) return;
+    
+    if (shows.length === 0) {
+        container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-2xl text-gray-400">Nenhum show disponível</p></div>';
+        return;
+    }
+    
+    container.innerHTML = shows.map(show => `
+        <div class="show-card card-hover">
+            <img src="${show.imagem}" alt="${show.titulo}" class="w-full h-64 object-cover">
+            <div class="content">
+                <h3 class="text-xl font-bold text-yellow-400 mb-2">${show.titulo}</h3>
+                <p class="text-gray-300 mb-2"><i class="fas fa-calendar mr-2"></i>${show.data}</p>
+                <p class="text-gray-300 mb-4"><i class="fas fa-map-marker-alt mr-2"></i>${show.local}</p>
+                <button onclick="abrirModalShow(${show.id})" class="btn">
+                    Saiba Mais
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function abrirModalShow(id) {
+    const show = shows.find(s => s.id === id);
+    if (!show) return;
+    
+    // Esconde o menu
+    const header = document.querySelector('header');
+    if (header) {
+        header.style.display = 'none';
+    }
+    
+    // Preenche modal
+    document.getElementById('modal-titulo-show').textContent = show.titulo;
+    document.getElementById('modal-descricao-show').innerHTML = show.descricao.replace(/\n/g, '<br>');
+    document.getElementById('modal-data-show').textContent = `Data: ${show.data}`;
+    document.getElementById('modal-local-show').textContent = `Local: ${show.local}`;
+    document.getElementById('modal-imagem-show').src = show.imagem;
+    // Define o número do WhatsApp baseado no tipo de show
+    const numeroWhatsApp = show.whatsapp === '21967187138' ? '21967187138' : '21971494252';
+    const mensagemShow = encodeURIComponent("Olá, vim através do seu site. Gostaria de saber mais sobre shows.");
+    document.getElementById('modal-whatsapp-show').href = `https://wa.me/55${numeroWhatsApp}?text=${mensagemShow}`;
+    
+    // Abre modal
+    document.getElementById('show-modal').classList.remove('hidden');
+    document.getElementById('show-modal').classList.add('flex');
+}
+
+// ========================================
+// SISTEMA DE MODAIS
+// ========================================
+
+function fecharModal(modalId) {
+    console.log('🔒 Fechando modal:', modalId);
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        console.log('✅ Modal fechado:', modalId);
+        
+        // Mostra o menu novamente
+        const header = document.querySelector('header');
+        if (header) {
+            header.style.display = 'block';
+        }
+    } else {
+        console.log('❌ Modal não encontrado:', modalId);
+    }
+}
+
+function fecharModalAoClicarFora(event, modalId) {
+    if (event.target.id === modalId) {
+        fecharModal(modalId);
+    }
+}
+
+function inicializarModais() {
+    // Fecha modal ao clicar fora
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal-backdrop')) {
+            fecharModal(e.target.id);
+        }
+    });
+    
+    // Fecha modal com ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modais = document.querySelectorAll('.modal-backdrop');
+            modais.forEach(modal => {
+                if (!modal.classList.contains('hidden')) {
+                    fecharModal(modal.id);
+                }
+            });
+    }
   });
 }
 
-faleConoscoButton.addEventListener("click", async () => {
-  await buscarShowsPlanilha();
-  atualizarModalContatoComShows();
-  contatoModal.classList.remove("hidden");
+// ========================================
+// MENU MOBILE
+// ========================================
+
+function inicializarMenuMobile() {
+    const button = document.getElementById('mobile-menu-button');
+    const menu = document.getElementById('mobile-menu');
+    
+    if (button && menu) {
+        button.addEventListener('click', function() {
+            // Toggle do menu
+            menu.classList.toggle('hidden');
+            menu.classList.toggle('show');
+            
+            // Rotaciona o ícone do hambúrguer
+            button.classList.toggle('rotated');
+            
+            // Muda o ícone
+            const icon = button.querySelector('i');
+            if (menu.classList.contains('show')) {
+                icon.className = 'fas fa-times';
+            } else {
+                icon.className = 'fas fa-bars';
+            }
+        });
+        
+        // Fecha o menu ao clicar em um link
+        const menuLinks = menu.querySelectorAll('a');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                menu.classList.add('hidden');
+                menu.classList.remove('show');
+                button.classList.remove('rotated');
+                const icon = button.querySelector('i');
+                icon.className = 'fas fa-bars';
+            });
+        });
+        
+        // Fecha o menu ao clicar fora dele
+        document.addEventListener('click', function(e) {
+            if (!button.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.add('hidden');
+                menu.classList.remove('show');
+                button.classList.remove('rotated');
+                const icon = button.querySelector('i');
+                icon.className = 'fas fa-bars';
+            }
+        });
+    }
+}
+
+// ========================================
+// SISTEMA DE SINCRONIZAÇÃO
+// ========================================
+
+// Escuta atualizações do admin
+function escutarAtualizacoesDoAdmin() {
+    // Verifica localStorage periodicamente
+    setInterval(function() {
+        const dadosSalvos = localStorage.getItem('casal-mel-dados');
+        if (dadosSalvos) {
+            try {
+                const dados = JSON.parse(dadosSalvos);
+                const ultimaAtualizacao = dados.ultimaAtualizacao || 0;
+                const ultimaAtualizacaoLocal = window.ultimaAtualizacaoLocal || 0;
+                
+                if (ultimaAtualizacao > ultimaAtualizacaoLocal) {
+                    eventos = dados.eventos || eventos;
+                    shows = dados.shows || shows;
+                    
+                    // Atualiza os componentes
+                    renderizarCardsEventos();
+                    renderizarCardsShows();
+                    
+                    window.ultimaAtualizacaoLocal = ultimaAtualizacao;
+                    console.log('🔄 Dados atualizados via localStorage');
+                }
+            } catch (error) {
+                console.error('❌ Erro ao verificar localStorage:', error);
+            }
+        }
+    }, 2000); // Verifica a cada 2 segundos
+}
+
+// ========================================
+// INICIALIZAÇÃO DA APLICAÇÃO
+// ========================================
+
+// Inicializa quando o DOM estiver carregado
+document.addEventListener('DOMContentLoaded', function() {
+    inicializarAplicacao();
+    escutarAtualizacoesDoAdmin();
 });
 
-closeContatoModal.addEventListener("click", () => {
-  contatoModal.classList.add("hidden");
-});
+// ========================================
+// FUNÇÕES GLOBAIS (para uso nos modais)
+// ========================================
 
-contatoModal.addEventListener("click", (e) => {
-  if (e.target === contatoModal) {
-    contatoModal.classList.add("hidden");
-  }
-});
+// Funções globais para fechar modais
+window.fecharModal = fecharModal;
+window.fecharModalAoClicarFora = fecharModalAoClicarFora;

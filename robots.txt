@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://conexaoswing.com.br/sitemap.xml
+
+# Disallow admin panel from search engines
+Disallow: /admin.html
+
+# Allow all other content
+Allow: /img/
+Allow: /css/
+Allow: /js/

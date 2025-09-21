@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Casal Mel</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #111827;
+        }
+        
+        .sidebar {
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+            border-right: 1px solid #4b5563;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-item {
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            margin: 4px 8px;
+        }
+        
+        .sidebar-item:hover {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+        
+        .sidebar-item.active {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border-left: 3px solid #f59e0b;
+        }
+        
+        .main-content {
+            background: #111827;
+            min-height: 100vh;
+        }
+        
+        .admin-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            transform: translateY(-2px);
+        }
+        
+        .modal-backdrop {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+        
+        .form-input {
+            background: #374151;
+            border: 1px solid #4b5563;
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        }
+        
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+            border: 1px solid #4b5563;
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .admin-header-left {
+            margin-left: 0 !important;
+        }
+        
+        .admin-header-right {
+            margin-right: 0 !important;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                z-index: 1000;
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar fixed left-0 top-0 w-64 h-full z-40">
+        <!-- Logo -->
+        <div class="p-6 border-b border-gray-600">
+            <div class="flex items-center">
+                <img src="img/logo primeira seçao.png" alt="Casal Mel" class="h-8 w-auto mr-3">
+                <div>
+                    <h1 class="text-lg font-bold text-white">Admin</h1>
+                    <p class="text-xs text-gray-400">Casal Mel</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Menu -->
+        <nav class="mt-6">
+            <a href="#" class="sidebar-item active flex items-center px-4 py-3 text-white" onclick="showSection('dashboard')">
+                <i class="fas fa-tachometer-alt mr-3"></i>
+                Dashboard
+            </a>
+            <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-300" onclick="showSection('eventos')">
+                <i class="fas fa-calendar-alt mr-3"></i>
+                Eventos
+            </a>
+            <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-300" onclick="showSection('shows')">
+                <i class="fas fa-music mr-3"></i>
+                Shows
+            </a>
+            <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-300" onclick="showSection('banners')">
+                <i class="fas fa-images mr-3"></i>
+                Banners
+            </a>
+            <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-300" onclick="showSection('configuracoes')">
+                <i class="fas fa-cog mr-3"></i>
+                Configurações
+            </a>
+        </nav>
+        
+        <!-- Footer do Sidebar -->
+        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-600">
+            <div class="flex items-center justify-between">
+                <a href="index.html" target="_blank" class="text-gray-400 hover:text-yellow-400 text-sm">
+                    <i class="fas fa-external-link-alt mr-2"></i>Ver Site
+                </a>
+                <button onclick="logout()" class="text-gray-400 hover:text-red-400 text-sm">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Sair
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content ml-64">
+        <!-- Header -->
+        <header class="bg-gray-800 border-b border-gray-700 px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <button id="mobile-menu-btn" class="md:hidden text-white mr-4">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <h2 id="page-title" class="text-xl font-semibold text-white">Dashboard</h2>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <!-- Botão removido conforme solicitado -->
+                </div>
+            </div>
+        </header>
+        
+        <!-- Content Area -->
+        <main class="p-6">
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="content-section active">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="stats-card p-6 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="p-3 bg-blue-500 bg-opacity-20 rounded-lg">
+                                <i class="fas fa-calendar-alt text-blue-400 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-400">Total de Eventos</p>
+                                <p id="total-eventos" class="text-2xl font-bold text-white">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-card p-6 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="p-3 bg-purple-500 bg-opacity-20 rounded-lg">
+                                <i class="fas fa-music text-purple-400 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-400">Total de Shows</p>
+                                <p id="total-shows" class="text-2xl font-bold text-white">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-card p-6 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="p-3 bg-green-500 bg-opacity-20 rounded-lg">
+                                <i class="fas fa-images text-green-400 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-400">Banners Ativos</p>
+                                <p id="total-banners" class="text-2xl font-bold text-white">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-card p-6 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="p-3 bg-yellow-500 bg-opacity-20 rounded-lg">
+                                <i class="fas fa-eye text-yellow-400 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-400">Visualizações</p>
+                                <p class="text-2xl font-bold text-white">1,234</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="admin-card p-6">
+                    <h3 class="text-lg font-semibold text-white mb-4">Bem-vindo ao Admin Casal Mel</h3>
+                    <p class="text-gray-400 mb-4">Gerencie seus eventos, shows e banners de forma fácil e intuitiva.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button onclick="showSection('eventos')" class="btn-primary p-4 rounded-lg text-center">
+                            <i class="fas fa-plus mr-2"></i>Adicionar Evento
+                        </button>
+                        <button onclick="showSection('shows')" class="btn-primary p-4 rounded-lg text-center">
+                            <i class="fas fa-plus mr-2"></i>Adicionar Show
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Eventos Section -->
+            <div id="eventos" class="content-section">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-white">Gerenciar Eventos</h2>
+                    <button onclick="abrirModalEvento()" class="btn-primary px-4 py-2 rounded-lg">
+                        <i class="fas fa-plus mr-2"></i>Adicionar Evento
+                    </button>
+                </div>
+                
+                <div id="eventos-lista" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Eventos serão carregados aqui -->
+                </div>
+            </div>
+            
+            <!-- Shows Section -->
+            <div id="shows" class="content-section">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-white">Gerenciar Shows</h2>
+                    <button onclick="abrirModalShow()" class="btn-primary px-4 py-2 rounded-lg">
+                        <i class="fas fa-plus mr-2"></i>Adicionar Show
+                    </button>
+                </div>
+                
+                <div id="shows-lista" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Shows serão carregados aqui -->
+                </div>
+            </div>
+            
+            <!-- Banners Section -->
+            <div id="banners" class="content-section">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-white">Gerenciar Banners</h2>
+                    <button onclick="abrirModalBanner()" class="btn-primary px-4 py-2 rounded-lg">
+                        <i class="fas fa-plus mr-2"></i>Adicionar Banner
+                    </button>
+                </div>
+                
+                <div id="banners-lista" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Banners serão carregados aqui -->
+                </div>
+            </div>
+            
+            <!-- Configurações Section -->
+            <div id="configuracoes" class="content-section">
+                <h2 class="text-2xl font-bold text-white mb-6">Configurações</h2>
+                <div class="admin-card p-6">
+                    <h3 class="text-lg font-semibold text-white mb-4">Configurações do Sistema</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Nome do Site</label>
+                            <input type="text" class="form-input w-full px-4 py-2 rounded-lg" value="Casal Mel">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Descrição</label>
+                            <textarea class="form-input w-full px-4 py-2 rounded-lg h-24" placeholder="Descrição do site">Eventos exclusivos e experiências únicas</textarea>
+                        </div>
+                        <button class="btn-primary px-4 py-2 rounded-lg">
+                            <i class="fas fa-save mr-2"></i>Salvar Configurações
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Modais (mantidos do admin original) -->
+    <!-- Modal de Evento -->
+    <div id="evento-modal" class="modal-backdrop fixed inset-0 hidden items-center justify-center p-4 z-50">
+        <div class="admin-card p-6 rounded-lg max-w-4xl w-full max-h-90vh overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-2xl font-bold">Adicionar/Editar Evento</h3>
+                <button onclick="fecharModal('evento-modal')" class="text-gray-400 hover:text-white text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="evento-form" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Título do Evento</label>
+                        <input type="text" id="evento-titulo" class="form-input w-full px-4 py-2 rounded-lg" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Data</label>
+                        <input type="text" id="evento-data" class="form-input w-full px-4 py-2 rounded-lg" placeholder="Ex: 15 de Janeiro de 2024" required>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Local</label>
+                        <input type="text" id="evento-local" class="form-input w-full px-4 py-2 rounded-lg" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">WhatsApp</label>
+                        <input type="text" id="evento-whatsapp" class="form-input w-full px-4 py-2 rounded-lg" placeholder="21999999999" required>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Descrição</label>
+                    <textarea id="evento-descricao" class="form-input w-full px-4 py-2 rounded-lg h-32" placeholder="Descrição detalhada do evento..."></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Imagem</label>
+                    <input type="file" id="evento-imagem" accept="image/*" class="form-input w-full px-4 py-2 rounded-lg">
+                    <div id="evento-imagem-preview" class="mt-2 hidden">
+                        <img id="evento-imagem-preview-img" src="" alt="Preview" class="h-20 w-20 object-cover rounded-lg">
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-4">
+                    <button type="button" onclick="fecharModal('evento-modal')" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition duration-300">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn-primary px-4 py-2 rounded-lg">
+                        <i class="fas fa-save mr-2"></i>Salvar Evento
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal de Show -->
+    <div id="show-modal" class="modal-backdrop fixed inset-0 hidden items-center justify-center p-4 z-50">
+        <div class="admin-card p-6 rounded-lg max-w-4xl w-full max-h-90vh overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-2xl font-bold">Adicionar/Editar Show</h3>
+                <button onclick="fecharModal('show-modal')" class="text-gray-400 hover:text-white text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="show-form" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Título do Show</label>
+                        <input type="text" id="show-titulo" class="form-input w-full px-4 py-2 rounded-lg" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Data</label>
+                        <input type="text" id="show-data" class="form-input w-full px-4 py-2 rounded-lg" placeholder="Ex: 20 de Janeiro de 2024" required>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Local</label>
+                        <input type="text" id="show-local" class="form-input w-full px-4 py-2 rounded-lg" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">WhatsApp</label>
+                        <input type="text" id="show-whatsapp" class="form-input w-full px-4 py-2 rounded-lg" placeholder="21999999999" required>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Descrição</label>
+                    <textarea id="show-descricao" class="form-input w-full px-4 py-2 rounded-lg h-32" placeholder="Descrição detalhada do show..."></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Imagem</label>
+                    <input type="file" id="show-imagem" accept="image/*" class="form-input w-full px-4 py-2 rounded-lg">
+                    <div id="show-imagem-preview" class="mt-2 hidden">
+                        <img id="show-imagem-preview-img" src="" alt="Preview" class="h-20 w-20 object-cover rounded-lg">
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-4">
+                    <button type="button" onclick="fecharModal('show-modal')" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition duration-300">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn-primary px-4 py-2 rounded-lg">
+                        <i class="fas fa-save mr-2"></i>Salvar Show
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal de Preview do Site -->
+    <div id="site-preview-modal" class="modal-backdrop fixed inset-0 hidden items-center justify-center p-4 z-50" onclick="fecharModalAoClicarFora(event, 'site-preview-modal')">
+        <div class="admin-card p-4 rounded-lg max-w-5xl w-full max-h-80vh overflow-y-auto" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Preview - Como Ficará no Site</h3>
+                <button onclick="fecharModal('site-preview-modal')" class="text-gray-400 hover:text-white text-2xl p-2">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="bg-gray-900 rounded-lg p-4">
+                <!-- Layout lado a lado -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Preview do Card (Lado Esquerdo) -->
+                    <div>
+                        <div class="text-center mb-3">
+                            <h4 class="text-base font-semibold text-yellow-400 mb-1">Card no Site</h4>
+                            <p class="text-gray-400 text-xs">Como aparecerá na seção</p>
+                        </div>
+                        
+                        <div id="preview-card-container" class="flex justify-center">
+                            <div id="preview-card" class="event-card card-hover max-w-xs w-full">
+                                <img id="preview-imagem" src="" alt="Preview" class="w-full h-48 object-cover">
+                                <div class="content p-3">
+                                    <h3 id="preview-titulo" class="text-lg font-bold text-yellow-400 mb-2"></h3>
+                                    <p id="preview-data" class="text-gray-300 mb-1 text-sm"><i class="fas fa-calendar mr-1"></i></p>
+                                    <p id="preview-local" class="text-gray-300 mb-3 text-sm"><i class="fas fa-map-marker-alt mr-1"></i></p>
+                                    <button class="btn w-full text-sm py-2">
+                                        Saiba Mais
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Preview do Modal (Lado Direito) -->
+                    <div>
+                        <div class="text-center mb-3">
+                            <h4 class="text-base font-semibold text-yellow-400 mb-1">Modal Detalhado</h4>
+                            <p class="text-gray-400 text-xs">Quando clicar em "Saiba Mais"</p>
+                        </div>
+                        
+                        <div class="bg-gray-800 rounded-lg p-3 h-full">
+                            <div class="flex flex-col items-center gap-3">
+                                <img id="preview-modal-imagem" src="" alt="Preview Modal" class="w-full h-32 object-cover rounded-lg">
+                                <div class="w-full">
+                                    <h4 id="preview-modal-titulo" class="text-lg font-bold text-yellow-400 mb-2"></h4>
+                                    <div id="preview-modal-descricao" class="text-gray-300 mb-2 text-xs max-h-20 overflow-y-auto"></div>
+                                    <p id="preview-modal-data" class="text-xs font-semibold mb-1"></p>
+                                    <p id="preview-modal-local" class="text-xs font-semibold mb-3"></p>
+                                    <a id="preview-modal-whatsapp" href="#" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded-full shadow-md transition duration-300 inline-block text-xs">
+                                        <i class="fab fa-whatsapp mr-1"></i>Entrar em Contato
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="admin.js"></script>
+    <script>
+        // Verificar se está logado
+        window.addEventListener('load', function() {
+            const isLoggedIn = localStorage.getItem('casal-mel-logged-in');
+            if (!isLoggedIn) {
+                window.location.href = 'login.html';
+            }
+        });
+        
+        // Função para mostrar seções
+        function showSection(sectionId) {
+            // Esconder todas as seções
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Mostrar a seção selecionada
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Atualizar menu ativo
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Atualizar título da página
+            const titles = {
+                'dashboard': 'Dashboard',
+                'eventos': 'Eventos',
+                'shows': 'Shows',
+                'banners': 'Banners',
+                'configuracoes': 'Configurações'
+            };
+            document.getElementById('page-title').textContent = titles[sectionId];
+        }
+        
+        // Função para logout
+        function logout() {
+            localStorage.removeItem('casal-mel-logged-in');
+            localStorage.removeItem('casal-mel-login-time');
+            window.location.href = 'login.html';
+        }
+        
+        // Menu mobile
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+        
+        // Fechar sidebar ao clicar fora (mobile)
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                const menuBtn = document.getElementById('mobile-menu-btn');
+                
+                if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+                    sidebar.classList.remove('open');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

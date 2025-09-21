@@ -1,455 +1,261 @@
 <!DOCTYPE html>
-<!-- 
-  Site Casal Mel
-  Desenvolvido por: Seu Nome
-  Última atualização: Agosto 2025
--->
 <html lang="pt-BR">
-  <!-- Início do HEAD - Configurações da página -->
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Casal Mel</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casal Mel - Eventos e Shows Exclusivos</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Casal Mel - Eventos exclusivos, shows e experiências únicas. Transmissão de jogos, sorteios, degustações e muito mais!">
+    <meta name="keywords" content="eventos, shows, casal mel, transmissão jogos, sorteios, degustação, entretenimento, festas">
+    <meta name="author" content="Casal Mel">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="pt-BR">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://casalmel.com">
+    <meta property="og:title" content="Casal Mel - Eventos e Shows Exclusivos">
+    <meta property="og:description" content="Eventos exclusivos, shows e experiências únicas. Transmissão de jogos, sorteios, degustações e muito mais!">
+    <meta property="og:image" content="https://casalmel.com/img/logo primeira seçao.png">
+    <meta property="og:site_name" content="Casal Mel">
+    <meta property="og:locale" content="pt_BR">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://casalmel.com">
+    <meta name="twitter:title" content="Casal Mel - Eventos e Shows Exclusivos">
+    <meta name="twitter:description" content="Eventos exclusivos, shows e experiências únicas. Transmissão de jogos, sorteios, degustações e muito mais!">
+    <meta name="twitter:image" content="https://casalmel.com/img/logo primeira seçao.png">
+    
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="img/logo primeira seçao.png">
+    
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="img/bacgrfaude primeira seçao (1).png" as="image">
+    <link rel="preload" href="img/logo primeira seçao.png" as="image">
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      rel="shortcut icon"
-      href="./img/logo primeira seçao.png"
-      type="image/x-icon"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
-    <link rel="stylesheet" href="style.css" />
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Casal Mel",
+        "description": "Eventos exclusivos, shows e experiências únicas",
+        "url": "https://casalmel.com",
+        "logo": "https://casalmel.com/img/logo primeira seçao.png",
+        "sameAs": [
+            "https://instagram.com/casalmel",
+            "https://facebook.com/casalmel"
+        ]
+    }
+    </script>
   </head>
-  <!-- Início do BODY - Conteúdo principal -->
   <body class="bg-gray-900 text-white">
-    <!-- Header - Barra de navegação fixa -->
-    <header class="bg-gray-800 p-4 shadow-lg fixed top-0 left-0 w-full z-50">
-      <nav class="container mx-auto flex justify-between items-center">
-        <div class="flex items-center">
-          <a href="#sessao1" class="hover:opacity-90 transition-opacity">
-            <img
-              src="img/logo primeira seçao (1).png"
-              alt="Logo Casal Mel"
-              class="h-10 w-auto rounded-md"
-            />
-        </div>
-
-        <div class="hidden md:flex space-x-8">
-          <a
-            href="#sessao2"
-            class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2"
-            >Nossa História</a
-          >
-          <a
-            href="#sessao3"
-            class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2"
-            >Eventos</a
-          >
-          <a
-            href="#sessao4"
-            class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2"
-            >Shows</a
-          >
-          <a
-              href="#sessao5"
-            class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2"
-            >SW</a
-          >
-
-                    <a
-            href="#footer"
-            class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2"
-            >Contatos</a
-          >
-        </div>
-
-        <div class="md:hidden">
-          <button
-            id="mobile-menu-button"
-            class="text-white focus:outline-none p-2 rounded-md hover:bg-gray-700"
-          >
-            <i class="fas fa-bars text-2xl"></i>
-          </button>
-        </div>
-      </nav>
+    <!-- Header -->
+    <header class="bg-black bg-opacity-90 fixed w-full top-0 z-50">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="logo-container">
+                <img src="img/logo primeira seçao.png" alt="Casal Mel" class="h-12 w-auto">
+            </div>
+            <div class="nav-links hidden md:flex space-x-8">
+                <a href="#sessao2" class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2">História</a>
+                <a href="#sessao3" class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2">Eventos</a>
+                <a href="#sessao4" class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2">Shows</a>
+                <a href="#sessao5" class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2">Convite Especial</a>
+                <a href="#footer" class="text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2">Contatos</a>
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-white text-2xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden mt-4 bg-black bg-opacity-95 rounded-lg p-4">
+                <div class="space-y-2">
+                    <a href="#sessao2" class="block text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2">História</a>
+                    <a href="#sessao3" class="block text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2">Eventos</a>
+                    <a href="#sessao4" class="block text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2">Shows</a>
+                    <a href="#sessao5" class="block text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2">Convite Especial</a>
+                    <a href="#footer" class="block text-white hover:text-yellow-400 text-lg font-semibold transition duration-300 rounded-md p-2">Contatos</a>
+                </div>
+            </div>
+        </nav>
     </header>
-    <!-- Fim do Header -->
 
-    <!-- Menu Mobile - Aparece apenas em telas pequenas -->
-    <div
-      id="mobile-menu-overlay"
-      class="mobile-menu-overlay fixed top-0 left-0 h-full w-64 bg-gray-800 shadow-xl z-50 md:hidden flex flex-col pt-20"
-    >
-      <button
-        id="close-mobile-menu"
-        class="absolute top-4 right-4 text-white focus:outline-none p-2 rounded-md hover:bg-gray-700"
-      >
-        <i class="fas fa-times text-2xl"></i>
-      </button>
-      <nav class="flex flex-col p-4 space-y-4">
-        <a
-          href="#sessao2"
-          class="text-white hover:text-yellow-400 text-xl font-semibold transition duration-300 rounded-md p-2"
-          onclick="closeMobileMenu()"
-          >Nossa História</a
-        >
-        <a
-          href="#sessao3"
-          class="text-white hover:text-yellow-400 text-xl font-semibold transition duration-300 rounded-md p-2"
-          onclick="closeMobileMenu()"
-          >Eventos</a
-        >
-        <a
-          href="#footer"
-          class="text-white hover:text-yellow-400 text-xl font-semibold transition duration-300 rounded-md p-2"
-          onclick="closeMobileMenu()"
-          >Contato</a
-        >
-        <a
-          href="#sessao5"
-          class="text-white hover:text-yellow-400 text-xl font-semibold transition duration-300 rounded-md p-2"
-          onclick="closeMobileMenu()"
-          >Convidar</a
-        >
-      </nav>
-    </div>
-    <!-- Fim do Menu Mobile -->
-
-    <!-- Seção 1 - Hero Section / Início -->
-    <section
-      id="sessao1"
-      class="section-background min-h-screen flex items-center justify-center p-8 pt-20"
-    >
-      <div
-        class="section-content flex-col md:flex-row items-center justify-center"
-      >
-        <div class="md:w-1/2 flex justify-center md:justify-start mb-8 md:mb-0">
-          <img
-            src="img/logo primeira seçao (1).png"
-            alt="Logo Casal Mel Grande"
-            class="max-w-full h-auto rounded-lg shadow-lg"
-          />
-        </div>
-
-        <div class="md:w-1/2 text-center md:text-left p-4">
-          <h1
-            class="text-4xl md:text-6xl font-extrabold leading-tight text-white drop-shadow-lg"
-          >
-            Quando o mel<br />
-            é bom, a abelha sempre volta.
+    <!-- Main Content -->
+    <main>
+        <!-- Seção 1: Banner Principal -->
+        <section id="sessao1" class="pt-20 min-h-screen flex items-center justify-center relative overflow-hidden section-background" role="banner" aria-label="Banner Principal">
+            <div class="section-content">
+                <div class="text-center">
+                    <img src="img/logo primeira seçao.png" alt="Casal Mel Logo" class="mx-auto mb-8 max-w-xs w-full h-auto">
+                    <h1 class="text-4xl md:text-6xl font-bold text-white mb-8 text-shadow">
+                        Bem-vindos ao Casal Mel
           </h1>
         </div>
       </div>
     </section>
-    <!-- Fim da Seção 1 -->
 
-    <!-- Seção 2 - Nossa História -->
-    <section
-      id="sessao2"
-      class="section-background min-h-screen flex items-center justify-center p-8"
-    >
-      <div
-        class="section-content flex-col md:flex-row items-center justify-center gap-8"
-      >
-        <div
-          class="md:w-1/2 text-center md:text-left order-first md:order-none"
-        >
-          <h2 class="text-5xl md:text-7xl font-bold mb-4 text-yellow-400">
-            Nossa História
+        <!-- Seção 2: História -->
+        <section id="sessao2" class="py-20 section-background" role="region" aria-label="Nossa História">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center mb-12 text-yellow-400">
+                    <i class="fas fa-heart mr-3"></i>Nossa História
           </h2>
-<p class="text-lg md:text-3xl max-w-3xl mx-auto mb-8">
-  Bem-vindos! Somos o Casal Mel, um casal casado
-  e liberal, apaixonado por unir pessoas.
-  <br />
-  Organizadores de festas e encontros de swing no
-  Rio de Janeiro, criamos um ambiente seguro
-  e divertido para casais, solteiras e solteiros.
-</p>
-
-<a
-  href="https://wa.me/5521967187138?text=Ol%C3%A1%2C%20Casal%20Mel!%0AAdorei%20o%20que%20vi%20no%20site%20de%20voc%C3%AAs%20e%20gostaria%20de%20saber%20mais%20detalhes%20sobre%20o%20evento%20Conex%C3%A3o%20Swing."
-  target="_blank"
-  class="inline-block bg-yellow-300 hover:bg-yellow-200 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300"
-  style="text-decoration: none;"
->
-  Quero saber mais
-</a>
-        </div>
-        <div class="md:w-1/2 flex justify-center order-last md:order-none">
-          <img
-            src="img/foto-casal-mel (1).png"
-            alt="Foto da Sessão 2"
-            class="rounded-lg shadow-xl"
-            style="height: 450px; object-fit: cover"
-          />
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div class="text-center md:text-left">
+                        <h3 class="text-3xl font-bold text-yellow-400 mb-6">Conheça o Casal Mel</h3>
+                        <p class="text-lg text-gray-300 mb-6 leading-relaxed">
+                            Somos um casal apaixonado por criar experiências únicas e memoráveis. 
+                            Nossos eventos são cuidadosamente planejados para proporcionar momentos 
+                            inesquecíveis de diversão, entretenimento e conexão.
+                        </p>
+                        <p class="text-lg text-gray-300 mb-8 leading-relaxed">
+                            Desde transmissões de jogos com sorteios especiais até shows exclusivos 
+                            e degustações únicas, cada evento é uma oportunidade de viver algo 
+                            extraordinário.
+                        </p>
+                    </div>
+                    <div class="text-center">
+                        <img src="img/foto-casal-mel (1).png" alt="Casal Mel" class="mx-auto max-w-md w-full h-auto rounded-lg shadow-2xl">
+                    </div>
         </div>
       </div>
     </section>
-    <!-- Fim da Seção 2 -->
 
-    <!-- Seção 3 - Eventos -->
-    <section
-      id="sessao3"
-      class="section-background min-h-screen flex flex-col items-center justify-center p-8"
-    >
-      <div class="section-content relative mb-8">
-        <img
-          src="img/logo-eventos.png"
-          alt="Pequena Logo"
-          class="absolute top-0 left-0 opacity-50 rounded-full hidden md:block h-12 w-auto"
-        />
-        <img
-          src="img/logo-eventos.png"
-          alt="Pequena Logo"
-          class="absolute top-0 right-0 opacity-50 rounded-full hidden md:block h-12 w-auto"
-        />
-
-        <h2 class="text-5xl font-bold mb-8 text-yellow-400">
-          EVENTOS CASAL MEL
+        <!-- Seção 3: Eventos -->
+        <section id="sessao3" class="py-20 section-background" role="region" aria-label="Eventos">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center mb-12 text-yellow-400">
+                    <i class="fas fa-calendar-alt mr-3"></i>Nossos Eventos
         </h2>
-        <p class="text-lg max-w-3xl mx-auto mb-8">
-          Confira nossos próximos eventos e não perca a chance de participar!
-        </p>
-
-        <div
-          class="relative w-full max-w-6xl mx-auto bg-gray-800 p-4 rounded-lg shadow-xl overflow-hidden"
-        >
-          <div id="slideshow-container">
-            <!-- Os cards dos eventos serão inseridos dinamicamente pelo JavaScript -->
-          </div>
-
-          <button id="prev-slide-button">
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          <button id="next-slide-button">
-            <i class="fas fa-chevron-right"></i>
-          </button>
-
-          <div id="slide-dots-container"></div>
+                <div id="eventos-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Eventos serão carregados dinamicamente -->
         </div>
       </div>
     </section>
-    <!-- Fim da Seção 3 -->
 
-    <!-- Seção 4 - Convite Especial -->
-    <section
-      id="sessao4"
-      class="section-background min-h-screen flex items-center justify-center p-8"
-    >
-      <div
-        class="section-content flex-col md:flex-row items-center justify-center gap-8"
-      >
-        <div class="md:w-1/2 flex justify-center order-first md:order-none">
-          <img
-            src="img/foto-sra-mel (1).png"
-            alt="Foto da Sessão 4"
-            class="rounded-lg shadow-xl"
-            style="width: 340px"
-          />
-        </div>
-        <div class="md:w-1/2 text-center md:text-left order-last md:order-none">
-          <h2 class="text-5xl font-bold mb-4 text-yellow-400">
-            🍯 Convite Especial 🍯
+        <!-- Seção 4: Shows -->
+        <section id="sessao4" class="py-20 section-background" role="region" aria-label="Shows">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center mb-12 text-yellow-400">
+                    <i class="fas fa-music mr-3"></i>Nossos Shows
           </h2>
-          <p class="text-lg max-w-3xl mx-auto mb-8">
-            Você está pronto para uma noite inesquecível? Sou Sra. Mel, e te
-            convido para assistir de pertinho os meus shows de strip — um
-            espetáculo envolvente, sensual e cheio de atitude.
-          </p>
-          <p class="mb-4">
-            Cada apresentação é feita com muito charme, mistério e provocação…
-            para quem sabe apreciar o prazer com classe.
-          </p>
-          <button
-            id="fale-conosco-button"
-            class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300"
-          >
-            Fale Conosco
-          </button>
+                <div id="shows-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Shows serão carregados dinamicamente -->
         </div>
       </div>
     </section>
-    <!-- Fim da Seção 4 -->
 
-    <!-- Seção 5 - Conexão e Desejos -->
-    <section
-      id="sessao5"
-      class="section-background min-h-screen flex items-center justify-center p-8"
-    >
-      <div
-        class="section-content flex-col md:flex-row items-stretch justify-center gap-12"
-      >
-        <div class="md:w-1/2 flex flex-col items-center justify-center p-4">
-          <div class="sessao5-card">
-            <img
-              src="img/conexao-sw.png"
-              alt="Imagem Detalhe"
-              class="sessao5-img"
-            />
-            <h4 class="sub-title text-lg font-semibold text-yellow-400">
-              Conexão e Desejos
-            </h4>
-            <h3 class="text-2xl font-bold mb-2 text-yellow-400">
-              Saiba mais sobre eventos
-            </h3>
-  <a
-  href="https://wa.me/5521967187138?text=Ol%C3%A1%2C%20Casal%20Mel!%0AAdorei%20o%20que%20vi%20no%20site%20de%20voc%C3%AAs%20e%20gostaria%20de%20saber%20mais%20detalhes%20sobre%20o%20evento%20Conex%C3%A3o%20Swing."
-  target="_blank"
-  class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 flex items-center justify-center"
-  style="text-decoration: none;"
->
-  Quero saber mais
-</a>
+        <!-- Seção 5: Convite Especial -->
+        <section id="sessao5" class="py-20 section-background" role="region" aria-label="Convite Especial">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center mb-12 text-yellow-400">
+                    <i class="fas fa-star mr-3"></i>Convite Especial
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div class="text-center">
+                        <img src="img/conexao-sw.png" alt="Conexão - Convite Especial" class="mx-auto max-w-md w-full h-auto rounded-lg shadow-2xl">
           </div>
-        </div>
-
-        <div class="md:w-1/2 flex flex-col items-center justify-center p-4">
-          <div class="sessao5-card">
-            <img
-              src="img/evento-05.jpeg"
-              alt="Banner Grande"
-              class="sessao5-img"
-            />
-            <h3 class="text-2xl font-bold mb-2 text-yellow-400">
-              Temos Um Convidado Especial para você
-            </h3>
-            <p class="text-lg mb-4 max-w-md">
-              Venha fazer parte de uma experiência gostosa no Conexão Swing.
-            </p>
- <a
-  href="https://wa.me/5521967187138?text=Ol%C3%A1%2C%20Casal%20Mel!%0AAdorei%20o%20que%20vi%20no%20site%20de%20voc%C3%AAs%20e%20gostaria%20de%20saber%20mais%20detalhes%20sobre%20o%20evento%20Conex%C3%A3o%20Swing."
-  target="_blank"
-  class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 flex items-center justify-center"
-  style="text-decoration: none;"
->
-  Quero saber mais
-</a>
+                    <div class="text-center md:text-left">
+                        <h3 class="text-3xl font-bold text-yellow-400 mb-6">Participe da Nossa Comunidade</h3>
+                        <p class="text-lg text-gray-300 mb-6 leading-relaxed">
+                            Junte-se ao nosso grupo exclusivo e seja o primeiro a saber sobre 
+                            nossos eventos especiais, sorteios únicos e experiências que só 
+                            o Casal Mel pode oferecer.
+                        </p>
+                        <p class="text-lg text-gray-300 mb-8 leading-relaxed">
+                            Receba convites exclusivos, descontos especiais e acesso antecipado 
+                            aos nossos eventos mais aguardados.
+                        </p>
+                        <div class="flex justify-center md:justify-start">
+                            <a href="https://wa.me/5521967187138?text=Olá, vim através do seu site. Gostaria de saber mais sobre conexão." target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full transition duration-300 text-center">
+                                <i class="fab fa-whatsapp mr-2"></i>WhatsApp
+                            </a>
+                        </div>
           </div>
         </div>
       </div>
     </section>
-    <!-- Fim da Seção 5 -->
+    </main>
 
-    <!-- Footer - Rodapé com Contatos -->
-    <footer id="footer" class="bg-gray-800 text-gray-300 py-12 px-4 relative">
-      <div
-        class="container mx-auto flex flex-col items-center justify-between min-h-[200px] text-center relative z-10"
-      >
-        <div
-          class="footer-content-wrapper mb-4 md:mb-0 md:flex md:items-center"
-        >
-          <div class="footer-contact">
-            <p class="text-xl font-bold mb-2">Contato</p>
-            <div
-              class="numbers-container flex flex-col md:flex-row md:items-center gap-4"
-            >
-              <a href="https://wa.me/5521967187138" target="_blank" class="hover:text-yellow-400 inline-flex items-center">
-                <i class="fab fa-whatsapp text-yellow-400 mr-2 text-2xl"></i>
-                <span>21 96718-7138</span>
-              </a>
-              <a href="https://wa.me/5521967187138" target="_blank" class="hover:text-yellow-400 inline-flex items-center">
-                <i class="fab fa-whatsapp text-yellow-400 mr-2 text-2xl"></i>
-                <span>21 96718-7138</span>
+    <!-- Footer -->
+    <footer id="footer" class="bg-black py-12" role="contentinfo">
+        <div class="container mx-auto px-4 text-center">
+            <div class="mb-6 flex justify-center">
+                <img src="img/logo primeira seçao.png" alt="Casal Mel" class="h-16 w-auto">
+            </div>
+            <div class="flex justify-center space-x-6 mb-6">
+                <a href="https://privacy.com.br/checkout/casalmel" target="_blank" class="text-gray-400 hover:text-yellow-400 transition duration-300">
+                    <img src="img/privac.png" alt="Privacy" class="h-8 w-auto">
+                </a>
+                <a href="https://casalreal.com/post-modal.php?cod_post=1310454" target="_blank" class="text-gray-400 hover:text-yellow-400 transition duration-300">
+                    <img src="img/casal-real.png" alt="Casal Real" class="h-8 w-auto">
               </a>
             </div>
-          </div>
-          <div class="footer-social mt-4 md:mt-0 space-x-4">
-            <p class="text-xl font-bold mb-2 md:hidden">Redes Sociais</p>
-            <div class="flex items-center justify-center space-x-6">
-              <a href="https://casalreal.com/perfil.php?cod_perfil=191697" target="_blank" class="hover:opacity-80 transition-opacity">
-                <img src="img/casal-real.png" alt="WhatsApp" class="w-8 h-8 object-contain">
-              </a>
-              <a href="https://wa.me/5521967187138" target="_blank" class="hover:opacity-80 transition-opacity">
-                <img src="img/insta.png" alt="WhatsApp" class="w-8 h-8 object-contain">
-              </a>
-              <a href="https://privacy.com.br/profile/CasalMel" target="_blank" class="hover:opacity-80 transition-opacity">
-                <img src="img/privac.png" alt="WhatsApp" class="w-8 h-8 object-contain">
-              </a>
-            </div>
-          </div>
-        </div>
-        <div class="footer-copyright mt-4 md:mt-0">
-          <p>&copy; 2024 Casal Mel. Todos os direitos reservados.</p>
-          <a href="https://conexaoswing.com.br" target="_blank" class="text-yellow-400 hover:text-yellow-300">
-            conexaoswing.com.br
-          </a>
-        </div>
+            <p class="text-gray-500 text-sm">&copy; 2024 Casal Mel. Todos os direitos reservados.</p>
       </div>
     </footer>
-    <!-- Fim do Footer -->
 
-    <!-- Modal de Eventos - Pop-up com detalhes do evento -->
-    <div
-      id="evento-modal"
-      class="custom-modal hidden fixed inset-0 bg-black bg-opacity-75 items-center justify-center p-4 z-50"
-    >
-      <div
-        class="bg-gray-800 rounded-lg max-w-2xl w-full p-6 text-white relative"
-      >
-        <button
-          id="close-evento-modal"
-          class="absolute top-4 right-4 text-white hover:text-gray-300 text-2xl"
-        >
-          <i class="fas fa-times"></i>
-        </button>
+    <!-- Modal de Evento -->
+    <div id="evento-modal" class="modal-backdrop fixed inset-0 hidden items-center justify-center p-4 z-50" onclick="fecharModalAoClicarFora(event, 'evento-modal')">
+        <div class="admin-card p-4 rounded-lg max-w-4xl w-full max-h-80vh overflow-y-auto" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Detalhes do Evento</h3>
+                <button onclick="fecharModal('evento-modal')" class="text-gray-400 hover:text-white text-2xl p-2">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
         <div class="flex flex-col md:flex-row items-center gap-6">
-          <img
-            id="modal-imagem-evento"
-            src=""
-            alt="Imagem do Evento"
-            class="rounded-lg max-w-full md:max-w-xs"
-          />
-          <div class="text-center md:text-left">
-            <h3
-              id="modal-titulo-evento"
-              class="text-3xl font-bold text-yellow-400 mb-2"
-            ></h3>
-            <p id="modal-descricao-evento" class="text-sm mb-4" style="white-space: pre-line;"></p>
-            <p id="modal-data-evento" class="text-md font-semibold mb-2"></p>
-            <p id="modal-local-evento" class="text-md font-semibold mb-4"></p>
-            <button
-              class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-5 rounded-full shadow-md transition duration-300"
-            >
-              Quero
-            </button>
+                <img id="modal-imagem-evento" src="" alt="Imagem do Evento" class="w-full md:w-1/2 h-64 md:h-80 object-cover rounded-lg">
+                <div class="flex-1">
+                    <h4 id="modal-titulo-evento" class="text-2xl font-bold text-yellow-400 mb-4"></h4>
+                    <div id="modal-descricao-evento" class="text-gray-300 mb-4"></div>
+                    <p id="modal-data-evento" class="text-lg font-semibold mb-2"></p>
+                    <p id="modal-local-evento" class="text-lg font-semibold mb-4"></p>
+                    <a id="modal-whatsapp-evento" href="#" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full shadow-md transition duration-300 inline-block">
+                        <i class="fab fa-whatsapp mr-2"></i>Entrar em Contato
+                    </a>
           </div>
         </div>
       </div>
     </div>
-    <!-- Fim do Modal de Eventos -->
 
-    <!-- Modal de Contato - Pop-up do formulário de contato -->
-    <div
-      id="contato-modal"
-      class="custom-modal hidden fixed inset-0 bg-black bg-opacity-75 items-center justify-center p-4 z-50"
-    >
-      <div
-        class="bg-gray-800 rounded-lg max-w-2xl w-full p-6 text-white relative"
-      >
-        <button
-          id="close-contato-modal"
-          class="absolute top-4 right-4 text-white hover:text-gray-300 text-2xl"
-        >
-          <i class="fas fa-times"></i>
-        </button>
-        <div class="flex flex-col items-center text-center">
-          <h3 class="text-3xl font-bold text-yellow-400 mb-4">Fale Conosco</h3>
-          <p class="text-lg mb-6">
-            Entre em contato para saber mais sobre nossos shows de strip e
-            eventos.
-          </p>
-          <div
-            class="contato-cards-wrapper flex flex-col md:flex-row items-center gap-4"
-          ></div>
+    <!-- Modal de Show -->
+    <div id="show-modal" class="modal-backdrop fixed inset-0 hidden items-center justify-center p-4 z-50" onclick="fecharModalAoClicarFora(event, 'show-modal')">
+        <div class="admin-card p-4 rounded-lg max-w-4xl w-full max-h-80vh overflow-y-auto" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Detalhes do Show</h3>
+                <button onclick="fecharModal('show-modal')" class="text-gray-400 hover:text-white text-2xl p-2">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="flex flex-col md:flex-row items-center gap-6">
+                <img id="modal-imagem-show" src="" alt="Imagem do Show" class="w-full md:w-1/2 h-64 md:h-80 object-cover rounded-lg">
+                <div class="flex-1">
+                    <h4 id="modal-titulo-show" class="text-2xl font-bold text-yellow-400 mb-4"></h4>
+                    <div id="modal-descricao-show" class="text-gray-300 mb-4"></div>
+                    <p id="modal-data-show" class="text-lg font-semibold mb-2"></p>
+                    <p id="modal-local-show" class="text-lg font-semibold mb-4"></p>
+                    <a id="modal-whatsapp-show" href="#" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full shadow-md transition duration-300 inline-block">
+                        <i class="fab fa-whatsapp mr-2"></i>Entrar em Contato
+                    </a>
+                </div>
         </div>
       </div>
     </div>
-    <!-- Fim do Modal de Contato -->
 
-    <!-- Scripts - JavaScript -->
+    <!-- Scripts -->
     <script src="script.js"></script>
   </body>
 </html>
-<!-- Fim do documento HTML -->
