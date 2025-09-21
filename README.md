@@ -11,23 +11,6 @@ Site oficial do Casal Mel, especializado em eventos exclusivos e experiências �
 - **Glassmorphism**: Design moderno com efeitos de vidro
 - **SEO Otimizado**: Otimizado para motores de busca
 
-## 🚀 Deploy
-
-### Vercel (Recomendado)
-1. Conecte seu repositório GitHub ao Vercel
-2. Configure como repositório privado
-3. Deploy automático a cada push
-
-### Netlify
-1. Conecte seu repositório GitHub ao Netlify
-2. Configure como repositório privado
-3. Deploy automático a cada push
-
-### GitHub Pages
-1. Ative GitHub Pages nas configurações do repositório
-2. Selecione a branch main
-3. Site ficará disponível em `https://seuusuario.github.io/casal-mel-eventos`
-
 ## 🛠️ Desenvolvimento Local
 
 ```bash
@@ -110,16 +93,7 @@ casal-mel-eventos/
 ## 🚀 Deploy Automático
 
 O projeto está configurado para deploy automático em:
-- **Vercel**: `vercel.json`
 - **Netlify**: `netlify.toml`
 - **GitHub Pages**: Configuração automática
 
-## 📞 Suporte
 
-Para dúvidas ou suporte, entre em contato:
-- **WhatsApp**: (21) 96718-7138 (MEL)
-- **WhatsApp**: (21) 97149-4252 (CASAL MEL)
-
----
-
-**Desenvolvido com ❤️ para o Casal Mel**
