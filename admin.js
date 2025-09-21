@@ -186,51 +186,12 @@ function salvarDadosNoLocalStorage() {
 }
 
 function carregarDadosPadrao() {
-    // Dados padrão usando as imagens existentes
-    eventos = [
-        {
-            id: 1,
-            titulo: "Evento de Exemplo",
-            data: "15 de Janeiro de 2024",
-            local: "Local do Evento",
-            descricao: "Descrição do evento de exemplo",
-            imagem: "img/evento-01.jpeg",
-            whatsapp: "21999999999"
-        },
-        {
-            id: 2,
-            titulo: "Transmissão dos Jogos",
-            data: "20 de Janeiro de 2024",
-            local: "Local Especial",
-            descricao: "TRANSMISSÃO DOS JOGOS\n\nSORTEIOS DE BALDE DE CERVEJAS P/ QUEM ESTIVER C/ CAMISA DE TIME (QUALQUER TIME)\n\nPALPITE PREMIADO\nCHEGUE ANTES DO JOGO COMEÇAR, FAÇA SEU PALPITE PREMIADO, ACERTOU O PLACAR GANHOU R$100\n\nDEGUSTAÇÃO DE CALDO🍵\n\nQUARTO DA SACANAGEM HOTWIFE  SRA.MEL🔥😈\n\nDJ FABYANO🎶🎤\n\nPiscina, Cabines Glory Hole, Quarto de Casal, Quarto Aquário, Quarto Coletivo\n\nValores: 👇🏼\n\n🕺💃 CASAL ENTRADA GRÁTIS A NOITE TODA S/ BEBIDAS E COOLER, C/ COLLER E BEBIDAS R$50,00\n\n💃 SOLTEIRAS ENTRADA GRÁTIS A NOITE TODA S/ COOLER E BEBIDAS, C/ COOLER E BEBIDAS   R$20\n\n🕺 SOLTEIROS R$80 ANTECIPADO NO PIX, NA HORA R$100",
-            imagem: "img/evento-02.jpeg",
-            whatsapp: "21999999999"
-        }
-    ];
+    // Usa os dados padrão da configuração
+    eventos = [...window.CASAL_MEL_CONFIG.defaultData.eventos];
+    shows = [...window.CASAL_MEL_CONFIG.defaultData.shows];
     
-    shows = [
-        {
-            id: 1,
-            titulo: "Show de Exemplo",
-            data: "20 de Janeiro de 2024",
-            local: "Local do Show",
-            descricao: "Descrição do show de exemplo",
-            imagem: "img/evento-03.jpeg",
-            whatsapp: "21999999999"
-        },
-        {
-            id: 2,
-            titulo: "DJ Fabyano",
-            data: "25 de Janeiro de 2024",
-            local: "Local Especial",
-            descricao: "Show exclusivo com DJ Fabyano\n\nMúsica ao vivo e muito mais!\n\nVenha se divertir conosco!",
-            imagem: "img/evento-04.jpeg",
-            whatsapp: "21999999999"
-        }
-    ];
-    
-    proximoIdEvento = 3;
-    proximoIdShow = 3;
+    proximoIdEvento = eventos.length + 1;
+    proximoIdShow = shows.length + 1;
     
     console.log('📋 Dados padrão carregados');
     salvarDadosNoLocalStorage();
