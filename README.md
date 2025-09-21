@@ -57,11 +57,6 @@ casal-mel-eventos/
 └── package.json        # Dependências Node.js
 ```
 
-## 🔐 Acesso Admin
-
-- **URL**: `/admin.html`
-- **Login**: `sra.mel.admin.com.ber`
-- **Senha**: `123456`
 
 ## 🎯 Funcionalidades
 
