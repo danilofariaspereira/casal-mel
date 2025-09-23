@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URLs do Sistema - Casal Mel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            font-family: 'Inter', sans-serif;
+        }
+        .url-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        .url-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .copy-btn {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            transition: all 0.3s ease;
+        }
+        .copy-btn:hover {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <div class="container mx-auto px-4 py-8">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold mb-4">
+                <i class="fas fa-link mr-3 text-yellow-400"></i>
+                URLs do Sistema Casal Mel
+            </h1>
+            <p class="text-xl text-gray-300">
+                Suas URLs após o deploy
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Site Público -->
+            <div class="url-card p-6">
+                <div class="text-center mb-4">
+                    <i class="fas fa-globe text-4xl text-yellow-400 mb-3"></i>
+                    <h3 class="text-xl font-bold">Site Público</h3>
+                    <p class="text-gray-300 text-sm">Para visitantes</p>
+                </div>
+                <div class="bg-black bg-opacity-50 p-3 rounded-lg mb-4">
+                    <code id="site-url" class="text-green-400 break-all"></code>
+                </div>
+                <button onclick="copyUrl('site-url')" class="copy-btn w-full py-2 px-4 rounded-lg text-black font-semibold">
+                    <i class="fas fa-copy mr-2"></i>Copiar URL
+                </button>
+                <a href="/" target="_blank" class="block mt-3 text-center text-yellow-400 hover:text-yellow-300">
+                    <i class="fas fa-external-link-alt mr-2"></i>Abrir Site
+                </a>
+            </div>
+
+            <!-- Login -->
+            <div class="url-card p-6">
+                <div class="text-center mb-4">
+                    <i class="fas fa-sign-in-alt text-4xl text-yellow-400 mb-3"></i>
+                    <h3 class="text-xl font-bold">Login Admin</h3>
+                    <p class="text-gray-300 text-sm">Acesso administrativo</p>
+                </div>
+                <div class="bg-black bg-opacity-50 p-3 rounded-lg mb-4">
+                    <code id="login-url" class="text-green-400 break-all"></code>
+                </div>
+                <button onclick="copyUrl('login-url')" class="copy-btn w-full py-2 px-4 rounded-lg text-black font-semibold">
+                    <i class="fas fa-copy mr-2"></i>Copiar URL
+                </button>
+                <a href="/login" target="_blank" class="block mt-3 text-center text-yellow-400 hover:text-yellow-300">
+                    <i class="fas fa-external-link-alt mr-2"></i>Abrir Login
+                </a>
+            </div>
+
+            <!-- Admin -->
+            <div class="url-card p-6">
+                <div class="text-center mb-4">
+                    <i class="fas fa-cogs text-4xl text-yellow-400 mb-3"></i>
+                    <h3 class="text-xl font-bold">Dashboard Admin</h3>
+                    <p class="text-gray-300 text-sm">Painel administrativo</p>
+                </div>
+                <div class="bg-black bg-opacity-50 p-3 rounded-lg mb-4">
+                    <code id="admin-url" class="text-green-400 break-all"></code>
+                </div>
+                <button onclick="copyUrl('admin-url')" class="copy-btn w-full py-2 px-4 rounded-lg text-black font-semibold">
+                    <i class="fas fa-copy mr-2"></i>Copiar URL
+                </button>
+                <a href="/admin" target="_blank" class="block mt-3 text-center text-yellow-400 hover:text-yellow-300">
+                    <i class="fas fa-external-link-alt mr-2"></i>Abrir Admin
+                </a>
+            </div>
+        </div>
+
+        <!-- Credenciais -->
+        <div class="url-card p-6 mb-8">
+            <h3 class="text-2xl font-bold mb-4 text-center">
+                <i class="fas fa-key mr-3 text-yellow-400"></i>
+                Credenciais de Acesso
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-black bg-opacity-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-yellow-400 mb-2">Email:</h4>
+                    <code class="text-green-400">teste@teste</code>
+                </div>
+                <div class="bg-black bg-opacity-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-yellow-400 mb-2">Senha:</h4>
+                    <code class="text-green-400">123456</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informações Adicionais -->
+        <div class="url-card p-6">
+            <h3 class="text-2xl font-bold mb-4 text-center">
+                <i class="fas fa-info-circle mr-3 text-yellow-400"></i>
+                Informações Importantes
+            </h3>
+            <div class="space-y-4">
+                <div class="flex items-start">
+                    <i class="fas fa-check-circle text-green-400 mt-1 mr-3"></i>
+                    <div>
+                        <h4 class="font-semibold">HTTPS Automático</h4>
+                        <p class="text-gray-300 text-sm">Todas as URLs usam HTTPS automaticamente</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-check-circle text-green-400 mt-1 mr-3"></i>
+                    <div>
+                        <h4 class="font-semibold">Redirecionamentos</h4>
+                        <p class="text-gray-300 text-sm">URLs limpas sem .html no final</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-check-circle text-green-400 mt-1 mr-3"></i>
+                    <div>
+                        <h4 class="font-semibold">Responsivo</h4>
+                        <p class="text-gray-300 text-sm">Funciona em desktop, tablet e mobile</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-exclamation-triangle text-yellow-400 mt-1 mr-3"></i>
+                    <div>
+                        <h4 class="font-semibold">Dados Locais</h4>
+                        <p class="text-gray-300 text-sm">Dados salvos no navegador (localStorage)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Função para copiar URL
+        function copyUrl(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                // Mostrar feedback visual
+                const button = event.target.closest('button');
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check mr-2"></i>Copiado!';
+                button.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+                }, 2000);
+            }).catch(err => {
+                console.error('Erro ao copiar:', err);
+                alert('Erro ao copiar URL');
+            });
+        }
+
+        // Função para gerar URLs baseadas no domínio atual
+        function generateUrls() {
+            const baseUrl = window.location.origin;
+            
+            document.getElementById('site-url').textContent = baseUrl + '/';
+            document.getElementById('login-url').textContent = baseUrl + '/login';
+            document.getElementById('admin-url').textContent = baseUrl + '/admin';
+        }
+
+        // Executar quando a página carregar
+        document.addEventListener('DOMContentLoaded', generateUrls);
+    </script>
+</body>
+</html>
