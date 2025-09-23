@@ -1,361 +1,236 @@
 // ========================================
-// SISTEMA ADMIN - CASAL MEL
+// PAINEL ADMINISTRATIVO - CASAL MEL
 // ========================================
 
-// Dados
-let eventos = [];
-let shows = [];
-
-// Contador de IDs
-let proximoIdEvento = 1;
-let proximoIdShow = 1;
-
-// ========================================
-// INICIALIZAÇÃO
-// ========================================
-
-function inicializarAdmin() {
-    console.log('🚀 Inicializando admin Casal Mel...');
-    
-    // Carrega dados do localStorage
-    carregarDadosDoLocalStorage();
-    
-    // Carrega dados padrão se não houver dados
-    if (eventos.length === 0 && shows.length === 0) {
-        carregarDadosPadrao();
+class AdminController {
+    constructor() {
+        this.currentEventoId = null;
+        this.currentShowId = null;
+        this.init();
     }
-    
-    // Atualiza interface
-    atualizarDashboard();
-    renderizarListas();
-    
-    // Inicializa formulários
-    inicializarFormularios();
-    
-    console.log('✅ Admin inicializado com sucesso!');
-}
 
-// ========================================
-// SISTEMA DE DADOS
-// ========================================
-
-function removerEventosPassados() {
-    const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0); // Zera as horas para comparar apenas a data
-    
-    // Remove eventos passados
-    const eventosAntes = eventos.length;
-    eventos = eventos.filter(evento => {
-        const dataEvento = converterDataBrasileira(evento.data);
-        if (!dataEvento) {
-            console.log('⚠️ Data inválida encontrada no evento:', evento.data);
-            return true; // Mantém evento se data for inválida
+    init() {
+        debug('Inicializando painel administrativo');
+        this.checkAuth();
+        this.setupEventListeners();
+        
+        // Aguarda o dataManager estar disponível
+        if (window.dataManager) {
+            this.loadData();
+        } else {
+            setTimeout(() => {
+                this.init();
+            }, 100);
+            return;
         }
-        dataEvento.setHours(0, 0, 0, 0);
-        return dataEvento >= hoje;
-    });
-    
-    // Remove shows passados
-    const showsAntes = shows.length;
-    shows = shows.filter(show => {
-        const dataShow = converterDataBrasileira(show.data);
-        if (!dataShow) {
-            console.log('⚠️ Data inválida encontrada no show:', show.data);
-            return true; // Mantém show se data for inválida
-        }
-        dataShow.setHours(0, 0, 0, 0);
-        return dataShow >= hoje;
-    });
-    
-    const eventosRemovidos = eventosAntes - eventos.length;
-    const showsRemovidos = showsAntes - shows.length;
-    
-    if (eventosRemovidos > 0 || showsRemovidos > 0) {
-        console.log(`🗑️ Removidos ${eventosRemovidos} eventos e ${showsRemovidos} shows passados automaticamente`);
-        salvarDados();
+        
+        this.setupSync();
     }
-}
 
-function converterDataBrasileira(dataStr) {
-    try {
-        if (!dataStr || typeof dataStr !== 'string') {
-            return null;
+    checkAuth() {
+        if (!window.auth.isLoggedIn()) {
+            debug('Usuário não logado, redirecionando...');
+            window.location.href = 'login.html';
+            return;
         }
-        
-        // Mapeia meses em português para números
-        const meses = {
-            'janeiro': '01', 'fevereiro': '02', 'março': '03', 'abril': '04',
-            'maio': '05', 'junho': '06', 'julho': '07', 'agosto': '08',
-            'setembro': '09', 'outubro': '10', 'novembro': '11', 'dezembro': '12'
-        };
-        
-        // Limpa a string e converte para minúsculo
-        const dataLimpa = dataStr.trim().toLowerCase();
-        
-        // Extrai dia, mês e ano da string
-        const partes = dataLimpa.split(' de ');
-        if (partes.length === 3) {
-            const dia = partes[0].trim().padStart(2, '0');
-            const mesNome = partes[1].trim();
-            const ano = partes[2].trim();
-            
-            const mes = meses[mesNome];
-            
-            if (mes && ano && dia) {
-                const dataConvertida = new Date(`${ano}-${mes}-${dia}`);
-                
-                // Verifica se a data é válida
-                if (dataConvertida instanceof Date && !isNaN(dataConvertida)) {
-                    return dataConvertida;
+
+        // Mostra informações do usuário
+        const user = window.auth.getCurrentUser();
+        document.getElementById('user-info').textContent = `Olá, ${user.name}`;
+    }
+
+    setupEventListeners() {
+        // Formulário de evento
+        document.getElementById('evento-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.saveEvento();
+        });
+
+        // Formulário de show
+        document.getElementById('show-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.saveShow();
+        });
+
+        // Upload de imagem - evento
+        document.getElementById('evento-imagem').addEventListener('change', (e) => {
+            this.handleImageUpload(e, 'evento-imagem-preview');
+        });
+
+        // Upload de imagem - show
+        document.getElementById('show-imagem').addEventListener('change', (e) => {
+            this.handleImageUpload(e, 'show-imagem-preview');
+        });
+
+        // Menu mobile
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+    }
+
+    setupSync() {
+        // Escuta atualizações de dados
+        window.addEventListener('data-updated', (e) => {
+            debug('Dados atualizados via evento');
+            this.loadData();
+        });
+
+        // Escuta BroadcastChannel
+        if (typeof BroadcastChannel !== 'undefined') {
+            const channel = new BroadcastChannel('casal-mel-sync');
+            channel.addEventListener('message', (e) => {
+                if (e.data.type === 'data-updated') {
+                    debug('Dados atualizados via BroadcastChannel');
+                    this.loadData();
                 }
+            });
+        }
+
+        // Escuta localStorage
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'casal-mel-sync') {
+                debug('Dados atualizados via localStorage');
+                this.loadData();
+            }
+        });
+
+        // Polling para verificar mudanças
+        setInterval(() => {
+            this.checkForDataChanges();
+        }, 2000);
+    }
+
+    checkForDataChanges() {
+        const data = localStorage.getItem('casal-mel-data');
+        if (data) {
+            try {
+                const parsed = JSON.parse(data);
+                const lastUpdate = parsed.lastUpdate || 0;
+                const currentUpdate = window.lastAdminDataUpdate || 0;
+                
+                if (lastUpdate > currentUpdate) {
+                    debug('Mudança detectada via polling');
+                    this.loadData();
+                    window.lastAdminDataUpdate = lastUpdate;
+                }
+            } catch (error) {
+                debug('Erro ao verificar mudanças:', error);
             }
         }
+    }
+
+    loadData() {
+        this.updateDashboard();
+        this.renderEventos();
+        this.renderShows();
+        this.updateBackupStats();
+    }
+
+    updateDashboard() {
+        const eventos = window.dataManager.getEventosAtivos();
+        const shows = window.dataManager.getShowsAtivos();
         
-        // Tenta outros formatos comuns
-        // Formato: DD/MM/YYYY
-        const formatoDDMMYYYY = dataStr.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-        if (formatoDDMMYYYY) {
-            const [, dia, mes, ano] = formatoDDMMYYYY;
-            const dataConvertida = new Date(`${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`);
-            if (dataConvertida instanceof Date && !isNaN(dataConvertida)) {
-                return dataConvertida;
-            }
-        }
+        document.getElementById('total-eventos').textContent = window.dataManager.eventos.length;
+        document.getElementById('total-shows').textContent = window.dataManager.shows.length;
+        document.getElementById('eventos-ativos').textContent = eventos.length;
+        document.getElementById('shows-ativos').textContent = shows.length;
+    }
+
+    renderEventos() {
+        const container = document.getElementById('eventos-lista');
+        if (!container) return;
         
-        // Se não conseguir converter, retorna null
-        console.log('⚠️ Formato de data não reconhecido:', dataStr);
-        return null;
-    } catch (error) {
-        console.log('❌ Erro ao converter data:', dataStr, error);
-        return null;
-    }
-}
-
-function carregarDadosDoLocalStorage() {
-    try {
-        const dadosSalvos = localStorage.getItem('casal-mel-dados');
-        if (dadosSalvos) {
-            const dados = JSON.parse(dadosSalvos);
-            eventos = dados.eventos || [];
-            shows = dados.shows || [];
-            
-            // Atualiza contadores de ID
-            proximoIdEvento = Math.max(...eventos.map(e => e.id), 0) + 1;
-            proximoIdShow = Math.max(...shows.map(s => s.id), 0) + 1;
-            
-            // Remove eventos passados automaticamente
-            removerEventosPassados();
-            
-            console.log('📦 Dados carregados do localStorage:', dados);
-            console.log('📅 Eventos carregados:', eventos.length);
-            console.log('🎭 Shows carregados:', shows.length);
+        const eventos = window.dataManager ? window.dataManager.eventos : [];
+    
+        if (eventos.length === 0) {
+            container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-gray-500 text-xl">Nenhum evento cadastrado</p></div>';
+            return;
         }
-    } catch (error) {
-        console.error('❌ Erro ao carregar dados do localStorage:', error);
-    }
-}
-
-function salvarDados() {
-    try {
-        const dados = {
-            eventos: eventos,
-            shows: shows,
-            ultimaAtualizacao: Date.now()
-        };
-        localStorage.setItem('casal-mel-dados', JSON.stringify(dados));
-        console.log('💾 Dados salvos no localStorage:', dados);
-    } catch (error) {
-        console.error('❌ Erro ao salvar dados no localStorage:', error);
-    }
-}
-
-function salvarDadosNoLocalStorage() {
-    try {
-        const dados = {
-            eventos: eventos,
-            shows: shows,
-            ultimaAtualizacao: Date.now()
-        };
-        localStorage.setItem('casal-mel-dados', JSON.stringify(dados));
-        console.log('💾 Dados salvos no localStorage:', dados);
-        return true;
-    } catch (error) {
-        console.error('❌ Erro ao salvar dados no localStorage:', error);
-        return false;
-    }
-}
-
-function carregarDadosPadrao() {
-    // Usa os dados padrão da configuração
-    eventos = [...window.CASAL_MEL_CONFIG.defaultData.eventos];
-    shows = [...window.CASAL_MEL_CONFIG.defaultData.shows];
     
-    proximoIdEvento = eventos.length + 1;
-    proximoIdShow = shows.length + 1;
-    
-    console.log('📋 Dados padrão carregados');
-    salvarDadosNoLocalStorage();
-}
-
-// ========================================
-// DASHBOARD
-// ========================================
-
-function atualizarDashboard() {
-    document.getElementById('total-eventos').textContent = eventos.length;
-    document.getElementById('total-shows').textContent = shows.length;
-}
-
-// ========================================
-// RENDERIZAÇÃO DAS LISTAS
-// ========================================
-
-function renderizarListas() {
-    renderizarListaEventos();
-    renderizarListaShows();
-}
-
-function renderizarListaEventos() {
-    const container = document.getElementById('eventos-lista');
-    if (!container) return;
-    
-    if (eventos.length === 0) {
-        container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-gray-400 text-xl">Nenhum evento cadastrado</p></div>';
-        return;
-    }
-    
-    container.innerHTML = eventos.map(evento => `
-        <div class="admin-card p-4 card-hover">
-            <div class="flex justify-between items-start mb-3">
-                <h3 class="font-semibold text-yellow-400 text-lg">${evento.titulo}</h3>
-                <div class="flex space-x-2">
-                    <button onclick="editarEvento(${evento.id})" class="text-blue-400 hover:text-blue-300 p-1">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button onclick="deletarEvento(${evento.id})" class="text-red-400 hover:text-red-300 p-1">
-                        <i class="fas fa-trash"></i>
-                    </button>
+        container.innerHTML = eventos.map(evento => `
+            <div class="card p-4">
+                <div class="flex justify-between items-start mb-3">
+                    <h3 class="font-semibold text-gray-800 text-lg">${evento.titulo}</h3>
+                    <div class="flex space-x-2">
+                        <button onclick="editEvento(${evento.id})" class="text-blue-600 hover:text-blue-800 p-1">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteEvento(${evento.id})" class="text-red-600 hover:text-red-800 p-1">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600 mb-2"><i class="fas fa-calendar mr-2"></i>${evento.data}</p>
+                <p class="text-sm text-gray-600 mb-3"><i class="fas fa-map-marker-alt mr-2"></i>${evento.local}</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs text-gray-500">ID: ${evento.id}</span>
+                    <span class="text-xs px-2 py-1 rounded-full ${evento.ativo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                        ${evento.ativo ? 'Ativo' : 'Inativo'}
+                    </span>
                 </div>
             </div>
-            <p class="text-sm text-gray-300 mb-2"><i class="fas fa-calendar mr-2"></i>${evento.data}</p>
-            <p class="text-sm text-gray-300 mb-3"><i class="fas fa-map-marker-alt mr-2"></i>${evento.local}</p>
-            <div class="flex justify-between items-center">
-                <span class="text-xs text-gray-500">ID: ${evento.id}</span>
-                <button onclick="previewEvento(${evento.id})" class="text-green-400 hover:text-green-300 text-sm">
-                    <i class="fas fa-eye mr-1"></i>Preview
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-
-function renderizarListaShows() {
-    const container = document.getElementById('shows-lista');
-    if (!container) return;
-    
-    if (shows.length === 0) {
-        container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-gray-400 text-xl">Nenhum show cadastrado</p></div>';
-        return;
+        `).join('');
     }
+
+    renderShows() {
+        const container = document.getElementById('shows-lista');
+        if (!container) return;
+        
+        const shows = window.dataManager ? window.dataManager.shows : [];
     
-    container.innerHTML = shows.map(show => `
-        <div class="admin-card p-4 card-hover">
-            <div class="flex justify-between items-start mb-3">
-                <h3 class="font-semibold text-yellow-400 text-lg">${show.titulo}</h3>
-                <div class="flex space-x-2">
-                    <button onclick="editarShow(${show.id})" class="text-blue-400 hover:text-blue-300 p-1">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button onclick="deletarShow(${show.id})" class="text-red-400 hover:text-red-300 p-1">
-                        <i class="fas fa-trash"></i>
-                    </button>
+        if (shows.length === 0) {
+            container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-gray-500 text-xl">Nenhum show cadastrado</p></div>';
+            return;
+        }
+    
+        container.innerHTML = shows.map(show => `
+            <div class="card p-4">
+                <div class="flex justify-between items-start mb-3">
+                    <h3 class="font-semibold text-gray-800 text-lg">${show.titulo}</h3>
+                    <div class="flex space-x-2">
+                        <button onclick="editShow(${show.id})" class="text-blue-600 hover:text-blue-800 p-1">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteShow(${show.id})" class="text-red-600 hover:text-red-800 p-1">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600 mb-2"><i class="fas fa-calendar mr-2"></i>${show.data}</p>
+                <p class="text-sm text-gray-600 mb-3"><i class="fas fa-map-marker-alt mr-2"></i>${show.local}</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs text-gray-500">ID: ${show.id}</span>
+                    <span class="text-xs px-2 py-1 rounded-full ${show.ativo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                        ${show.ativo ? 'Ativo' : 'Inativo'}
+                    </span>
                 </div>
             </div>
-            <p class="text-sm text-gray-300 mb-2"><i class="fas fa-calendar mr-2"></i>${show.data}</p>
-            <p class="text-sm text-gray-300 mb-3"><i class="fas fa-map-marker-alt mr-2"></i>${show.local}</p>
-            <div class="flex justify-between items-center">
-                <span class="text-xs text-gray-500">ID: ${show.id}</span>
-                <button onclick="previewShow(${show.id})" class="text-green-400 hover:text-green-300 text-sm">
-                    <i class="fas fa-eye mr-1"></i>Preview
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-
-// ========================================
-// FUNÇÕES DE PREVIEW
-// ========================================
-
-function previewEvento(id) {
-    const evento = eventos.find(e => e.id === id);
-    if (!evento) return;
-    
-    // Mostra preview de como ficará no site
-    mostrarPreviewSite(evento, 'evento');
-}
-
-function previewShow(id) {
-    const show = shows.find(s => s.id === id);
-    if (!show) return;
-    
-    // Mostra preview de como ficará no site
-    mostrarPreviewSite(show, 'show');
-}
-
-// ========================================
-// SISTEMA DE MODAIS
-// ========================================
-
-function fecharModal(modalId) {
-    console.log('🔒 Fechando modal:', modalId);
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        console.log('✅ Modal fechado:', modalId);
-    } else {
-        console.log('❌ Modal não encontrado:', modalId);
+        `).join('');
     }
-}
 
-function fecharModalAoClicarFora(event, modalId) {
-    if (event.target.id === modalId) {
-        fecharModal(modalId);
-    }
-}
+// ========================================
+    // EVENTOS
+// ========================================
 
-function abrirModalEvento(id = null) {
+    openEventModal(id = null) {
+        this.currentEventoId = id;
     const modal = document.getElementById('evento-modal');
     const form = document.getElementById('evento-form');
     
-    // Limpa formulário
     form.reset();
-    const preview = document.getElementById('evento-imagem-preview');
-    if (preview) preview.classList.add('hidden');
+        this.hideImagePreview('evento-imagem-preview');
     
     if (id) {
-        // Modo edição
-        const evento = eventos.find(e => e.id === id);
+            const evento = window.dataManager.getEvento(id);
         if (evento) {
-            const titulo = document.getElementById('evento-titulo');
-            const data = document.getElementById('evento-data');
-            const local = document.getElementById('evento-local');
-            const descricao = document.getElementById('evento-descricao');
-            const whatsapp = document.getElementById('evento-whatsapp');
-            
-            if (titulo) titulo.value = evento.titulo;
-            if (data) data.value = evento.data;
-            if (local) local.value = evento.local;
-            if (descricao) descricao.value = evento.descricao;
-            if (whatsapp) whatsapp.value = evento.whatsapp;
-            
-            if (evento.imagem && preview) {
-                const img = document.getElementById('evento-imagem-preview-img');
-                if (img) {
-                    img.src = evento.imagem;
-                    preview.classList.remove('hidden');
-                }
+                document.getElementById('evento-titulo').value = evento.titulo;
+                document.getElementById('evento-data').value = evento.data;
+                document.getElementById('evento-local').value = evento.local;
+                document.getElementById('evento-descricao').value = evento.descricao;
+                document.getElementById('evento-whatsapp').value = evento.whatsapp;
+                
+                if (evento.imagem) {
+                    this.showImagePreview(evento.imagem, 'evento-imagem-preview');
             }
         }
     }
@@ -364,276 +239,227 @@ function abrirModalEvento(id = null) {
     modal.classList.add('flex');
 }
 
-function abrirModalShow(id = null) {
-    const modal = document.getElementById('show-modal');
-    const form = document.getElementById('show-form');
-    
-    // Limpa formulário
-    form.reset();
-    const preview = document.getElementById('show-imagem-preview');
-    if (preview) preview.classList.add('hidden');
-    
-    if (id) {
-        // Modo edição
-        const show = shows.find(s => s.id === id);
-        if (show) {
-            const titulo = document.getElementById('show-titulo');
-            const data = document.getElementById('show-data');
-            const local = document.getElementById('show-local');
-            const descricao = document.getElementById('show-descricao');
-            const whatsapp = document.getElementById('show-whatsapp');
+    async saveEvento() {
+        const titulo = document.getElementById('evento-titulo').value;
+        const data = document.getElementById('evento-data').value;
+        const local = document.getElementById('evento-local').value;
+        const descricao = document.getElementById('evento-descricao').value;
+        const whatsapp = document.getElementById('evento-whatsapp').value;
+        const imagem = document.getElementById('evento-imagem').files[0];
+
+        const eventoData = {
+            titulo,
+            data,
+            local,
+            descricao,
+            whatsapp,
+            imagem: imagem
+        };
+
+        // Validação básica
+        if (!titulo || !data || !local || !whatsapp) {
+            this.showError('Preencha todos os campos obrigatórios');
+            return;
+        }
+
+        // Sanitizar dados básicos
+        const sanitizedData = {
+            titulo: titulo.trim(),
+            data: data.trim(),
+            local: local.trim(),
+            descricao: descricao.trim(),
+            whatsapp: whatsapp.replace(/\D/g, '') // Remove caracteres não numéricos
+        };
+
+        let imagemData = null;
+        if (imagem) {
+            // Validação básica de imagem
+            if (!imagem.type.startsWith('image/')) {
+                this.showError('Por favor, selecione apenas arquivos de imagem');
+                return;
+            }
             
-            if (titulo) titulo.value = show.titulo;
-            if (data) data.value = show.data;
-            if (local) local.value = show.local;
-            if (descricao) descricao.value = show.descricao;
-            if (whatsapp) whatsapp.value = show.whatsapp;
+            if (imagem.size > 5 * 1024 * 1024) {
+                this.showError('A imagem deve ter no máximo 5MB');
+                return;
+            }
             
-            if (show.imagem && preview) {
-                const img = document.getElementById('show-imagem-preview-img');
-                if (img) {
-                    img.src = show.imagem;
-                    preview.classList.remove('hidden');
+            imagemData = await this.getImageData(imagem);
+        }
+
+        const finalData = {
+            ...sanitizedData,
+            imagem: imagemData
+        };
+
+        if (this.currentEventoId) {
+            window.dataManager.updateEvento(this.currentEventoId, finalData);
+            this.showSuccess('Evento atualizado com sucesso!');
+        } else {
+            window.dataManager.addEvento(finalData);
+            this.showSuccess('Evento adicionado com sucesso!');
+        }
+
+        this.closeModal('evento-modal');
+        this.loadData();
+    }
+
+    editEvento(id) {
+        this.openEventModal(id);
+    }
+
+    deleteEvento(id) {
+        if (confirm('Tem certeza que deseja deletar este evento?')) {
+            window.dataManager.removeEvento(id);
+            this.showSuccess('Evento deletado com sucesso!');
+            this.loadData();
+        }
+    }
+
+    // ========================================
+    // SHOWS
+    // ========================================
+
+    openShowModal(id = null) {
+        this.currentShowId = id;
+        const modal = document.getElementById('show-modal');
+        const form = document.getElementById('show-form');
+        
+        form.reset();
+        this.hideImagePreview('show-imagem-preview');
+        
+        if (id) {
+            const show = window.dataManager.getShow(id);
+            if (show) {
+                document.getElementById('show-titulo').value = show.titulo;
+                document.getElementById('show-data').value = show.data;
+                document.getElementById('show-local').value = show.local;
+                document.getElementById('show-descricao').value = show.descricao;
+                document.getElementById('show-whatsapp').value = show.whatsapp;
+                
+                if (show.imagem) {
+                    this.showImagePreview(show.imagem, 'show-imagem-preview');
                 }
             }
         }
+        
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
     }
-    
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-}
 
-// ========================================
-// INICIALIZAÇÃO DOS FORMULÁRIOS
-// ========================================
+    async saveShow() {
+        const titulo = document.getElementById('show-titulo').value;
+        const data = document.getElementById('show-data').value;
+        const local = document.getElementById('show-local').value;
+        const descricao = document.getElementById('show-descricao').value;
+        const whatsapp = document.getElementById('show-whatsapp').value;
+        const imagem = document.getElementById('show-imagem').files[0];
 
-function inicializarFormularios() {
-    // Formulário de Evento
-    const eventoForm = document.getElementById('evento-form');
-    if (eventoForm) {
-        eventoForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            salvarEvento();
-        });
-    }
-    
-    // Formulário de Show
-    const showForm = document.getElementById('show-form');
-    if (showForm) {
-        showForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            salvarShow();
-        });
-    }
-    
-    // Upload de imagem - Evento
-    const eventoImagem = document.getElementById('evento-imagem');
-    if (eventoImagem) {
-        eventoImagem.addEventListener('change', function(e) {
-            handleImageUpload(e, 'evento-imagem-preview');
-        });
-    }
-    
-    // Upload de imagem - Show
-    const showImagem = document.getElementById('show-imagem');
-    if (showImagem) {
-        showImagem.addEventListener('change', function(e) {
-            handleImageUpload(e, 'show-imagem-preview');
-        });
-    }
-}
-
-// ========================================
-// SALVAR EVENTOS E SHOWS
-// ========================================
-
-function salvarEvento() {
-    const titulo = document.getElementById('evento-titulo').value;
-    const data = document.getElementById('evento-data').value;
-    const local = document.getElementById('evento-local').value;
-    const descricao = document.getElementById('evento-descricao').value;
-    const whatsapp = document.getElementById('evento-whatsapp').value;
-    const imagem = document.getElementById('evento-imagem').files[0];
-    
-    if (!titulo || !data || !local || !whatsapp) {
-        alert('Por favor, preencha todos os campos obrigatórios');
-        return;
-    }
-    
-    let imagemBase64 = '';
-    if (imagem) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            imagemBase64 = e.target.result;
-            finalizarSalvarEvento(titulo, data, local, descricao, whatsapp, imagemBase64);
+        const showData = {
+            titulo,
+            data,
+            local,
+            descricao,
+            whatsapp,
+            imagem: imagem
         };
-        reader.readAsDataURL(imagem);
-    } else {
-        finalizarSalvarEvento(titulo, data, local, descricao, whatsapp, imagemBase64);
-    }
-}
 
-function finalizarSalvarEvento(titulo, data, local, descricao, whatsapp, imagem) {
-    const novoEvento = {
-        id: proximoIdEvento++,
-        titulo: titulo,
-        data: data,
-        local: local,
-        descricao: descricao,
-        whatsapp: whatsapp,
-        imagem: imagem || 'img/evento-01.jpeg'
-    };
-    
-    eventos.push(novoEvento);
-    salvarDados();
-    renderizarListas();
-    atualizarDashboard();
-    fecharModal('evento-modal');
-    
-    console.log('✅ Evento salvo:', novoEvento);
-}
+        // Validação básica
+        if (!titulo || !data || !local || !whatsapp) {
+            this.showError('Preencha todos os campos obrigatórios');
+            return;
+        }
 
-function salvarShow() {
-    const titulo = document.getElementById('show-titulo').value;
-    const data = document.getElementById('show-data').value;
-    const local = document.getElementById('show-local').value;
-    const descricao = document.getElementById('show-descricao').value;
-    const whatsapp = document.getElementById('show-whatsapp').value;
-    const imagem = document.getElementById('show-imagem').files[0];
-    
-    if (!titulo || !data || !local || !whatsapp) {
-        alert('Por favor, preencha todos os campos obrigatórios');
-        return;
-    }
-    
-    let imagemBase64 = '';
-    if (imagem) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            imagemBase64 = e.target.result;
-            finalizarSalvarShow(titulo, data, local, descricao, whatsapp, imagemBase64);
+        // Sanitizar dados básicos
+        const sanitizedData = {
+            titulo: titulo.trim(),
+            data: data.trim(),
+            local: local.trim(),
+            descricao: descricao.trim(),
+            whatsapp: whatsapp.replace(/\D/g, '') // Remove caracteres não numéricos
         };
-        reader.readAsDataURL(imagem);
-    } else {
-        finalizarSalvarShow(titulo, data, local, descricao, whatsapp, imagemBase64);
+
+        let imagemData = null;
+        if (imagem) {
+            // Validação básica de imagem
+            if (!imagem.type.startsWith('image/')) {
+                this.showError('Por favor, selecione apenas arquivos de imagem');
+                return;
+            }
+            
+            if (imagem.size > 5 * 1024 * 1024) {
+                this.showError('A imagem deve ter no máximo 5MB');
+                return;
+            }
+            
+            imagemData = await this.getImageData(imagem);
+        }
+
+        const finalData = {
+            ...sanitizedData,
+            imagem: imagemData
+        };
+
+        if (this.currentShowId) {
+            window.dataManager.updateShow(this.currentShowId, finalData);
+            this.showSuccess('Show atualizado com sucesso!');
+        } else {
+            window.dataManager.addShow(finalData);
+            this.showSuccess('Show adicionado com sucesso!');
+        }
+
+        this.closeModal('show-modal');
+        this.loadData();
     }
-}
 
-function finalizarSalvarShow(titulo, data, local, descricao, whatsapp, imagem) {
-    const novoShow = {
-        id: proximoIdShow++,
-        titulo: titulo,
-        data: data,
-        local: local,
-        descricao: descricao,
-        whatsapp: whatsapp,
-        imagem: imagem || 'img/evento-03.jpeg'
-    };
-    
-    shows.push(novoShow);
-    salvarDados();
-    renderizarListas();
-    atualizarDashboard();
-    fecharModal('show-modal');
-    
-    console.log('✅ Show salvo:', novoShow);
-}
-
-// ========================================
-// EDITAR E DELETAR
-// ========================================
-
-function editarEvento(id) {
-    abrirModalEvento(id);
-}
-
-function deletarEvento(id) {
-    if (confirm('Tem certeza que deseja deletar este evento?')) {
-        eventos = eventos.filter(e => e.id !== id);
-        salvarDados();
-        renderizarListas();
-        atualizarDashboard();
-        console.log('🗑️ Evento deletado:', id);
+    editShow(id) {
+        this.openShowModal(id);
     }
-}
 
-function editarShow(id) {
-    abrirModalShow(id);
-}
-
-function deletarShow(id) {
+    deleteShow(id) {
     if (confirm('Tem certeza que deseja deletar este show?')) {
-        shows = shows.filter(s => s.id !== id);
-        salvarDados();
-        renderizarListas();
-        atualizarDashboard();
-        console.log('🗑️ Show deletado:', id);
+            window.dataManager.removeShow(id);
+            this.showSuccess('Show deletado com sucesso!');
+            this.loadData();
     }
 }
 
 // ========================================
-// SINCRONIZAÇÃO
+    // UTILITÁRIOS
 // ========================================
 
-function sincronizarDados() {
-    salvarDados();
-    
-    // Notifica a página principal sobre a atualização
-    if (window.opener) {
-        window.opener.postMessage({
-            type: 'dados-atualizados',
-            dados: {
-                eventos: eventos,
-                shows: shows,
-                ultimaAtualizacao: Date.now()
-            }
-        }, '*');
+    getImageData(file) {
+        if (!file) return Promise.resolve(null);
+        
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.readAsDataURL(file);
+        });
     }
-    
-    // Força reload da página principal se estiver aberta
-    if (window.opener) {
-        window.opener.location.reload();
-    }
-    
-    console.log('🔄 Dados sincronizados com o site principal');
-    alert('Dados sincronizados com sucesso!');
-}
 
-// ========================================
-// UPLOAD DE IMAGENS
-// ========================================
-
-function handleImageUpload(event, targetInputId) {
+    handleImageUpload(event, previewId) {
     const file = event.target.files[0];
     if (!file) return;
     
-    // Valida o tipo de arquivo
     if (!file.type.startsWith('image/')) {
-        alert('Por favor, selecione apenas arquivos de imagem');
+            this.showError('Por favor, selecione apenas arquivos de imagem');
         return;
     }
     
-    // Valida o tamanho (máximo 5MB)
     if (file.size > 5 * 1024 * 1024) {
-        alert('A imagem deve ter no máximo 5MB');
+            this.showError('A imagem deve ter no máximo 5MB');
         return;
     }
     
-    // Converte para base64
     const reader = new FileReader();
-    reader.onload = function(e) {
-        const base64 = e.target.result;
-        
-        // Atualiza o campo de URL com a imagem base64
-        document.getElementById(targetInputId).value = base64;
-        
-        // Mostra o preview
-        showImagePreview(base64, targetInputId + '-preview');
+        reader.onload = (e) => {
+            this.showImagePreview(e.target.result, previewId);
     };
     reader.readAsDataURL(file);
 }
 
-function showImagePreview(src, previewId) {
+    showImagePreview(src, previewId) {
     const preview = document.getElementById(previewId);
     const img = document.getElementById(previewId + '-img');
     
@@ -643,241 +469,146 @@ function showImagePreview(src, previewId) {
     }
 }
 
-// ========================================
-// FORMULÁRIOS
-// ========================================
+    hideImagePreview(previewId) {
+        const preview = document.getElementById(previewId);
+        if (preview) {
+            preview.classList.add('hidden');
+        }
+    }
 
-function inicializarFormularios() {
-    // Formulário de Evento
-    document.getElementById('evento-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        salvarEvento();
+    closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    showError(message) {
+        window.showError(message);
+    }
+
+    showSuccess(message) {
+        window.showSuccess(message);
+    }
+
+    syncData() {
+        window.dataManager.triggerSync();
+        this.showSuccess('Dados sincronizados com sucesso!');
+    }
+
+    updateBackupStats() {
+        const stats = window.getBackupStats();
+        
+        document.getElementById('backup-eventos-count').textContent = stats.eventos;
+        document.getElementById('backup-shows-count').textContent = stats.shows;
+        
+        if (stats.lastBackup) {
+            const lastBackup = new Date(stats.lastBackup);
+            const now = new Date();
+            const diffMinutes = Math.floor((now - lastBackup) / (1000 * 60));
+            
+            if (diffMinutes < 60) {
+                document.getElementById('backup-last-time').textContent = `${diffMinutes} min atrás`;
+            } else if (diffMinutes < 1440) {
+                const hours = Math.floor(diffMinutes / 60);
+                document.getElementById('backup-last-time').textContent = `${hours}h atrás`;
+            } else {
+                const days = Math.floor(diffMinutes / 1440);
+                document.getElementById('backup-last-time').textContent = `${days} dias atrás`;
+            }
+        } else {
+            document.getElementById('backup-last-time').textContent = 'Nunca';
+        }
+    }
+
+    handleImport() {
+        const fileInput = document.getElementById('import-file');
+        const file = fileInput.files[0];
+        
+        if (!file) {
+            this.showError('Selecione um arquivo para importar');
+            return;
+        }
+
+        window.importData(file)
+            .then(() => {
+                this.loadData();
+                fileInput.value = ''; // Limpa o input
+            })
+            .catch(error => {
+                this.showError(error.message);
+            });
+    }
+
+    logout() {
+        window.auth.logout();
+        window.location.href = 'login.html';
+    }
+}
+
+// Funções globais
+function showSection(sectionId) {
+    document.querySelectorAll('.content-section').forEach(section => {
+        section.classList.remove('active');
     });
     
-    // Formulário de Show
-    document.getElementById('show-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        salvarShow();
+    document.getElementById(sectionId).classList.add('active');
+    
+    document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.classList.remove('active');
     });
-}
-
-function salvarEvento() {
-    const titulo = document.getElementById('evento-titulo').value;
-    const data = document.getElementById('evento-data').value;
-    const local = document.getElementById('evento-local').value;
-    const descricao = document.getElementById('evento-descricao').value;
-    const whatsapp = document.getElementById('evento-whatsapp').value;
-    const imagem = document.getElementById('evento-imagem').files[0];
+    event.target.classList.add('active');
     
-    if (!titulo || !data || !local || !whatsapp) {
-        alert('Por favor, preencha todos os campos obrigatórios');
-        return;
-    }
-    
-    let imagemBase64 = '';
-    if (imagem) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            imagemBase64 = e.target.result;
-            finalizarSalvarEvento(titulo, data, local, descricao, whatsapp, imagemBase64);
-        };
-        reader.readAsDataURL(imagem);
-    } else {
-        finalizarSalvarEvento(titulo, data, local, descricao, whatsapp, imagemBase64);
-    }
-}
-
-function finalizarSalvarEvento(titulo, data, local, descricao, whatsapp, imagem) {
-    const novoEvento = {
-        id: proximoIdEvento++,
-        titulo: titulo,
-        data: data,
-        local: local,
-        descricao: descricao,
-        whatsapp: whatsapp,
-        imagem: imagem || 'img/evento-01.jpeg'
+    const titles = {
+        'dashboard': 'Dashboard',
+        'eventos': 'Eventos',
+        'shows': 'Shows',
+        'backup': 'Backup',
+        'configuracoes': 'Configurações'
     };
-    
-    eventos.push(novoEvento);
-    salvarDados();
-    renderizarListas();
-    atualizarDashboard();
-    fecharModal('evento-modal');
-    
-    console.log('✅ Evento salvo:', novoEvento);
+    document.getElementById('page-title').textContent = titles[sectionId];
 }
 
-function salvarShow() {
-    const titulo = document.getElementById('show-titulo').value;
-    const data = document.getElementById('show-data').value;
-    const local = document.getElementById('show-local').value;
-    const descricao = document.getElementById('show-descricao').value;
-    const whatsapp = document.getElementById('show-whatsapp').value;
-    const imagem = document.getElementById('show-imagem').files[0];
-    
-    if (!titulo || !data || !local || !whatsapp) {
-        alert('Por favor, preencha todos os campos obrigatórios');
-        return;
-    }
-    
-    let imagemBase64 = '';
-    if (imagem) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            imagemBase64 = e.target.result;
-            finalizarSalvarShow(titulo, data, local, descricao, whatsapp, imagemBase64);
-        };
-        reader.readAsDataURL(imagem);
-    } else {
-        finalizarSalvarShow(titulo, data, local, descricao, whatsapp, imagemBase64);
-    }
+function openEventModal(id = null) {
+    window.adminController.openEventModal(id);
 }
 
-function finalizarSalvarShow(titulo, data, local, descricao, whatsapp, imagem) {
-    const novoShow = {
-        id: proximoIdShow++,
-        titulo: titulo,
-        data: data,
-        local: local,
-        descricao: descricao,
-        whatsapp: whatsapp,
-        imagem: imagem || 'img/evento-03.jpeg'
-    };
-    
-    shows.push(novoShow);
-    salvarDados();
-    renderizarListas();
-    atualizarDashboard();
-    fecharModal('show-modal');
-    
-    console.log('✅ Show salvo:', novoShow);
+function openShowModal(id = null) {
+    window.adminController.openShowModal(id);
 }
 
-// ========================================
-// EDIÇÃO E EXCLUSÃO
-// ========================================
-
-function editarEvento(id) {
-    abrirModalEvento(id);
+function editEvento(id) {
+    window.adminController.editEvento(id);
 }
 
-function editarShow(id) {
-    abrirModalShow(id);
+function deleteEvento(id) {
+    window.adminController.deleteEvento(id);
 }
 
-function deletarEvento(id) {
-    if (confirm('Tem certeza que deseja excluir este evento?')) {
-        eventos = eventos.filter(e => e.id !== id);
-        salvarDadosNoLocalStorage();
-        renderizarListas();
-        atualizarDashboard();
-        console.log('🗑️ Evento excluído:', id);
-    }
+function editShow(id) {
+    window.adminController.editShow(id);
 }
 
-function deletarShow(id) {
-    if (confirm('Tem certeza que deseja excluir este show?')) {
-        shows = shows.filter(s => s.id !== id);
-        salvarDadosNoLocalStorage();
-        renderizarListas();
-        atualizarDashboard();
-        console.log('🗑️ Show excluído:', id);
-    }
+function deleteShow(id) {
+    window.adminController.deleteShow(id);
 }
 
-// ========================================
-// SINCRONIZAÇÃO
-// ========================================
-
-function sincronizarDados() {
-    const sucesso = salvarDadosNoLocalStorage();
-    if (sucesso) {
-        alert('✅ Dados sincronizados com sucesso!');
-        console.log('🔄 Dados sincronizados');
-    } else {
-        alert('❌ Erro ao sincronizar dados');
-    }
+function closeModal(modalId) {
+    window.adminController.closeModal(modalId);
 }
 
-// ========================================
-// FUNÇÕES GLOBAIS
-// ========================================
-
-// Função global para fechar modais
-window.fecharModal = fecharModal;
-
-// ========================================
-// INICIALIZAÇÃO
-// ========================================
-
-// Inicializa quando o DOM estiver carregado
-document.addEventListener('DOMContentLoaded', inicializarAdmin);
-
-// ========================================
-// FUNÇÕES DE PREVIEW
-// ========================================
-
-function previewEvento(id) {
-    const evento = eventos.find(e => e.id === id);
-    if (!evento) return;
-    
-    // Mostra preview de como ficará no site
-    mostrarPreviewSite(evento, 'evento');
+function syncData() {
+    window.adminController.syncData();
 }
 
-function previewShow(id) {
-    const show = shows.find(s => s.id === id);
-    if (!show) return;
-    
-    // Mostra preview de como ficará no site
-    mostrarPreviewSite(show, 'show');
+function logout() {
+    window.adminController.logout();
 }
 
-// Função para mostrar preview do site
-function mostrarPreviewSite(item, tipo) {
-    // Atualiza preview do card
-    document.getElementById('preview-imagem').src = item.imagem;
-    document.getElementById('preview-titulo').textContent = item.titulo;
-    document.getElementById('preview-data').innerHTML = `<i class="fas fa-calendar mr-2"></i>${item.data}`;
-    document.getElementById('preview-local').innerHTML = `<i class="fas fa-map-marker-alt mr-2"></i>${item.local}`;
-    
-    // Atualiza preview do modal
-    document.getElementById('preview-modal-imagem').src = item.imagem;
-    document.getElementById('preview-modal-titulo').textContent = item.titulo;
-    document.getElementById('preview-modal-descricao').innerHTML = item.descricao.replace(/\n/g, '<br>');
-    document.getElementById('preview-modal-data').textContent = `Data: ${item.data}`;
-    document.getElementById('preview-modal-local').textContent = `Local: ${item.local}`;
-    // Define o número do WhatsApp baseado no tipo
-    const numeroWhatsApp = item.whatsapp === '21967187138' ? '21967187138' : '21971494252';
-    const mensagem = tipo === 'show' 
-        ? encodeURIComponent("Olá, vim através do seu site. Gostaria de saber mais sobre shows.")
-        : encodeURIComponent("Olá, vim através do seu site. Gostaria de saber mais informações sobre eventos.");
-    document.getElementById('preview-modal-whatsapp').href = `https://wa.me/55${numeroWhatsApp}?text=${mensagem}`;
-    
-    // Ajusta o tipo de card (evento ou show)
-    const previewCard = document.getElementById('preview-card');
-    if (tipo === 'show') {
-        previewCard.className = 'show-card card-hover max-w-sm w-full';
-    } else {
-        previewCard.className = 'event-card card-hover max-w-sm w-full';
-    }
-    
-    // Abre o modal de preview
-    document.getElementById('site-preview-modal').classList.remove('hidden');
-    document.getElementById('site-preview-modal').classList.add('flex');
+function handleImport() {
+    window.adminController.handleImport();
 }
 
-
-// Funções globais para uso nos botões
-window.abrirModalEvento = abrirModalEvento;
-window.abrirModalShow = abrirModalShow;
-window.editarEvento = editarEvento;
-window.deletarEvento = deletarEvento;
-window.editarShow = editarShow;
-window.deletarShow = deletarShow;
-window.sincronizarDados = sincronizarDados;
-window.fecharModal = fecharModal;
-window.fecharModalAoClicarFora = fecharModalAoClicarFora;
-window.previewEvento = previewEvento;
-window.previewShow = previewShow;
-window.mostrarPreviewSite = mostrarPreviewSite;
+// Inicializa o controlador quando o DOM estiver carregado
+document.addEventListener('DOMContentLoaded', () => {
+    window.adminController = new AdminController();
+});

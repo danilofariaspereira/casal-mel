@@ -7,6 +7,17 @@
   to = "/index.html"
   status = 200
 
+# Redirecionamentos específicos para arquivos
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+[[redirects]]
+  from = "/login"
+  to = "/login.html"
+  status = 200
+
 [build.environment]
   NODE_VERSION = "18"
 
