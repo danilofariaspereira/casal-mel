@@ -34,7 +34,7 @@ window.CASAL_MEL_CONFIG = {
                 data: "20 de Janeiro de 2024",
                 local: "Mansão Imperial, Rio de Janeiro",
                 descricao: "Uma noite inesquecível com música ao vivo, jantar requintado e a presença especial do Casal Mel. Vista seu melhor traje e venha celebrar conosco!",
-                whatsapp: "21967187138",
+                whatsapp: "21983551277",
                 imagem: "img/espaco-01.jpeg",
                 ativo: true,
                 criadoEm: new Date().toISOString()
@@ -58,7 +58,7 @@ window.CASAL_MEL_CONFIG = {
                 data: "15 de Fevereiro de 2024",
                 local: "Teatro Municipal, Rio de Janeiro",
                 descricao: "Um show intimista e acústico com a Sra. Mel apresentando seus maiores sucessos. Uma noite de música, emoção e conexão especial.",
-                whatsapp: "21967187138",
+                whatsapp: "21983551277",
                 imagem: "img/espaco-03.jpeg",
                 ativo: true,
                 criadoEm: new Date().toISOString()
