@@ -832,6 +832,13 @@ main {
         margin-right: 20px !important;
     }
     
+    header .mobile-menu-trigger {
+        margin-right: 20px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
     header .logo-container img {
         height: 40px !important;
     }

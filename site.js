@@ -26,22 +26,39 @@ class SiteController {
     setupEventListeners() {
         // Menu mobile
         const mobileMenuBtn = document.getElementById('mobile-menu-button');
-        if (mobileMenuBtn) {
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        if (mobileMenuBtn && mobileMenu) {
+            const openMenu = () => {
+                mobileMenu.classList.remove('hidden');
+                requestAnimationFrame(() => {
+                    mobileMenu.classList.add('show');
+                });
+                mobileMenuBtn.classList.add('rotated');
+            };
+
+            const closeMenu = () => {
+                mobileMenu.classList.remove('show');
+                mobileMenuBtn.classList.remove('rotated');
+                setTimeout(() => {
+                    if (!mobileMenu.classList.contains('show')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }, 300);
+            };
+
             mobileMenuBtn.addEventListener('click', () => {
-                const menu = document.getElementById('mobile-menu');
-                if (menu) {
-                    menu.classList.toggle('hidden');
+                if (mobileMenu.classList.contains('show')) {
+                    closeMenu();
+                } else {
+                    openMenu();
                 }
             });
-        }
 
-        // Fechar menu ao clicar em um link
-        const mobileMenu = document.getElementById('mobile-menu');
-        if (mobileMenu) {
             const menuLinks = mobileMenu.querySelectorAll('a');
             menuLinks.forEach(link => {
                 link.addEventListener('click', () => {
-                    mobileMenu.classList.add('hidden');
+                    closeMenu();
                 });
             });
         }
