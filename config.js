@@ -34,7 +34,7 @@ window.CASAL_MEL_CONFIG = {
                 data: "20 de Janeiro de 2024",
                 local: "Mansão Imperial, Rio de Janeiro",
                 descricao: "Uma noite inesquecível com música ao vivo, jantar requintado e a presença especial do Casal Mel. Vista seu melhor traje e venha celebrar conosco!",
-                whatsapp: "21983551277",
+                whatsapp: "21967187138",
                 imagem: "img/espaco-01.jpeg",
                 ativo: true,
                 criadoEm: new Date().toISOString()
@@ -58,7 +58,7 @@ window.CASAL_MEL_CONFIG = {
                 data: "15 de Fevereiro de 2024",
                 local: "Teatro Municipal, Rio de Janeiro",
                 descricao: "Um show intimista e acústico com a Sra. Mel apresentando seus maiores sucessos. Uma noite de música, emoção e conexão especial.",
-                whatsapp: "21983551277",
+                whatsapp: "21967187138",
                 imagem: "img/espaco-03.jpeg",
                 ativo: true,
                 criadoEm: new Date().toISOString()
@@ -81,6 +81,17 @@ function getImageUrl(imagePath) {
     // Converte para string se não for
     const path = String(imagePath);
     
+    // Substituição de imagens antigas removidas
+    const legacyImages = {
+        'img/evento-01.jpeg': 'img/espaco-01.jpeg',
+        'img/evento-02.jpeg': 'img/espaco-02.jpeg',
+        'img/evento-03.jpeg': 'img/espaco-03.jpeg',
+        'img/evento-04.jpeg': 'img/espaco-04.jpeg'
+    };
+    if (legacyImages[path]) {
+        return legacyImages[path];
+    }
+
     // Se já é uma URL completa, retorna como está
     if (path.startsWith('http') || path.startsWith('data:')) {
         return path;

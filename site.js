@@ -272,8 +272,8 @@ class SiteController {
         document.getElementById('modal-imagem-evento').src = getImageUrl(evento.imagem);
         
         // Configura WhatsApp
-        const mensagem = encodeURIComponent("Olá, vim através do seu site. Gostaria de saber mais informações sobre eventos.");
-        document.getElementById('modal-whatsapp-evento').href = `https://wa.me/55${evento.whatsapp}?text=${mensagem}`;
+        const mensagem = encodeURIComponent("Olá, Casal Mel, vim através do seu site e gostaria de saber mais informações sobre seus eventos.");
+        document.getElementById('modal-whatsapp-evento').href = `https://wa.me/5521967187138?text=${mensagem}`;
         
         // Abre modal
         document.getElementById('evento-modal').classList.remove('hidden');
@@ -325,8 +325,8 @@ class SiteController {
         document.getElementById('modal-imagem-show').src = getImageUrl(show.imagem);
         
         // Configura WhatsApp
-        const mensagem = encodeURIComponent("Olá, vim através do seu site. Gostaria de saber mais sobre shows.");
-        document.getElementById('modal-whatsapp-show').href = `https://wa.me/55${show.whatsapp}?text=${mensagem}`;
+        const mensagem = encodeURIComponent("Olá, Casal Mel, vim através do seu site e gostaria de saber mais informações sobre seus shows.");
+        document.getElementById('modal-whatsapp-show').href = `https://wa.me/5521967187138?text=${mensagem}`;
         
         // Abre modal
         document.getElementById('show-modal').classList.remove('hidden');

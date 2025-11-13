@@ -94,7 +94,7 @@ window.CASAL_MEL_CONFIG = {
                 data: "20 de Janeiro de 2024",
                 local: "Mansão Imperial, Rio de Janeiro",
                 descricao: "Uma noite inesquecível com música ao vivo, jantar requintado e a presença especial do Casal Mel. Vista seu melhor traje e venha celebrar conosco!",
-                whatsapp: "21983551277",
+                whatsapp: "21967187138",
                 imagem: "img/espaco-01.jpeg",
                 ativo: true,
                 criadoEm: new Date().toISOString()
@@ -116,7 +116,7 @@ window.CASAL_MEL_CONFIG = {
                 data: "30 de Janeiro de 2024",
                 local: "Casa do Casal Mel",
                 descricao: "Uma experiência gastronômica única! Degustação de vinhos, queijos artesanais e pratos especiais preparados pelo Casal Mel.",
-                whatsapp: "21983551277",
+                whatsapp: "21967187138",
                 imagem: "img/espaco-03.jpeg",
                 ativo: true,
                 criadoEm: new Date().toISOString()
@@ -129,7 +129,7 @@ window.CASAL_MEL_CONFIG = {
                 data: "15 de Fevereiro de 2024",
                 local: "Casa do Casal Mel",
                 descricao: "Uma noite de música acústica com repertório especial. Ambiente intimista e acolhedor para uma experiência única.",
-                whatsapp: "21983551277",
+                whatsapp: "21967187138",
                 imagem: "img/espaco-04.jpeg",
                 ativo: true,
                 criadoEm: new Date().toISOString()
@@ -262,6 +262,57 @@ function sanitizeProductionData(data) {
     }
 }
 
+// ========================================
+// FUNÇÕES UTILITÁRIAS
+// ========================================
+
+// Função para obter URL da imagem
+function getImageUrl(imagePath) {
+    // Se não há imagem ou é null/undefined, retorna imagem padrão
+    if (!imagePath || imagePath === null || imagePath === undefined) {
+        return 'img/espaco-01.jpeg';
+    }
+
+    // Converte para string se não for
+    const path = String(imagePath);
+
+    // Substituição de imagens antigas removidas
+    const legacyImages = {
+        'img/evento-01.jpeg': 'img/espaco-01.jpeg',
+        'img/evento-02.jpeg': 'img/espaco-02.jpeg',
+        'img/evento-03.jpeg': 'img/espaco-03.jpeg',
+        'img/evento-04.jpeg': 'img/espaco-04.jpeg'
+    };
+    if (legacyImages[path]) {
+        return legacyImages[path];
+    }
+
+    // Se já é uma URL completa, retorna como está
+    if (path.startsWith('http') || path.startsWith('data:')) {
+        return path;
+    }
+
+    // Se começa com 'img/', usa o caminho relativo
+    if (path.startsWith('img/')) {
+        return path;
+    }
+
+    // Caso contrário, adiciona o caminho da pasta img
+    return window.CASAL_MEL_CONFIG.imgPath + path;
+}
+
+// Função para obter URL base
+function getBaseUrl() {
+    return window.CASAL_MEL_CONFIG.baseUrl;
+}
+
+// Função para debug
+function debug(message, data = null) {
+    if (window.CASAL_MEL_CONFIG.debug) {
+        console.log(`[CASAL MEL] ${message}`, data || '');
+    }
+}
+
 // Inicializar configurações de produção
 document.addEventListener('DOMContentLoaded', () => {
     logProduction('Configuração de produção carregada', 'info');
@@ -275,3 +326,8 @@ window.CASAL_MEL_PRODUCTION = {
     sanitize: sanitizeProductionData,
     compressImage: compressImage
 };
+
+// Exportar funções globalmente
+window.getImageUrl = getImageUrl;
+window.getBaseUrl = getBaseUrl;
+window.debug = debug;
