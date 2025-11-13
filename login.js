@@ -31,7 +31,7 @@ class LoginController {
             return;
         }
 
-        this.loginForm.addEventListener('submit', (e) => {
+        this.loginForm?.addEventListener('submit', (e) => {
             e.preventDefault();
             this.handleLogin();
         });
@@ -51,8 +51,8 @@ class LoginController {
             return;
         }
 
-        const username = this.usernameInput.value;
-        const password = this.passwordInput.value;
+        const username = this.usernameInput?.value || '';
+        const password = this.passwordInput?.value || '';
 
         const loginData = { username, password };
 
