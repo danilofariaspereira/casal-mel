@@ -271,10 +271,6 @@ class SiteController {
         document.getElementById('modal-local-evento').textContent = `Local: ${evento.local}`;
         document.getElementById('modal-imagem-evento').src = getImageUrl(evento.imagem);
         
-        // Configura WhatsApp
-        const mensagem = encodeURIComponent("Olá, Casal Mel, vim através do seu site e gostaria de saber mais informações sobre seus eventos.");
-        document.getElementById('modal-whatsapp-evento').href = `https://wa.me/5521967187138?text=${mensagem}`;
-        
         // Abre modal
         document.getElementById('evento-modal').classList.remove('hidden');
         document.getElementById('evento-modal').classList.add('flex');
@@ -323,10 +319,6 @@ class SiteController {
         document.getElementById('modal-data-show').textContent = `Data: ${show.data}`;
         document.getElementById('modal-local-show').textContent = `Local: ${show.local}`;
         document.getElementById('modal-imagem-show').src = getImageUrl(show.imagem);
-        
-        // Configura WhatsApp
-        const mensagem = encodeURIComponent("Olá, Casal Mel, vim através do seu site e gostaria de saber mais informações sobre seus shows.");
-        document.getElementById('modal-whatsapp-show').href = `https://wa.me/5521967187138?text=${mensagem}`;
         
         // Abre modal
         document.getElementById('show-modal').classList.remove('hidden');
