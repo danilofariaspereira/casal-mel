@@ -107,66 +107,23 @@
         <!-- Formulário de Login -->
         <form id="loginForm" class="space-y-4">
             <div>
-                <input type="email" id="email" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none" 
-                       placeholder="Email" required>
+                <input type="text" id="username" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none" 
+                       placeholder="Usuário" autocomplete="username" required>
             </div>
             
             <div>
                 <input type="password" id="password" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none" 
-                       placeholder="Senha" required>
+                       placeholder="Senha" autocomplete="current-password" required>
             </div>
             
             <button type="submit" class="btn-primary w-full text-white py-3 px-4 rounded-lg font-semibold">
                 <i class="fas fa-sign-in-alt mr-2"></i>Entrar
             </button>
         </form>
-
-        <!-- Login com Google -->
-        <div class="text-center mt-4">
-            <button id="googleLogin" class="w-full bg-white bg-opacity-10 hover:bg-opacity-20 text-white py-3 px-4 rounded-lg font-semibold border border-white border-opacity-30 backdrop-filter backdrop-blur-10 transition duration-300">
-                <i class="fab fa-google mr-2 text-red-400"></i>Entrar com Google
-            </button>
-        </div>
-
-        <!-- Link para Registro -->
-        <div class="text-center mt-4">
-            <button id="showRegister" class="text-yellow-400 hover:text-yellow-300 text-sm transition duration-300">
-                Criar conta
-            </button>
-        </div>
-    </div>
-
-    <!-- Modal de Registro -->
-    <div id="registerModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-filter backdrop-blur-5 hidden items-center justify-center p-4 z-50">
-        <div class="login-card rounded-2xl shadow-2xl p-6 w-full max-w-sm">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-bold text-white">Criar Conta</h2>
-                <button id="closeRegister" class="text-white text-opacity-70 hover:text-white">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-
-            <form id="registerForm" class="space-y-3">
-                <div>
-                    <input type="text" id="regName" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none" 
-                           placeholder="Nome completo" required>
-                </div>
-                
-                <div>
-                    <input type="email" id="regEmail" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none" 
-                           placeholder="Email" required>
-                </div>
-                
-                <div>
-                    <input type="password" id="regPassword" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none" 
-                           placeholder="Senha (mín. 6 caracteres)" required minlength="6">
-                </div>
-                
-                <button type="submit" class="btn-primary w-full text-white py-3 px-4 rounded-lg font-semibold">
-                    <i class="fas fa-user-plus mr-2"></i>Criar Conta
-                </button>
-            </form>
-        </div>
+        
+        <p class="text-center text-sm text-white text-opacity-80 mt-4">
+            Utilize as credenciais fornecidas pela equipe Casal Mel.
+        </p>
     </div>
 
     <!-- Mensagem de Erro -->

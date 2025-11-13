@@ -171,8 +171,8 @@ class ValidationSystem {
     // Validação específica para login
     validateLogin(loginData) {
         const rules = {
-            email: ['required', 'email'],
-            password: ['required', ['minLength', 6]]
+            username: ['required'],
+            password: ['required']
         };
 
         return this.validateForm(loginData, rules);

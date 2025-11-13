@@ -15,14 +15,11 @@ window.CASAL_MEL_CONFIG = {
     
     // Configurações de login
     login: {
-        // Usuário de teste padrão
-        testUser: {
-            email: 'teste@teste',
-            password: '123456',
-            name: 'Usuário Teste'
-        },
-        // Configuração do Google (para implementar depois)
-        googleClientId: 'YOUR_GOOGLE_CLIENT_ID'
+        adminUser: {
+            username: 'admincasalmel',
+            password: 'casalmel#2025@admin#',
+            name: 'Admin Casal Mel'
+        }
     },
     
     // Configurações de produção
