@@ -275,7 +275,12 @@ class SiteController {
         const botaoEvento = document.getElementById('modal-whatsapp-evento');
         if (botaoEvento) {
             const mensagem = encodeURIComponent('Olá, Casal Mel, vim através do site de vocês e gostaria de saber mais sobre o evento.');
-            botaoEvento.href = `https://wa.me/${this.whatsappContato}?text=${mensagem}`;
+            const url = `https://wa.me/${this.whatsappContato}?text=${mensagem}`;
+            botaoEvento.href = url;
+            botaoEvento.onclick = (event) => {
+                event.preventDefault();
+                window.open(url, '_blank', 'noopener');
+            };
         }
 
         // Abre modal
@@ -330,7 +335,12 @@ class SiteController {
         const botaoShow = document.getElementById('modal-whatsapp-show');
         if (botaoShow) {
             const mensagem = encodeURIComponent('Olá, Casal Mel, vim através do site de vocês e gostaria de saber mais sobre o show.');
-            botaoShow.href = `https://wa.me/${this.whatsappContato}?text=${mensagem}`;
+            const url = `https://wa.me/${this.whatsappContato}?text=${mensagem}`;
+            botaoShow.href = url;
+            botaoShow.onclick = (event) => {
+                event.preventDefault();
+                window.open(url, '_blank', 'noopener');
+            };
         }
 
         // Abre modal
