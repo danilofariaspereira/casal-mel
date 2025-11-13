@@ -5,8 +5,9 @@
 class LoginController {
     constructor() {
         this.loginForm = null;
-        this.usernameInput = null;
-        this.passwordInput = null;
+        this.usernameSelector = '#username, input[name="username"]';
+        this.passwordSelector = '#password, input[name="password"]';
+        this.handleLogin = this.handleLogin.bind(this);
         this.init();
     }
 
@@ -19,22 +20,13 @@ class LoginController {
     setupEventListeners() {
         // Referências aos elementos do formulário
         this.loginForm = document.getElementById('loginForm');
-        this.usernameInput = document.getElementById('username');
-        this.passwordInput = document.getElementById('password');
 
-        if (!this.loginForm || !this.usernameInput || !this.passwordInput) {
-            debug('Elementos do formulário de login não encontrados', {
-                hasForm: !!this.loginForm,
-                hasUsername: !!this.usernameInput,
-                hasPassword: !!this.passwordInput
-            });
+        if (!this.loginForm) {
+            debug('Formulário de login não encontrado');
             return;
         }
 
-        this.loginForm?.addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.handleLogin();
-        });
+        this.loginForm.addEventListener('submit', this.handleLogin);
     }
 
     checkAuth() {
@@ -45,14 +37,25 @@ class LoginController {
         }
     }
 
-    async handleLogin() {
-        if (!this.usernameInput || !this.passwordInput) {
+    async handleLogin(event) {
+        event?.preventDefault();
+
+        const form = event?.currentTarget || this.loginForm || document.getElementById('loginForm');
+        if (!form) {
             this.showError('Formulário de login não encontrado. Recarregue a página.');
             return;
         }
 
-        const username = this.usernameInput?.value || '';
-        const password = this.passwordInput?.value || '';
+        const usernameInput = form.querySelector(this.usernameSelector) || document.querySelector(this.usernameSelector);
+        const passwordInput = form.querySelector(this.passwordSelector) || document.querySelector(this.passwordSelector);
+
+        if (!usernameInput || !passwordInput) {
+            this.showError('Campos de usuário ou senha não encontrados. Recarregue a página.');
+            return;
+        }
+
+        const username = (usernameInput.value || '').trim();
+        const password = passwordInput.value || '';
 
         const loginData = { username, password };
 
