@@ -4,6 +4,9 @@
 
 class LoginController {
     constructor() {
+        this.loginForm = null;
+        this.usernameInput = null;
+        this.passwordInput = null;
         this.init();
     }
 
@@ -14,14 +17,24 @@ class LoginController {
     }
 
     setupEventListeners() {
-        // Formulário de login
-        const loginForm = document.getElementById('loginForm');
-        if (loginForm) {
-            loginForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                this.handleLogin();
+        // Referências aos elementos do formulário
+        this.loginForm = document.getElementById('loginForm');
+        this.usernameInput = document.getElementById('username');
+        this.passwordInput = document.getElementById('password');
+
+        if (!this.loginForm || !this.usernameInput || !this.passwordInput) {
+            debug('Elementos do formulário de login não encontrados', {
+                hasForm: !!this.loginForm,
+                hasUsername: !!this.usernameInput,
+                hasPassword: !!this.passwordInput
             });
+            return;
         }
+
+        this.loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.handleLogin();
+        });
     }
 
     checkAuth() {
@@ -33,8 +46,13 @@ class LoginController {
     }
 
     async handleLogin() {
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
+        if (!this.usernameInput || !this.passwordInput) {
+            this.showError('Formulário de login não encontrado. Recarregue a página.');
+            return;
+        }
+
+        const username = this.usernameInput.value;
+        const password = this.passwordInput.value;
 
         const loginData = { username, password };
 
@@ -75,6 +93,12 @@ class LoginController {
 
 // Inicializa o controlador quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', () => {
+    const loginForm = document.getElementById('loginForm');
+    if (!loginForm) {
+        debug('Página sem formulário de login detectada. Controlador não inicializado.');
+        return;
+    }
+
     new LoginController();
 });
 
