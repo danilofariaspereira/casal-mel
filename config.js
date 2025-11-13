@@ -35,7 +35,7 @@ window.CASAL_MEL_CONFIG = {
                 local: "Mansão Imperial, Rio de Janeiro",
                 descricao: "Uma noite inesquecível com música ao vivo, jantar requintado e a presença especial do Casal Mel. Vista seu melhor traje e venha celebrar conosco!",
                 whatsapp: "21967187138",
-                imagem: "img/evento-01.jpeg",
+                imagem: "img/espaco-01.jpeg",
                 ativo: true,
                 criadoEm: new Date().toISOString()
             },
@@ -46,7 +46,7 @@ window.CASAL_MEL_CONFIG = {
                 local: "Casa do Casal Mel, Rio de Janeiro",
                 descricao: "TRANSMISSÃO DOS JOGOS\nSORTEIOS DE BALDE DE CERVEJAS P/ QUEM ESTIVER C/ CAMISA DE TIME (QUALQUER TIME)\nPALPITE PREMIADO\nCHEGUE ANTES DO JOGO COMEÇAR, FAÇA SEU PALPITE PREMIADO, ACERTOU O PLACAR GANHOU R$100\nDEGUSTAÇÃO DE CALDO🍵\nQUARTO DA SACANAGEM HOTWIFE SRA.MEL🔥😈\nDJ FABYANO🎶🎤\nPiscina, Cabines Glory Hole, Quarto de Casal, Quarto Aquário, Quarto Coletivo\nValores: 👇🏼\n🕺💃 CASAL ENTRADA GRÁTIS A NOITE TODA S/ BEBIDAS E COOLER, C/ COLLER E BEBIDAS R$50,00\n💃 SOLTEIRAS ENTRADA GRÁTIS A NOITE TODA S/ COOLER E BEBIDAS, C/ COOLER E BEBIDAS R$20\n🕺 SOLTEIROS R$80 ANTECIPADO NO PIX, NA HORA R$100",
                 whatsapp: "21967187138",
-                imagem: "img/evento-02.jpeg",
+                imagem: "img/espaco-02.jpeg",
                 ativo: true,
                 criadoEm: new Date().toISOString()
             }
@@ -59,7 +59,7 @@ window.CASAL_MEL_CONFIG = {
                 local: "Teatro Municipal, Rio de Janeiro",
                 descricao: "Um show intimista e acústico com a Sra. Mel apresentando seus maiores sucessos. Uma noite de música, emoção e conexão especial.",
                 whatsapp: "21967187138",
-                imagem: "img/evento-04.jpeg",
+                imagem: "img/espaco-03.jpeg",
                 ativo: true,
                 criadoEm: new Date().toISOString()
             }
@@ -75,7 +75,7 @@ window.CASAL_MEL_CONFIG = {
 function getImageUrl(imagePath) {
     // Se não há imagem ou é null/undefined, retorna imagem padrão
     if (!imagePath || imagePath === null || imagePath === undefined) {
-        return 'img/evento-01.jpeg';
+        return 'img/espaco-01.jpeg';
     }
     
     // Converte para string se não for

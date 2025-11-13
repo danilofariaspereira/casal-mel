@@ -30,9 +30,10 @@
     
     <!-- Apple Touch Icon -->
     <link rel="apple-touch-icon" href="img/logo primeira seçao.png">
+    <link rel="icon" type="image/png" href="img/logo primeira seçao.png">
     
     <!-- Preload Critical Resources -->
-    <link rel="preload" href="img/bacgrfaude primeira seçao (1).png" as="image">
+    <link rel="preload" href="img/banner-home.png" as="image">
     <link rel="preload" href="img/logo primeira seçao.png" as="image">
     
     <!-- Tailwind CSS -->
@@ -130,7 +131,7 @@
                         </p>
                     </div>
                     <div class="text-center">
-                        <img src="img/foto-casal-mel (1).png" alt="Casal Mel" class="mx-auto max-w-md w-full h-auto rounded-lg shadow-2xl">
+                        <img src="img/casal-mel.jpeg" alt="Casal Mel" class="mx-auto max-w-md w-full h-auto rounded-lg shadow-2xl">
                     </div>
                 </div>
             </div>
@@ -160,31 +161,36 @@
             </div>
         </section>
 
-        <!-- Seção 5: Convite Especial -->
-        <section id="sessao5" class="py-20 section-background" role="region" aria-label="Convite Especial">
+        <!-- Seção 5: Nosso Espaço -->
+        <section id="sessao5" class="py-20 section-background" role="region" aria-label="Nosso Espaço">
             <div class="container mx-auto px-4">
                 <h2 class="text-4xl font-bold text-center mb-12 text-yellow-400">
-                    <i class="fas fa-star mr-3"></i>Convite Especial
+                    <i class="fas fa-map-marker-alt mr-3"></i>Nosso Espaço
                 </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                    <div class="text-center">
-                        <img src="img/conexao-sw.png" alt="Conexão - Convite Especial" class="mx-auto max-w-md w-full h-auto rounded-lg shadow-2xl">
+                <div class="space-section grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div class="space-image-wrapper text-center md:text-left">
+                        <img src="img/logo-nosso-espaco.jpeg" alt="Logo do Nosso Espaço" class="space-image mx-auto md:ml-0">
                     </div>
-                    <div class="text-center md:text-left">
-                        <h3 class="text-3xl font-bold text-yellow-400 mb-6">Participe da Nossa Comunidade</h3>
-                        <p class="text-lg text-gray-300 mb-6 leading-relaxed">
-                            Junte-se ao nosso grupo exclusivo e seja o primeiro a saber sobre 
-                            nossos eventos especiais, sorteios únicos e experiências que só 
-                            o Casal Mel pode oferecer.
+                    <div class="space-content text-center md:text-left">
+                        <h3 class="text-3xl font-bold text-yellow-400 mb-6">Conheça um pouco do nosso espaço</h3>
+                        <p class="space-lead text-lg text-gray-300 mb-3 leading-relaxed">
+                            Ambiente aconchegante, discreto e pronto para muita interação. Cada detalhe foi pensado para criar memórias especiais ao lado de quem você escolhe.
                         </p>
-                        <p class="text-lg text-gray-300 mb-8 leading-relaxed">
-                            Receba convites exclusivos, descontos especiais e acesso antecipado 
-                            aos nossos eventos mais aguardados.
+                        <p class="space-lead text-lg text-gray-300 mb-6 leading-relaxed">
+                            Lounges confortáveis, iluminação intimista, palco privativo e espaços temáticos personalizados garantem encontros reservados, transmissões exclusivas e festas com sofisticação.
                         </p>
+                        <div class="space-features text-left text-gray-300 mb-8">
+                            <div class="space-feature"><i class="fas fa-heart text-yellow-400 mr-3"></i>Quartos exclusivos para casais</div>
+                            <div class="space-feature"><i class="fas fa-mask text-yellow-400 mr-3"></i>Glory hole e dark room dedicados</div>
+                            <div class="space-feature"><i class="fas fa-eye text-yellow-400 mr-3"></i>Quarto aquário com visão 360°</div>
+                            <div class="space-feature"><i class="fas fa-glass-cheers text-yellow-400 mr-3"></i>Espaço de lazer e lounge gourmet</div>
+                            <div class="space-feature"><i class="fas fa-smoking text-yellow-400 mr-3"></i>Área externa para fumantes</div>
+                            <div class="space-feature"><i class="fas fa-wind text-yellow-400 mr-3"></i>Ambientes 100% climatizados</div>
+                        </div>
                         <div class="flex justify-center md:justify-start">
-                            <a href="https://wa.me/5521967187138?text=Olá, vim através do seu site. Gostaria de saber mais sobre conexão." target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full transition duration-300 text-center">
-                                <i class="fab fa-whatsapp mr-2"></i>WhatsApp
-                            </a>
+                            <button id="open-espaco-modal" type="button" class="space-button inline-flex items-center justify-center">
+                                <i class="fas fa-images mr-2"></i>Saiba Mais
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -192,21 +198,73 @@
         </section>
     </main>
 
+    <!-- Modal do Espaço -->
+    <div id="espaco-modal" class="modal-backdrop fixed inset-0 hidden items-center justify-center p-4 z-50" onclick="fecharModalAoClicarFora(event, 'espaco-modal')">
+        <div class="admin-card space-modal-card p-6 rounded-3xl max-w-5xl w-full" onclick="event.stopPropagation()">
+            <div class="space-modal-head flex justify-between items-start mb-6">
+                <div>
+                    <h3 class="text-2xl font-bold text-yellow-400 mb-4">Nosso Espaço</h3>
+                    <p class="space-modal-lead text-gray-200 leading-relaxed mb-4">
+                        Conheça os ambientes onde o Casal Mel recebe seus convidados com todo carinho e dedicação.
+                        Cada espaço foi preparado para garantir conforto, discrição e muita interação.
+                    </p>
+                    <div class="space-modal-features text-gray-200">
+                        <div class="space-modal-feature"><i class="fas fa-heart text-yellow-400 mr-3"></i>Quartos exclusivos para casais</div>
+                        <div class="space-modal-feature"><i class="fas fa-mask text-yellow-400 mr-3"></i>Glory hole e dark room dedicados</div>
+                        <div class="space-modal-feature"><i class="fas fa-eye text-yellow-400 mr-3"></i>Quarto aquário com visão 360°</div>
+                        <div class="space-modal-feature"><i class="fas fa-glass-cheers text-yellow-400 mr-3"></i>Espaço de lazer e lounge gourmet</div>
+                        <div class="space-modal-feature"><i class="fas fa-smoking text-yellow-400 mr-3"></i>Área externa para fumantes</div>
+                        <div class="space-modal-feature"><i class="fas fa-wind text-yellow-400 mr-3"></i>Ambientes 100% climatizados</div>
+                    </div>
+                </div>
+                <button onclick="fecharModal('espaco-modal')" class="space-modal-close text-gray-400 hover:text-white text-xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="espaco-gallery" class="espaco-gallery grid gap-4">
+                <!-- Imagens do espaço carregadas dinamicamente -->
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
-    <footer id="footer" class="bg-black py-12" role="contentinfo">
-        <div class="container mx-auto px-4 text-center">
-            <div class="mb-6 flex justify-center">
-                <img src="img/logo primeira seçao.png" alt="Casal Mel" class="h-16 w-auto">
+    <footer id="footer" class="site-footer bg-black py-16" role="contentinfo">
+        <div class="container mx-auto px-4">
+            <div class="footer-container">
+                <div class="footer-brand">
+                    <img src="img/logo primeira seçao.png" alt="Casal Mel" class="footer-logo">
+                    <div class="footer-partners">
+                        <a href="https://privacy.com.br/checkout/casalmel" target="_blank" class="footer-partner">
+                            <img src="img/privac.png" alt="Privacy" class="footer-partner-image">
+                        </a>
+                        <a href="https://casalreal.com/post-modal.php?cod_post=1310454" target="_blank" class="footer-partner">
+                            <img src="img/casal-real.png" alt="Casal Real" class="footer-partner-image">
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Contatos</h4>
+                    <a href="https://wa.me/5521999999999?text=Olá%2C%20vim%20através%20do%20site%20Casal%20Mel%20e%20gostaria%20de%20mais%20informações." target="_blank" class="footer-link">
+                        <i class="fab fa-whatsapp"></i> WhatsApp · (21) 99999-9999
+                    </a>
+                    <a href="https://wa.me/5521993350228?text=Olá%2C%20vim%20através%20do%20site%20Casal%20Mel%20e%20gostaria%20de%20mais%20informações." target="_blank" class="footer-link">
+                        <i class="fab fa-whatsapp"></i> WhatsApp · (21) 99335-0228
+                    </a>
+                </div>
+                <div class="footer-section">
+                    <h4>Endereço</h4>
+                    <p>Av. Bruxelas, 165 · Bonsucesso</p>
+                    <p>Rio de Janeiro · RJ · CEP 21070-060</p>
+                    <p>Fácil acesso para estacionamento</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Av.+Bruxelas%2C+165+-+Bonsucesso%2C+Rio+de+Janeiro+-+RJ%2C+21070-060" target="_blank" class="footer-map-button">
+                        <i class="fas fa-map-marker-alt mr-2"></i>Ver no Google Maps
+                    </a>
+                </div>
             </div>
-            <div class="flex justify-center space-x-6 mb-6">
-                <a href="https://privacy.com.br/checkout/casalmel" target="_blank" class="text-gray-400 hover:text-yellow-400 transition duration-300">
-                    <img src="img/privac.png" alt="Privacy" class="h-8 w-auto">
-                </a>
-                <a href="https://casalreal.com/post-modal.php?cod_post=1310454" target="_blank" class="text-gray-400 hover:text-yellow-400 transition duration-300">
-                    <img src="img/casal-real.png" alt="Casal Real" class="h-8 w-auto">
-                </a>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Casal Mel. Todos os direitos reservados.</p>
+                <p>Criado por <a href="https://wa.me/5521993350228?text=Olá%2C%20Danilo%2C%20vim%20através%20do%20site%20Casal%20Mel%20e%20gostaria%20de%20saber%20mais%20informações%20sobre%20o%20seu%20trabalho." target="_blank">Danilo Farias</a></p>
             </div>
-            <p class="text-gray-500 text-sm">&copy; 2024 Casal Mel. Todos os direitos reservados.</p>
         </div>
     </footer>
 

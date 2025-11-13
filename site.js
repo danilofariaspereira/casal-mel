@@ -4,6 +4,14 @@
 
 class SiteController {
     constructor() {
+        this.espacoImages = [
+            'img/espaco-01.jpeg',
+            'img/espaco-02.jpeg',
+            'img/espaco-03.jpeg',
+            'img/espaco-04.jpeg',
+            'img/espaco-05.jpeg',
+            'img/espaco-06.jpeg'
+        ];
         this.init();
     }
 
@@ -71,6 +79,13 @@ class SiteController {
                 });
             }
         });
+
+        const espacoBtn = document.getElementById('open-espaco-modal');
+        if (espacoBtn) {
+            espacoBtn.addEventListener('click', () => {
+                this.openEspacoModal();
+            });
+        }
     }
 
     setupSync() {
@@ -265,6 +280,33 @@ class SiteController {
         document.getElementById('evento-modal').classList.add('flex');
     }
 
+    openEspacoModal() {
+        const modal = document.getElementById('espaco-modal');
+        if (!modal) {
+            return;
+        }
+
+        const gallery = document.getElementById('espaco-gallery');
+        if (gallery) {
+            gallery.innerHTML = this.espacoImages.map((src, index) => {
+                const imagemUrl = getImageUrl(src);
+                return `
+                    <figure class="espaco-thumb">
+                        <img src="${imagemUrl}" alt="Foto do nosso espaço ${index + 1}" loading="lazy">
+                    </figure>
+                `;
+            }).join('');
+        }
+
+        const header = document.querySelector('header');
+        if (header) {
+            header.style.display = 'none';
+        }
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
     openShowModal(id) {
         const show = window.dataManager.getShow(id);
         if (!show) return;
@@ -311,6 +353,10 @@ function openEventoModal(id) {
 
 function openShowModal(id) {
     window.siteController.openShowModal(id);
+}
+
+function openEspacoModal() {
+    window.siteController.openEspacoModal();
 }
 
 function closeModal(modalId) {
