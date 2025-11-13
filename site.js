@@ -12,6 +12,7 @@ class SiteController {
             'img/espaco-05.jpeg',
             'img/espaco-06.jpeg'
         ];
+        this.whatsappContato = '5521967187138';
         this.init();
     }
 
@@ -270,7 +271,13 @@ class SiteController {
         document.getElementById('modal-data-evento').textContent = `Data: ${evento.data}`;
         document.getElementById('modal-local-evento').textContent = `Local: ${evento.local}`;
         document.getElementById('modal-imagem-evento').src = getImageUrl(evento.imagem);
-        
+
+        const botaoEvento = document.getElementById('modal-whatsapp-evento');
+        if (botaoEvento) {
+            const mensagem = encodeURIComponent('Olá, Casal Mel, vim através do site de vocês e gostaria de saber mais sobre o evento.');
+            botaoEvento.href = `https://wa.me/${this.whatsappContato}?text=${mensagem}`;
+        }
+
         // Abre modal
         document.getElementById('evento-modal').classList.remove('hidden');
         document.getElementById('evento-modal').classList.add('flex');
@@ -319,7 +326,13 @@ class SiteController {
         document.getElementById('modal-data-show').textContent = `Data: ${show.data}`;
         document.getElementById('modal-local-show').textContent = `Local: ${show.local}`;
         document.getElementById('modal-imagem-show').src = getImageUrl(show.imagem);
-        
+
+        const botaoShow = document.getElementById('modal-whatsapp-show');
+        if (botaoShow) {
+            const mensagem = encodeURIComponent('Olá, Casal Mel, vim através do site de vocês e gostaria de saber mais sobre o show.');
+            botaoShow.href = `https://wa.me/${this.whatsappContato}?text=${mensagem}`;
+        }
+
         // Abre modal
         document.getElementById('show-modal').classList.remove('hidden');
         document.getElementById('show-modal').classList.add('flex');
