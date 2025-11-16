@@ -203,19 +203,19 @@ class SiteController {
             const imagemUrl = getImageUrl(evento.imagem);
             debug('Imagem do evento:', { evento: evento.titulo, imagem: evento.imagem, url: imagemUrl });
             
+            const diaSemanaBadge = evento.diaSemana ? `
+                <div class="dia-semana-badge-top">
+                    <i class="fas fa-calendar-day mr-2"></i>${evento.diaSemana}
+                </div>
+            ` : '';
+            
             return `
                 <div class="event-card">
+                    ${diaSemanaBadge}
                     <div class="image-container">
                         <img src="${imagemUrl}" alt="${evento.titulo}" class="event-image">
                     </div>
                     <div class="content">
-                        <h3>${evento.titulo}</h3>
-                        <p>
-                            <i class="fas fa-calendar mr-2"></i>${evento.data}
-                        </p>
-                        <p>
-                            <i class="fas fa-map-marker-alt mr-2"></i>${evento.local}
-                        </p>
                         <button onclick="openEventoModal(${evento.id})" class="btn">
                             <i class="fas fa-info-circle mr-2"></i>Saiba Mais
                         </button>
@@ -250,19 +250,19 @@ class SiteController {
             const imagemUrl = getImageUrl(show.imagem);
             debug('Imagem do show:', { show: show.titulo, imagem: show.imagem, url: imagemUrl });
             
+            const diaSemanaBadge = show.diaSemana ? `
+                <div class="dia-semana-badge-top">
+                    <i class="fas fa-calendar-day mr-2"></i>${show.diaSemana}
+                </div>
+            ` : '';
+            
             return `
                 <div class="show-card">
+                    ${diaSemanaBadge}
                     <div class="image-container">
                         <img src="${imagemUrl}" alt="${show.titulo}" class="show-image">
                     </div>
                     <div class="content">
-                        <h3>${show.titulo}</h3>
-                        <p>
-                            <i class="fas fa-calendar mr-2"></i>${show.data}
-                        </p>
-                        <p>
-                            <i class="fas fa-map-marker-alt mr-2"></i>${show.local}
-                        </p>
                         <button onclick="openShowModal(${show.id})" class="btn">
                             <i class="fas fa-info-circle mr-2"></i>Saiba Mais
                         </button>
@@ -285,7 +285,8 @@ class SiteController {
         // Preenche modal
         document.getElementById('modal-titulo-evento').textContent = evento.titulo;
         document.getElementById('modal-descricao-evento').innerHTML = evento.descricao.replace(/\n/g, '<br>');
-        document.getElementById('modal-data-evento').textContent = `Data: ${evento.data}`;
+        const dataTexto = evento.diaSemana ? `${evento.diaSemana} - ${evento.data}` : evento.data;
+        document.getElementById('modal-data-evento').textContent = `Data: ${dataTexto}`;
         document.getElementById('modal-local-evento').textContent = `Local: ${evento.local}`;
         document.getElementById('modal-imagem-evento').src = getImageUrl(evento.imagem);
 
@@ -345,7 +346,8 @@ class SiteController {
         // Preenche modal
         document.getElementById('modal-titulo-show').textContent = show.titulo;
         document.getElementById('modal-descricao-show').innerHTML = show.descricao.replace(/\n/g, '<br>');
-        document.getElementById('modal-data-show').textContent = `Data: ${show.data}`;
+        const dataTexto = show.diaSemana ? `${show.diaSemana} - ${show.data}` : show.data;
+        document.getElementById('modal-data-show').textContent = `Data: ${dataTexto}`;
         document.getElementById('modal-local-show').textContent = `Local: ${show.local}`;
         document.getElementById('modal-imagem-show').src = getImageUrl(show.imagem);
 

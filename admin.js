@@ -147,7 +147,9 @@ class AdminController {
             return;
         }
     
-        container.innerHTML = eventos.map(evento => `
+        container.innerHTML = eventos.map(evento => {
+            const diaSemanaBadge = evento.diaSemana ? `<span class="text-xs px-2 py-1 rounded-full bg-yellow-500 text-black font-semibold mr-2">${evento.diaSemana}</span>` : '';
+            return `
             <div class="card p-4">
                 <div class="flex justify-between items-start mb-3">
                     <h3 class="font-semibold text-gray-800 text-lg">${evento.titulo}</h3>
@@ -160,7 +162,10 @@ class AdminController {
                         </button>
                     </div>
                 </div>
-                <p class="text-sm text-gray-600 mb-2"><i class="fas fa-calendar mr-2"></i>${evento.data}</p>
+                <div class="flex items-center mb-2">
+                    ${diaSemanaBadge}
+                    <p class="text-sm text-gray-600"><i class="fas fa-calendar mr-2"></i>${evento.data}</p>
+                </div>
                 <p class="text-sm text-gray-600 mb-3"><i class="fas fa-map-marker-alt mr-2"></i>${evento.local}</p>
                 <div class="flex justify-between items-center">
                     <span class="text-xs text-gray-500">ID: ${evento.id}</span>
@@ -169,7 +174,8 @@ class AdminController {
                     </span>
                 </div>
             </div>
-        `).join('');
+        `;
+        }).join('');
     }
 
     renderShows() {
@@ -183,7 +189,9 @@ class AdminController {
             return;
         }
     
-        container.innerHTML = shows.map(show => `
+        container.innerHTML = shows.map(show => {
+            const diaSemanaBadge = show.diaSemana ? `<span class="text-xs px-2 py-1 rounded-full bg-yellow-500 text-black font-semibold mr-2">${show.diaSemana}</span>` : '';
+            return `
             <div class="card p-4">
                 <div class="flex justify-between items-start mb-3">
                     <h3 class="font-semibold text-gray-800 text-lg">${show.titulo}</h3>
@@ -196,7 +204,10 @@ class AdminController {
                         </button>
                     </div>
                 </div>
-                <p class="text-sm text-gray-600 mb-2"><i class="fas fa-calendar mr-2"></i>${show.data}</p>
+                <div class="flex items-center mb-2">
+                    ${diaSemanaBadge}
+                    <p class="text-sm text-gray-600"><i class="fas fa-calendar mr-2"></i>${show.data}</p>
+                </div>
                 <p class="text-sm text-gray-600 mb-3"><i class="fas fa-map-marker-alt mr-2"></i>${show.local}</p>
                 <div class="flex justify-between items-center">
                     <span class="text-xs text-gray-500">ID: ${show.id}</span>
@@ -205,7 +216,8 @@ class AdminController {
                     </span>
                 </div>
             </div>
-        `).join('');
+        `;
+        }).join('');
     }
 
 // ========================================
@@ -225,6 +237,7 @@ class AdminController {
         if (evento) {
                 document.getElementById('evento-titulo').value = evento.titulo;
                 document.getElementById('evento-data').value = evento.data;
+                document.getElementById('evento-dia-semana').value = evento.diaSemana || '';
                 document.getElementById('evento-local').value = evento.local;
                 document.getElementById('evento-descricao').value = evento.descricao;
                 document.getElementById('evento-whatsapp').value = evento.whatsapp;
@@ -242,6 +255,7 @@ class AdminController {
     async saveEvento() {
         const titulo = document.getElementById('evento-titulo').value;
         const data = document.getElementById('evento-data').value;
+        const diaSemana = document.getElementById('evento-dia-semana').value;
         const local = document.getElementById('evento-local').value;
         const descricao = document.getElementById('evento-descricao').value;
         const whatsapp = document.getElementById('evento-whatsapp').value;
@@ -250,6 +264,7 @@ class AdminController {
         const eventoData = {
             titulo,
             data,
+            diaSemana,
             local,
             descricao,
             whatsapp,
@@ -257,7 +272,7 @@ class AdminController {
         };
 
         // Validação básica
-        if (!titulo || !data || !local || !whatsapp) {
+        if (!titulo || !data || !diaSemana || !local || !whatsapp) {
             this.showError('Preencha todos os campos obrigatórios');
             return;
         }
@@ -266,6 +281,7 @@ class AdminController {
         const sanitizedData = {
             titulo: titulo.trim(),
             data: data.trim(),
+            diaSemana: diaSemana.trim(),
             local: local.trim(),
             descricao: descricao.trim(),
             whatsapp: whatsapp.replace(/\D/g, '') // Remove caracteres não numéricos
@@ -333,6 +349,7 @@ class AdminController {
             if (show) {
                 document.getElementById('show-titulo').value = show.titulo;
                 document.getElementById('show-data').value = show.data;
+                document.getElementById('show-dia-semana').value = show.diaSemana || '';
                 document.getElementById('show-local').value = show.local;
                 document.getElementById('show-descricao').value = show.descricao;
                 document.getElementById('show-whatsapp').value = show.whatsapp;
@@ -350,6 +367,7 @@ class AdminController {
     async saveShow() {
         const titulo = document.getElementById('show-titulo').value;
         const data = document.getElementById('show-data').value;
+        const diaSemana = document.getElementById('show-dia-semana').value;
         const local = document.getElementById('show-local').value;
         const descricao = document.getElementById('show-descricao').value;
         const whatsapp = document.getElementById('show-whatsapp').value;
@@ -358,6 +376,7 @@ class AdminController {
         const showData = {
             titulo,
             data,
+            diaSemana,
             local,
             descricao,
             whatsapp,
@@ -365,7 +384,7 @@ class AdminController {
         };
 
         // Validação básica
-        if (!titulo || !data || !local || !whatsapp) {
+        if (!titulo || !data || !diaSemana || !local || !whatsapp) {
             this.showError('Preencha todos os campos obrigatórios');
             return;
         }
@@ -374,6 +393,7 @@ class AdminController {
         const sanitizedData = {
             titulo: titulo.trim(),
             data: data.trim(),
+            diaSemana: diaSemana.trim(),
             local: local.trim(),
             descricao: descricao.trim(),
             whatsapp: whatsapp.replace(/\D/g, '') // Remove caracteres não numéricos

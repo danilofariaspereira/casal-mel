@@ -11,6 +11,9 @@
 
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
 }
 
 body {
@@ -21,6 +24,18 @@ body {
     margin: 0;
     padding: 0;
     min-height: 100vh;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+    position: relative;
+}
+
+/* Prevenir overflow em todos os elementos principais */
+header, nav, main, section {
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 /* ========================================
@@ -33,6 +48,10 @@ body {
     background-repeat: no-repeat;
     position: relative;
     background-attachment: fixed;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    box-sizing: border-box;
 }
 
 .section-background::before {
@@ -50,7 +69,7 @@ body {
     position: relative;
     z-index: 2;
     width: 100%;
-    max-width: 1200px;
+    max-width: 100%;
     margin: 0 auto;
     padding: 2rem 1rem;
     box-sizing: border-box;
@@ -59,6 +78,7 @@ body {
     align-items: center;
     justify-content: center;
     text-align: center;
+    overflow-x: hidden;
 }
 
 /* Backgrounds das seções */
@@ -85,11 +105,19 @@ body {
 /* Ajustes para seções com background */
 #sessao2, #sessao3, #sessao4, #sessao5 {
     position: relative;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    box-sizing: border-box;
 }
 
 #sessao2 .container, #sessao3 .container, #sessao4 .container, #sessao5 .container {
     position: relative;
     z-index: 2;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 #sessao2.section-background::before,
@@ -312,13 +340,6 @@ body {
     color: #f59e0b;
 }
 
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    transition: all 0.2s ease;
-}
-
 .space-modal-close:hover {
     background: rgba(245, 158, 11, 0.15);
     color: #f59e0b;
@@ -481,6 +502,9 @@ body {
     transition: all 0.3s ease;
     position: relative;
     z-index: 1;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .event-card:hover, .show-card:hover, .card:hover {
@@ -493,13 +517,16 @@ body {
 /* Container para imagens */
 .image-container {
     width: 100%;
-    height: 250px;
+    max-width: 100%;
+    height: 300px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    border-radius: 20px 20px 0 0;
+    border-radius: 0;
+    position: relative;
+    box-sizing: border-box;
 }
 
 .event-image {
@@ -520,9 +547,9 @@ body {
 
 .event-card img, .show-card img, .card img {
     width: 100%;
-    height: 250px;
+    height: 300px;
     object-fit: cover;
-    object-position: center;
+    object-position: center top;
     transition: transform 0.3s ease;
 }
 
@@ -536,6 +563,12 @@ body {
 
 .event-card .content, .show-card .content, .card .content {
     padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .event-card h3, .show-card h3, .card h3 {
@@ -563,7 +596,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.2);
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-top: 1rem;
+    margin-top: 0;
     box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
 }
 
@@ -574,6 +607,61 @@ body {
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Badge do Dia da Semana - No topo centralizado */
+.dia-semana-badge-top {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 0;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #000000;
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    animation: pulse-badge 2s ease-in-out infinite;
+    margin-bottom: 0;
+    box-sizing: border-box;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Cards com badge no topo - imagem sem borda no topo */
+.event-card .dia-semana-badge-top + .image-container,
+.show-card .dia-semana-badge-top + .image-container {
+    border-radius: 0;
+}
+
+/* Cards sem badge - imagem com borda arredondada no topo */
+.event-card > .image-container:first-child,
+.show-card > .image-container:first-child {
+    border-radius: 20px 20px 0 0;
+}
+
+.dia-semana-badge-top i {
+    font-size: 1rem;
+    margin-right: 0.5rem;
+}
+
+@keyframes pulse-badge {
+    0%, 100% {
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.5);
+    }
+    50% {
+        box-shadow: 0 4px 20px rgba(245, 158, 11, 0.7), 0 0 20px rgba(245, 158, 11, 0.3);
+    }
+}
+
+.event-card:hover .dia-semana-badge-top,
+.show-card:hover .dia-semana-badge-top {
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6), 0 0 25px rgba(245, 158, 11, 0.4);
 }
 
 /* ========================================
