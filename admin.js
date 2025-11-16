@@ -62,11 +62,19 @@ class AdminController {
             this.handleImageUpload(e, 'show-imagem-preview');
         });
 
-        // Listener para mostrar/ocultar campos quando "Aguardando próxima data" for selecionado
+        // Listener para mostrar/ocultar campos quando "Aguardando próxima data" for selecionado - Shows
         const showDiaSemanaSelect = document.getElementById('show-dia-semana');
         if (showDiaSemanaSelect) {
             showDiaSemanaSelect.addEventListener('change', (e) => {
                 this.toggleShowCampos(e.target.value);
+            });
+        }
+
+        // Listener para mostrar/ocultar campos quando "Aguardando próxima data" for selecionado - Eventos
+        const eventoDiaSemanaSelect = document.getElementById('evento-dia-semana');
+        if (eventoDiaSemanaSelect) {
+            eventoDiaSemanaSelect.addEventListener('change', (e) => {
+                this.toggleEventoCampos(e.target.value);
             });
         }
 
@@ -84,6 +92,34 @@ class AdminController {
         const dataInput = document.getElementById('show-data');
         const localInput = document.getElementById('show-local');
         const whatsappInput = document.getElementById('show-whatsapp');
+
+        if (isAguardando) {
+            // Ocultar campos e tornar opcionais
+            if (dataField) dataField.style.display = 'none';
+            if (camposAdicionais) camposAdicionais.style.display = 'none';
+            if (descricaoField) descricaoField.style.display = 'none';
+            if (dataInput) dataInput.removeAttribute('required');
+            if (localInput) localInput.removeAttribute('required');
+            if (whatsappInput) whatsappInput.removeAttribute('required');
+        } else {
+            // Mostrar campos e tornar obrigatórios
+            if (dataField) dataField.style.display = 'block';
+            if (camposAdicionais) camposAdicionais.style.display = 'grid';
+            if (descricaoField) descricaoField.style.display = 'block';
+            if (dataInput) dataInput.setAttribute('required', 'required');
+            if (localInput) localInput.setAttribute('required', 'required');
+            if (whatsappInput) whatsappInput.setAttribute('required', 'required');
+        }
+    }
+
+    toggleEventoCampos(diaSemana) {
+        const isAguardando = diaSemana === 'Aguardando próxima data';
+        const dataField = document.getElementById('evento-data-field');
+        const camposAdicionais = document.getElementById('evento-campos-adicionais');
+        const descricaoField = document.getElementById('evento-descricao-field');
+        const dataInput = document.getElementById('evento-data');
+        const localInput = document.getElementById('evento-local');
+        const whatsappInput = document.getElementById('evento-whatsapp');
 
         if (isAguardando) {
             // Ocultar campos e tornar opcionais
@@ -272,16 +308,22 @@ class AdminController {
             const evento = window.dataManager.getEvento(id);
         if (evento) {
                 document.getElementById('evento-titulo').value = evento.titulo;
-                document.getElementById('evento-data').value = evento.data;
+                document.getElementById('evento-data').value = evento.data || '';
                 document.getElementById('evento-dia-semana').value = evento.diaSemana || '';
-                document.getElementById('evento-local').value = evento.local;
-                document.getElementById('evento-descricao').value = evento.descricao;
-                document.getElementById('evento-whatsapp').value = evento.whatsapp;
+                document.getElementById('evento-local').value = evento.local || '';
+                document.getElementById('evento-descricao').value = evento.descricao || '';
+                document.getElementById('evento-whatsapp').value = evento.whatsapp || '';
+                
+                // Aplicar toggle baseado no dia da semana
+                this.toggleEventoCampos(evento.diaSemana || '');
                 
                 if (evento.imagem) {
                     this.showImagePreview(evento.imagem, 'evento-imagem-preview');
             }
         }
+    } else {
+        // Resetar campos ao abrir modal novo
+        this.toggleEventoCampos('');
     }
     
     modal.classList.remove('hidden');
@@ -297,30 +339,40 @@ class AdminController {
         const whatsapp = document.getElementById('evento-whatsapp').value;
         const imagem = document.getElementById('evento-imagem').files[0];
 
-        const eventoData = {
-            titulo,
-            data,
-            diaSemana,
-            local,
-            descricao,
-            whatsapp,
-            imagem: imagem
-        };
+        const isAguardando = diaSemana === 'Aguardando próxima data';
 
         // Validação básica
-        if (!titulo || !data || !diaSemana || !local || !whatsapp) {
-            this.showError('Preencha todos os campos obrigatórios');
+        if (!titulo || !diaSemana) {
+            this.showError('Preencha o título e o dia da semana');
             return;
+        }
+
+        // Se não for "Aguardando próxima data", validar campos obrigatórios
+        if (!isAguardando) {
+            if (!data || !local || !whatsapp) {
+                this.showError('Preencha todos os campos obrigatórios');
+                return;
+            }
+        }
+
+        // Validação de imagem (sempre obrigatória)
+        if (!imagem) {
+            // Verificar se já existe imagem salva (ao editar)
+            const eventoExistente = this.currentEventoId ? window.dataManager.getEvento(this.currentEventoId) : null;
+            if (!eventoExistente || !eventoExistente.imagem) {
+                this.showError('A imagem é obrigatória');
+                return;
+            }
         }
 
         // Sanitizar dados básicos
         const sanitizedData = {
             titulo: titulo.trim(),
-            data: data.trim(),
+            data: isAguardando ? '' : data.trim(),
             diaSemana: diaSemana.trim(),
-            local: local.trim(),
-            descricao: descricao.trim(),
-            whatsapp: whatsapp.replace(/\D/g, '') // Remove caracteres não numéricos
+            local: isAguardando ? '' : local.trim(),
+            descricao: isAguardando ? '' : descricao.trim(),
+            whatsapp: isAguardando ? '' : whatsapp.replace(/\D/g, '') // Remove caracteres não numéricos
         };
 
         let imagemData = null;
@@ -337,6 +389,12 @@ class AdminController {
             }
             
             imagemData = await this.getImageData(imagem);
+        } else if (this.currentEventoId) {
+            // Se estiver editando e não selecionou nova imagem, preservar a existente
+            const eventoExistente = window.dataManager.getEvento(this.currentEventoId);
+            if (eventoExistente && eventoExistente.imagem) {
+                imagemData = eventoExistente.imagem;
+            }
         }
 
         const finalData = {

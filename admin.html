@@ -553,16 +553,17 @@
                             <option value="sexta-feira">Sexta-feira</option>
                             <option value="sábado">Sábado</option>
                             <option value="domingo">Domingo</option>
+                            <option value="Aguardando próxima data">Aguardando próxima data</option>
                         </select>
                     </div>
                 </div>
                 
-                <div>
+                <div id="evento-data-field">
                     <label class="block text-sm font-medium mb-2">Data Completa</label>
                     <input type="text" id="evento-data" class="form-input w-full px-4 py-2 rounded-lg" placeholder="Ex: 15 de Janeiro de 2024" required>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div id="evento-campos-adicionais" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium mb-2">Local</label>
                         <input type="text" id="evento-local" class="form-input w-full px-4 py-2 rounded-lg" required>
@@ -573,7 +574,7 @@
                     </div>
                 </div>
                 
-                <div>
+                <div id="evento-descricao-field">
                     <label class="block text-sm font-medium mb-2">Descrição</label>
                     <textarea id="evento-descricao" class="form-input w-full px-4 py-2 rounded-lg h-32" placeholder="Descrição detalhada do evento..."></textarea>
                 </div>
