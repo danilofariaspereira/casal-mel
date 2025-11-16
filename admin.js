@@ -62,10 +62,46 @@ class AdminController {
             this.handleImageUpload(e, 'show-imagem-preview');
         });
 
+        // Listener para mostrar/ocultar campos quando "Aguardando próxima data" for selecionado
+        const showDiaSemanaSelect = document.getElementById('show-dia-semana');
+        if (showDiaSemanaSelect) {
+            showDiaSemanaSelect.addEventListener('change', (e) => {
+                this.toggleShowCampos(e.target.value);
+            });
+        }
+
         // Menu mobile
         document.getElementById('mobile-menu-btn').addEventListener('click', () => {
             document.getElementById('sidebar').classList.toggle('open');
         });
+    }
+
+    toggleShowCampos(diaSemana) {
+        const isAguardando = diaSemana === 'Aguardando próxima data';
+        const dataField = document.getElementById('show-data-field');
+        const camposAdicionais = document.getElementById('show-campos-adicionais');
+        const descricaoField = document.getElementById('show-descricao-field');
+        const dataInput = document.getElementById('show-data');
+        const localInput = document.getElementById('show-local');
+        const whatsappInput = document.getElementById('show-whatsapp');
+
+        if (isAguardando) {
+            // Ocultar campos e tornar opcionais
+            if (dataField) dataField.style.display = 'none';
+            if (camposAdicionais) camposAdicionais.style.display = 'none';
+            if (descricaoField) descricaoField.style.display = 'none';
+            if (dataInput) dataInput.removeAttribute('required');
+            if (localInput) localInput.removeAttribute('required');
+            if (whatsappInput) whatsappInput.removeAttribute('required');
+        } else {
+            // Mostrar campos e tornar obrigatórios
+            if (dataField) dataField.style.display = 'block';
+            if (camposAdicionais) camposAdicionais.style.display = 'grid';
+            if (descricaoField) descricaoField.style.display = 'block';
+            if (dataInput) dataInput.setAttribute('required', 'required');
+            if (localInput) localInput.setAttribute('required', 'required');
+            if (whatsappInput) whatsappInput.setAttribute('required', 'required');
+        }
     }
 
     setupSync() {
@@ -348,16 +384,22 @@ class AdminController {
             const show = window.dataManager.getShow(id);
             if (show) {
                 document.getElementById('show-titulo').value = show.titulo;
-                document.getElementById('show-data').value = show.data;
+                document.getElementById('show-data').value = show.data || '';
                 document.getElementById('show-dia-semana').value = show.diaSemana || '';
-                document.getElementById('show-local').value = show.local;
-                document.getElementById('show-descricao').value = show.descricao;
-                document.getElementById('show-whatsapp').value = show.whatsapp;
+                document.getElementById('show-local').value = show.local || '';
+                document.getElementById('show-descricao').value = show.descricao || '';
+                document.getElementById('show-whatsapp').value = show.whatsapp || '';
+                
+                // Aplicar toggle baseado no dia da semana
+                this.toggleShowCampos(show.diaSemana || '');
                 
                 if (show.imagem) {
                     this.showImagePreview(show.imagem, 'show-imagem-preview');
                 }
             }
+        } else {
+            // Resetar campos ao abrir modal novo
+            this.toggleShowCampos('');
         }
         
         modal.classList.remove('hidden');
@@ -373,30 +415,40 @@ class AdminController {
         const whatsapp = document.getElementById('show-whatsapp').value;
         const imagem = document.getElementById('show-imagem').files[0];
 
-        const showData = {
-            titulo,
-            data,
-            diaSemana,
-            local,
-            descricao,
-            whatsapp,
-            imagem: imagem
-        };
+        const isAguardando = diaSemana === 'Aguardando próxima data';
 
         // Validação básica
-        if (!titulo || !data || !diaSemana || !local || !whatsapp) {
-            this.showError('Preencha todos os campos obrigatórios');
+        if (!titulo || !diaSemana) {
+            this.showError('Preencha o título e o dia da semana');
             return;
+        }
+
+        // Se não for "Aguardando próxima data", validar campos obrigatórios
+        if (!isAguardando) {
+            if (!data || !local || !whatsapp) {
+                this.showError('Preencha todos os campos obrigatórios');
+                return;
+            }
+        }
+
+        // Validação de imagem (sempre obrigatória)
+        if (!imagem) {
+            // Verificar se já existe imagem salva (ao editar)
+            const showExistente = this.currentShowId ? window.dataManager.getShow(this.currentShowId) : null;
+            if (!showExistente || !showExistente.imagem) {
+                this.showError('A imagem é obrigatória');
+                return;
+            }
         }
 
         // Sanitizar dados básicos
         const sanitizedData = {
             titulo: titulo.trim(),
-            data: data.trim(),
+            data: isAguardando ? '' : data.trim(),
             diaSemana: diaSemana.trim(),
-            local: local.trim(),
-            descricao: descricao.trim(),
-            whatsapp: whatsapp.replace(/\D/g, '') // Remove caracteres não numéricos
+            local: isAguardando ? '' : local.trim(),
+            descricao: isAguardando ? '' : descricao.trim(),
+            whatsapp: isAguardando ? '' : whatsapp.replace(/\D/g, '') // Remove caracteres não numéricos
         };
 
         let imagemData = null;
@@ -413,6 +465,12 @@ class AdminController {
             }
             
             imagemData = await this.getImageData(imagem);
+        } else if (this.currentShowId) {
+            // Se estiver editando e não selecionou nova imagem, preservar a existente
+            const showExistente = window.dataManager.getShow(this.currentShowId);
+            if (showExistente && showExistente.imagem) {
+                imagemData = showExistente.imagem;
+            }
         }
 
         const finalData = {
