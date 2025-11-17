@@ -354,13 +354,17 @@ class AdminController {
         const isAguardando = diaSemana === 'Aguardando próxima data';
 
         // Validação básica
-        if (!titulo || !diaSemana) {
-            this.showError('Preencha o título e o dia da semana');
+        if (!diaSemana) {
+            this.showError('Selecione o dia da semana');
             return;
         }
 
         // Se não for "Aguardando próxima data", validar campos obrigatórios
         if (!isAguardando) {
+            if (!titulo) {
+                this.showError('Preencha o título');
+                return;
+            }
             if (!data || !local || !whatsapp) {
                 this.showError('Preencha todos os campos obrigatórios');
                 return;
