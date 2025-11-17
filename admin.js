@@ -86,6 +86,8 @@ class AdminController {
 
     toggleShowCampos(diaSemana) {
         const isAguardando = diaSemana === 'Aguardando próxima data';
+        const tituloField = document.getElementById('show-titulo-field');
+        const tituloInput = document.getElementById('show-titulo');
         const dataField = document.getElementById('show-data-field');
         const camposAdicionais = document.getElementById('show-campos-adicionais');
         const descricaoField = document.getElementById('show-descricao-field');
@@ -94,18 +96,22 @@ class AdminController {
         const whatsappInput = document.getElementById('show-whatsapp');
 
         if (isAguardando) {
-            // Ocultar campos e tornar opcionais
+            // Ocultar todos os campos exceto dia da semana e imagem
+            if (tituloField) tituloField.style.display = 'none';
             if (dataField) dataField.style.display = 'none';
             if (camposAdicionais) camposAdicionais.style.display = 'none';
             if (descricaoField) descricaoField.style.display = 'none';
+            if (tituloInput) tituloInput.removeAttribute('required');
             if (dataInput) dataInput.removeAttribute('required');
             if (localInput) localInput.removeAttribute('required');
             if (whatsappInput) whatsappInput.removeAttribute('required');
         } else {
             // Mostrar campos e tornar obrigatórios
+            if (tituloField) tituloField.style.display = 'block';
             if (dataField) dataField.style.display = 'block';
             if (camposAdicionais) camposAdicionais.style.display = 'grid';
             if (descricaoField) descricaoField.style.display = 'block';
+            if (tituloInput) tituloInput.setAttribute('required', 'required');
             if (dataInput) dataInput.setAttribute('required', 'required');
             if (localInput) localInput.setAttribute('required', 'required');
             if (whatsappInput) whatsappInput.setAttribute('required', 'required');
@@ -114,6 +120,8 @@ class AdminController {
 
     toggleEventoCampos(diaSemana) {
         const isAguardando = diaSemana === 'Aguardando próxima data';
+        const tituloField = document.getElementById('evento-titulo-field');
+        const tituloInput = document.getElementById('evento-titulo');
         const dataField = document.getElementById('evento-data-field');
         const camposAdicionais = document.getElementById('evento-campos-adicionais');
         const descricaoField = document.getElementById('evento-descricao-field');
@@ -122,18 +130,22 @@ class AdminController {
         const whatsappInput = document.getElementById('evento-whatsapp');
 
         if (isAguardando) {
-            // Ocultar campos e tornar opcionais
+            // Ocultar todos os campos exceto dia da semana e imagem
+            if (tituloField) tituloField.style.display = 'none';
             if (dataField) dataField.style.display = 'none';
             if (camposAdicionais) camposAdicionais.style.display = 'none';
             if (descricaoField) descricaoField.style.display = 'none';
+            if (tituloInput) tituloInput.removeAttribute('required');
             if (dataInput) dataInput.removeAttribute('required');
             if (localInput) localInput.removeAttribute('required');
             if (whatsappInput) whatsappInput.removeAttribute('required');
         } else {
             // Mostrar campos e tornar obrigatórios
+            if (tituloField) tituloField.style.display = 'block';
             if (dataField) dataField.style.display = 'block';
             if (camposAdicionais) camposAdicionais.style.display = 'grid';
             if (descricaoField) descricaoField.style.display = 'block';
+            if (tituloInput) tituloInput.setAttribute('required', 'required');
             if (dataInput) dataInput.setAttribute('required', 'required');
             if (localInput) localInput.setAttribute('required', 'required');
             if (whatsappInput) whatsappInput.setAttribute('required', 'required');
@@ -367,7 +379,7 @@ class AdminController {
 
         // Sanitizar dados básicos
         const sanitizedData = {
-            titulo: titulo.trim(),
+            titulo: isAguardando ? '' : titulo.trim(),
             data: isAguardando ? '' : data.trim(),
             diaSemana: diaSemana.trim(),
             local: isAguardando ? '' : local.trim(),
@@ -476,13 +488,17 @@ class AdminController {
         const isAguardando = diaSemana === 'Aguardando próxima data';
 
         // Validação básica
-        if (!titulo || !diaSemana) {
-            this.showError('Preencha o título e o dia da semana');
+        if (!diaSemana) {
+            this.showError('Selecione o dia da semana');
             return;
         }
 
         // Se não for "Aguardando próxima data", validar campos obrigatórios
         if (!isAguardando) {
+            if (!titulo) {
+                this.showError('Preencha o título');
+                return;
+            }
             if (!data || !local || !whatsapp) {
                 this.showError('Preencha todos os campos obrigatórios');
                 return;
@@ -501,7 +517,7 @@ class AdminController {
 
         // Sanitizar dados básicos
         const sanitizedData = {
-            titulo: titulo.trim(),
+            titulo: isAguardando ? '' : titulo.trim(),
             data: isAguardando ? '' : data.trim(),
             diaSemana: diaSemana.trim(),
             local: isAguardando ? '' : local.trim(),
