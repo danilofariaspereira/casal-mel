@@ -697,7 +697,19 @@ class DataManager {
 }
 
 // Instância global do gerenciador de dados
-window.dataManager = new DataManager();
-
-// Debug para verificar se foi inicializado
-console.log('DataManager inicializado:', window.dataManager);
+// Proteção contra erros de inicialização
+try {
+    window.dataManager = new DataManager();
+    console.log('[CASAL MEL] ✅ DataManager inicializado:', window.dataManager);
+} catch (error) {
+    console.error('[CASAL MEL] ❌ Erro ao inicializar DataManager:', error);
+    // Cria uma instância básica para não quebrar o site
+    window.dataManager = {
+        eventos: [],
+        shows: [],
+        getEventosAtivos: () => [],
+        getShowsAtivos: () => [],
+        getEvento: () => null,
+        getShow: () => null
+    };
+}

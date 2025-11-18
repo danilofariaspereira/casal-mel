@@ -381,6 +381,7 @@ header, nav, main, section {
     left: 0;
     width: 100%;
     height: 100%;
+    min-height: 100vh;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
@@ -388,8 +389,18 @@ header, nav, main, section {
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    padding: 100px 20px 20px 20px;
+    padding: 80px 15px 15px 15px;
     overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling no iOS */
+}
+
+/* Ajuste para mobile */
+@media (max-width: 768px) {
+    .modal-backdrop {
+        padding: 60px 10px 10px 10px;
+    }
 }
 
 .admin-card {
@@ -400,8 +411,22 @@ header, nav, main, section {
     border-radius: 20px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     max-width: 90vw;
-    max-height: 90vh;
+    max-height: 85vh;
+    width: 100%;
     overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling no iOS */
+}
+
+/* Ajuste para mobile */
+@media (max-width: 768px) {
+    .admin-card {
+        max-width: 95vw;
+        max-height: 90vh;
+        border-radius: 15px;
+        padding: 15px !important;
+    }
 }
 
 /* Modal de Evento - Layout Responsivo */
