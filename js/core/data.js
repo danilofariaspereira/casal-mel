@@ -25,14 +25,21 @@ class DataManager {
     initSupabase() {
         try {
             if (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url && window.SUPABASE_CONFIG.anonKey !== 'SUA_ANON_KEY_AQUI') {
-                // Aguarda um pouco para garantir que o script do Supabase foi carregado
-                setTimeout(() => {
-                    this.tryInitSupabase();
-                }, 100);
+                // Tenta inicializar imediatamente
+                this.tryInitSupabase();
+                
+                // Se não funcionou, tenta novamente após um delay (para CDN carregar)
+                if (!this.useSupabase) {
+                    setTimeout(() => {
+                        this.tryInitSupabase();
+                    }, 200);
+                }
             } else {
+                console.warn('[CASAL MEL] ⚠️ Credenciais do Supabase não configuradas, usando localStorage');
                 debug('Credenciais do Supabase não configuradas, usando localStorage');
             }
         } catch (error) {
+            console.error('[CASAL MEL] ❌ Erro ao inicializar Supabase:', error);
             debug('Erro ao inicializar Supabase:', error);
             this.useSupabase = false;
         }
@@ -63,12 +70,19 @@ class DataManager {
 
             // Se encontrou createClient, inicializa
             if (createClient) {
-                this.supabase = createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey);
-                this.useSupabase = true;
-                debug('Supabase inicializado com sucesso');
-                
-                // Recarrega os dados do Supabase
-                this.loadData();
+                try {
+                    this.supabase = createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey);
+                    this.useSupabase = true;
+                    console.log('[CASAL MEL] ✅ Supabase inicializado com sucesso');
+                    debug('Supabase inicializado com sucesso');
+                    
+                    // Recarrega os dados do Supabase
+                    this.loadData();
+                } catch (error) {
+                    console.error('[CASAL MEL] ❌ Erro ao criar cliente Supabase:', error);
+                    debug('Erro ao criar cliente Supabase:', error);
+                    this.useSupabase = false;
+                }
             } else {
                 // Tenta carregar via módulo ES6
                 this.loadSupabaseFromModule();
@@ -92,7 +106,7 @@ class DataManager {
                 debug('Supabase inicializado com sucesso (módulo ES6)');
                 
                 // Recarrega os dados do Supabase
-                this.loadData();
+        this.loadData();
             } else {
                 debug('Supabase não disponível, usando localStorage como fallback');
                 this.useSupabase = false;
@@ -116,6 +130,7 @@ class DataManager {
                     .order('id', { ascending: true });
 
                 if (eventosError) {
+                    console.error('[CASAL MEL] ❌ Erro ao carregar eventos do Supabase:', eventosError);
                     debug('Erro ao carregar eventos do Supabase:', eventosError);
                     throw eventosError;
                 }
@@ -127,6 +142,7 @@ class DataManager {
                     .order('id', { ascending: true });
 
                 if (showsError) {
+                    console.error('[CASAL MEL] ❌ Erro ao carregar shows do Supabase:', showsError);
                     debug('Erro ao carregar shows do Supabase:', showsError);
                     throw showsError;
                 }
@@ -135,6 +151,7 @@ class DataManager {
                 this.eventos = (eventosData || []).map(e => this.convertFromSupabase(e, 'evento'));
                 this.shows = (showsData || []).map(s => this.convertFromSupabase(s, 'show'));
 
+                console.log('[CASAL MEL] ✅ Dados carregados do Supabase:', { eventos: this.eventos.length, shows: this.shows.length });
                 debug('Dados carregados do Supabase:', { eventos: this.eventos.length, shows: this.shows.length });
                 
                 // Salva cache no localStorage
@@ -143,6 +160,7 @@ class DataManager {
                 // Dispara evento de sincronização
                 this.triggerSync();
             } catch (error) {
+                console.error('[CASAL MEL] ❌ Erro ao carregar do Supabase, tentando localStorage:', error);
                 debug('Erro ao carregar do Supabase, tentando localStorage:', error);
                 this.loadFromLocalStorage();
             }
@@ -170,12 +188,11 @@ class DataManager {
         }
     }
 
-    // Carrega dados padrão
+    // Carrega dados padrão (vazio - não carrega dados mockados)
     loadDefaultData() {
-        this.eventos = [...window.CASAL_MEL_CONFIG.defaultData.eventos];
-        this.shows = [...window.CASAL_MEL_CONFIG.defaultData.shows];
-        this.saveData();
-        debug('Dados padrão carregados');
+        this.eventos = [];
+        this.shows = [];
+        debug('Sistema inicializado sem dados padrão - aguardando dados do Supabase');
     }
 
     // Converte dados do Supabase para formato interno
@@ -279,6 +296,7 @@ class DataManager {
                     }
                 }
 
+                console.log('[CASAL MEL] ✅ Dados salvos no Supabase com sucesso');
                 debug('Dados salvos no Supabase');
                 
                 // Salva cache no localStorage
@@ -287,6 +305,7 @@ class DataManager {
                 // Dispara evento de sincronização
                 this.triggerSync();
             } catch (error) {
+                console.error('[CASAL MEL] ❌ Erro ao salvar no Supabase:', error);
                 debug('Erro ao salvar no Supabase:', error);
                 // Fallback para localStorage
                 this.saveToLocalStorage();
@@ -371,25 +390,35 @@ class DataManager {
         // Se usar Supabase, insere diretamente
         if (this.useSupabase && this.supabase) {
             try {
+                console.log('[CASAL MEL] 🔄 Tentando salvar evento no Supabase...', novoEvento);
                 const eventoData = this.convertToSupabase(novoEvento);
+                console.log('[CASAL MEL] 📤 Dados convertidos para Supabase:', eventoData);
                 const { data, error } = await this.supabase
                     .from('eventos')
                     .insert([eventoData])
                     .select()
                     .single();
+                console.log('[CASAL MEL] 📥 Resposta do Supabase:', { data, error });
                 
                 if (error) {
+                    console.error('[CASAL MEL] ❌ Erro ao adicionar evento no Supabase:', error);
                     debug('Erro ao adicionar evento no Supabase:', error);
                     // Fallback para local
                     novoEvento.id = this.getNextEventoId();
                     this.eventos.push(novoEvento);
                     await this.saveData();
-                } else {
+                } else if (data) {
                     // Converte de volta para formato interno
                     novoEvento = this.convertFromSupabase(data, 'evento');
                     this.eventos.push(novoEvento);
+                    console.log('[CASAL MEL] ✅ Evento salvo no Supabase com sucesso:', novoEvento);
                     this.saveCache();
                     this.triggerSync();
+                } else {
+                    console.error('[CASAL MEL] ❌ Nenhum dado retornado do Supabase ao adicionar evento');
+                    novoEvento.id = this.getNextEventoId();
+                    this.eventos.push(novoEvento);
+                    await this.saveData();
                 }
             } catch (error) {
                 debug('Erro ao adicionar evento:', error);
@@ -398,7 +427,8 @@ class DataManager {
                 await this.saveData();
             }
         } else {
-            this.eventos.push(novoEvento);
+            console.warn('[CASAL MEL] ⚠️ Supabase não disponível, salvando apenas no localStorage');
+        this.eventos.push(novoEvento);
             await this.saveData();
         }
         
@@ -516,17 +546,24 @@ class DataManager {
                     .single();
                 
                 if (error) {
+                    console.error('[CASAL MEL] ❌ Erro ao adicionar show no Supabase:', error);
                     debug('Erro ao adicionar show no Supabase:', error);
                     // Fallback para local
                     novoShow.id = this.getNextShowId();
                     this.shows.push(novoShow);
                     await this.saveData();
-                } else {
+                } else if (data) {
                     // Converte de volta para formato interno
                     novoShow = this.convertFromSupabase(data, 'show');
                     this.shows.push(novoShow);
+                    console.log('[CASAL MEL] ✅ Show salvo no Supabase com sucesso:', novoShow);
                     this.saveCache();
                     this.triggerSync();
+                } else {
+                    console.error('[CASAL MEL] ❌ Nenhum dado retornado do Supabase ao adicionar show');
+                    novoShow.id = this.getNextShowId();
+                    this.shows.push(novoShow);
+                    await this.saveData();
                 }
             } catch (error) {
                 debug('Erro ao adicionar show:', error);
@@ -535,7 +572,8 @@ class DataManager {
                 await this.saveData();
             }
         } else {
-            this.shows.push(novoShow);
+            console.warn('[CASAL MEL] ⚠️ Supabase não disponível, salvando apenas no localStorage');
+        this.shows.push(novoShow);
             await this.saveData();
         }
         

@@ -82,56 +82,10 @@ window.CASAL_MEL_CONFIG = {
         duration: 5000 // 5 segundos
     },
     
-    // Dados padrão dos eventos
+    // Dados padrão dos eventos (vazio - dados vêm apenas do Supabase)
     defaultData: {
-        eventos: [
-            {
-                id: 1,
-                titulo: "Noite de Gala Casal Mel",
-                data: "20 de Janeiro de 2024",
-                local: "Mansão Imperial, Rio de Janeiro",
-                descricao: "Uma noite inesquecível com música ao vivo, jantar requintado e a presença especial do Casal Mel. Vista seu melhor traje e venha celebrar conosco!",
-                whatsapp: "21967187138",
-                imagem: "img/espaco-01.jpeg",
-                ativo: true,
-                criadoEm: new Date().toISOString()
-            },
-            {
-                id: 2,
-                titulo: "Transmissão de Jogos",
-                data: "25 de Janeiro de 2024",
-                local: "Casa do Casal Mel",
-                descricao: "Venha assistir aos melhores jogos conosco! Ambiente climatizado, petiscos deliciosos e muita diversão. Traga sua torcida!",
-                whatsapp: "21967187138",
-                imagem: "img/espaco-02.jpeg",
-                ativo: true,
-                criadoEm: new Date().toISOString()
-            },
-            {
-                id: 3,
-                titulo: "Degustação Especial",
-                data: "30 de Janeiro de 2024",
-                local: "Casa do Casal Mel",
-                descricao: "Uma experiência gastronômica única! Degustação de vinhos, queijos artesanais e pratos especiais preparados pelo Casal Mel.",
-                whatsapp: "21967187138",
-                imagem: "img/espaco-03.jpeg",
-                ativo: true,
-                criadoEm: new Date().toISOString()
-            }
-        ],
-        shows: [
-            {
-                id: 1,
-                titulo: "Show Acústico",
-                data: "15 de Fevereiro de 2024",
-                local: "Casa do Casal Mel",
-                descricao: "Uma noite de música acústica com repertório especial. Ambiente intimista e acolhedor para uma experiência única.",
-                whatsapp: "21967187138",
-                imagem: "img/espaco-04.jpeg",
-                ativo: true,
-                criadoEm: new Date().toISOString()
-            }
-        ]
+        eventos: [],
+        shows: []
     }
 };
 

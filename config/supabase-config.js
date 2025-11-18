@@ -12,6 +12,6 @@ window.SUPABASE_CONFIG = {
 
 // Verificar se as credenciais foram configuradas
 if (window.SUPABASE_CONFIG.anonKey === 'SUA_ANON_KEY_AQUI') {
-    console.warn('[CASAL MEL] ⚠️ Configure as credenciais do Supabase em supabase-config.js');
+    console.warn('[CASAL MEL] ⚠️ Configure as credenciais do Supabase em config/supabase-config.js');
 }
 
