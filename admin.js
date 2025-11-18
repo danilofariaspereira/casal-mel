@@ -418,27 +418,37 @@ class AdminController {
             imagem: imagemData
         };
 
-        if (this.currentEventoId) {
-            window.dataManager.updateEvento(this.currentEventoId, finalData);
-            this.showSuccess('Evento atualizado com sucesso!');
-        } else {
-            window.dataManager.addEvento(finalData);
-            this.showSuccess('Evento adicionado com sucesso!');
-        }
+        try {
+            if (this.currentEventoId) {
+                await window.dataManager.updateEvento(this.currentEventoId, finalData);
+                this.showSuccess('Evento atualizado com sucesso!');
+            } else {
+                await window.dataManager.addEvento(finalData);
+                this.showSuccess('Evento adicionado com sucesso!');
+            }
 
-        this.closeModal('evento-modal');
-        this.loadData();
+            this.closeModal('evento-modal');
+            this.loadData();
+        } catch (error) {
+            debug('Erro ao salvar evento:', error);
+            this.showError('Erro ao salvar evento. Tente novamente.');
+        }
     }
 
     editEvento(id) {
         this.openEventModal(id);
     }
 
-    deleteEvento(id) {
+    async deleteEvento(id) {
         if (confirm('Tem certeza que deseja deletar este evento?')) {
-            window.dataManager.removeEvento(id);
-            this.showSuccess('Evento deletado com sucesso!');
-            this.loadData();
+            try {
+                await window.dataManager.removeEvento(id);
+                this.showSuccess('Evento deletado com sucesso!');
+                this.loadData();
+            } catch (error) {
+                debug('Erro ao deletar evento:', error);
+                this.showError('Erro ao deletar evento. Tente novamente.');
+            }
         }
     }
 
@@ -556,29 +566,39 @@ class AdminController {
             imagem: imagemData
         };
 
-        if (this.currentShowId) {
-            window.dataManager.updateShow(this.currentShowId, finalData);
-            this.showSuccess('Show atualizado com sucesso!');
-        } else {
-            window.dataManager.addShow(finalData);
-            this.showSuccess('Show adicionado com sucesso!');
-        }
+        try {
+            if (this.currentShowId) {
+                await window.dataManager.updateShow(this.currentShowId, finalData);
+                this.showSuccess('Show atualizado com sucesso!');
+            } else {
+                await window.dataManager.addShow(finalData);
+                this.showSuccess('Show adicionado com sucesso!');
+            }
 
-        this.closeModal('show-modal');
-        this.loadData();
+            this.closeModal('show-modal');
+            this.loadData();
+        } catch (error) {
+            debug('Erro ao salvar show:', error);
+            this.showError('Erro ao salvar show. Tente novamente.');
+        }
     }
 
     editShow(id) {
         this.openShowModal(id);
     }
 
-    deleteShow(id) {
-    if (confirm('Tem certeza que deseja deletar este show?')) {
-            window.dataManager.removeShow(id);
-            this.showSuccess('Show deletado com sucesso!');
-            this.loadData();
+    async deleteShow(id) {
+        if (confirm('Tem certeza que deseja deletar este show?')) {
+            try {
+                await window.dataManager.removeShow(id);
+                this.showSuccess('Show deletado com sucesso!');
+                this.loadData();
+            } catch (error) {
+                debug('Erro ao deletar show:', error);
+                this.showError('Erro ao deletar show. Tente novamente.');
+            }
+        }
     }
-}
 
 // ========================================
     // UTILITÁRIOS

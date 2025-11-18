@@ -6,25 +6,160 @@ class DataManager {
     constructor() {
         this.eventos = [];
         this.shows = [];
+        this.supabase = null;
+        this.useSupabase = false;
         this.init();
     }
 
     init() {
         debug('Inicializando sistema de dados');
-        this.loadData();
+        this.initSupabase();
+        // loadData será chamado depois que o Supabase for inicializado
+        // ou imediatamente se não usar Supabase
+        if (!this.useSupabase) {
+            this.loadData();
+        }
     }
 
-    // Carrega dados do localStorage
-    loadData() {
+    // Inicializa Supabase
+    initSupabase() {
+        try {
+            if (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url && window.SUPABASE_CONFIG.anonKey !== 'SUA_ANON_KEY_AQUI') {
+                // Aguarda um pouco para garantir que o script do Supabase foi carregado
+                setTimeout(() => {
+                    this.tryInitSupabase();
+                }, 100);
+            } else {
+                debug('Credenciais do Supabase não configuradas, usando localStorage');
+            }
+        } catch (error) {
+            debug('Erro ao inicializar Supabase:', error);
+            this.useSupabase = false;
+        }
+    }
+
+    // Tenta inicializar o Supabase de várias formas
+    tryInitSupabase() {
+        try {
+            let createClient = null;
+
+            // Tenta encontrar createClient no window.supabase (CDN)
+            if (typeof window.supabase !== 'undefined') {
+                if (window.supabase.createClient) {
+                    createClient = window.supabase.createClient;
+                } else if (window.supabase.default && window.supabase.default.createClient) {
+                    createClient = window.supabase.default.createClient;
+                }
+            }
+
+            // Tenta encontrar createClient globalmente
+            if (!createClient && typeof supabase !== 'undefined') {
+                if (supabase.createClient) {
+                    createClient = supabase.createClient;
+                } else if (supabase.default && supabase.default.createClient) {
+                    createClient = supabase.default.createClient;
+                }
+            }
+
+            // Se encontrou createClient, inicializa
+            if (createClient) {
+                this.supabase = createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey);
+                this.useSupabase = true;
+                debug('Supabase inicializado com sucesso');
+                
+                // Recarrega os dados do Supabase
+                this.loadData();
+            } else {
+                // Tenta carregar via módulo ES6
+                this.loadSupabaseFromModule();
+            }
+        } catch (error) {
+            debug('Erro ao tentar inicializar Supabase:', error);
+            this.useSupabase = false;
+        }
+    }
+
+    // Carrega Supabase via módulo ES6
+    async loadSupabaseFromModule() {
+        try {
+            // Tenta importar o módulo (funciona se estiver usando um bundler)
+            const module = await import('@supabase/supabase-js');
+            const createClient = module.createClient || (module.default && module.default.createClient);
+            
+            if (createClient) {
+                this.supabase = createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey);
+                this.useSupabase = true;
+                debug('Supabase inicializado com sucesso (módulo ES6)');
+                
+                // Recarrega os dados do Supabase
+                this.loadData();
+            } else {
+                debug('Supabase não disponível, usando localStorage como fallback');
+                this.useSupabase = false;
+            }
+        } catch (error) {
+            debug('Erro ao carregar Supabase do módulo, usando localStorage como fallback:', error);
+            this.useSupabase = false;
+        }
+    }
+
+    // Carrega dados do Supabase ou localStorage
+    async loadData() {
+        if (this.useSupabase && this.supabase) {
+            try {
+                debug('Carregando dados do Supabase...');
+                
+                // Carrega eventos
+                const { data: eventosData, error: eventosError } = await this.supabase
+                    .from('eventos')
+                    .select('*')
+                    .order('id', { ascending: true });
+
+                if (eventosError) {
+                    debug('Erro ao carregar eventos do Supabase:', eventosError);
+                    throw eventosError;
+                }
+
+                // Carrega shows
+                const { data: showsData, error: showsError } = await this.supabase
+                    .from('shows')
+                    .select('*')
+                    .order('id', { ascending: true });
+
+                if (showsError) {
+                    debug('Erro ao carregar shows do Supabase:', showsError);
+                    throw showsError;
+                }
+
+                // Converte dados do Supabase para formato interno
+                this.eventos = (eventosData || []).map(e => this.convertFromSupabase(e, 'evento'));
+                this.shows = (showsData || []).map(s => this.convertFromSupabase(s, 'show'));
+
+                debug('Dados carregados do Supabase:', { eventos: this.eventos.length, shows: this.shows.length });
+                
+                // Salva cache no localStorage
+                this.saveCache();
+                
+                // Dispara evento de sincronização
+                this.triggerSync();
+            } catch (error) {
+                debug('Erro ao carregar do Supabase, tentando localStorage:', error);
+                this.loadFromLocalStorage();
+            }
+        } else {
+            this.loadFromLocalStorage();
+        }
+    }
+
+    // Carrega dados do localStorage (fallback)
+    loadFromLocalStorage() {
         try {
             const data = localStorage.getItem('casal-mel-data');
             if (data) {
                 const parsed = JSON.parse(data);
                 this.eventos = parsed.eventos || [];
                 this.shows = parsed.shows || [];
-                debug('Dados carregados:', { eventos: this.eventos.length, shows: this.shows.length });
-                debug('Eventos carregados:', this.eventos);
-                debug('Shows carregados:', this.shows);
+                debug('Dados carregados do localStorage:', { eventos: this.eventos.length, shows: this.shows.length });
             } else {
                 // Carrega dados padrão
                 this.loadDefaultData();
@@ -43,8 +178,140 @@ class DataManager {
         debug('Dados padrão carregados');
     }
 
-    // Salva dados no localStorage
-    saveData() {
+    // Converte dados do Supabase para formato interno
+    convertFromSupabase(data, type) {
+        return {
+            id: data.id,
+            titulo: data.titulo || '',
+            data: data.data || '',
+            diaSemana: data.dia_semana || '',
+            local: data.local || '',
+            descricao: data.descricao || '',
+            whatsapp: data.whatsapp || '',
+            imagem: data.imagem || '',
+            ativo: data.ativo !== undefined ? data.ativo : true,
+            criadoEm: data.criado_em || new Date().toISOString()
+        };
+    }
+
+    // Converte dados internos para formato do Supabase
+    convertToSupabase(data) {
+        return {
+            titulo: data.titulo || '',
+            data: data.data || '',
+            dia_semana: data.diaSemana || '',
+            local: data.local || '',
+            descricao: data.descricao || '',
+            whatsapp: data.whatsapp || '',
+            imagem: data.imagem || '',
+            ativo: data.ativo !== undefined ? data.ativo : true
+        };
+    }
+
+    // Salva dados no Supabase ou localStorage
+    async saveData() {
+        if (this.useSupabase && this.supabase) {
+            try {
+                // Sincroniza eventos
+                const eventosSupabase = this.eventos.map(e => this.convertToSupabase(e));
+                
+                // Para cada evento, verifica se existe ou cria/atualiza
+                for (let i = 0; i < this.eventos.length; i++) {
+                    const evento = this.eventos[i];
+                    const eventoData = this.convertToSupabase(evento);
+                    
+                    if (evento.id) {
+                        // Atualiza existente
+                        const { error } = await this.supabase
+                            .from('eventos')
+                            .update(eventoData)
+                            .eq('id', evento.id);
+                        
+                        if (error) {
+                            debug('Erro ao atualizar evento no Supabase:', error);
+                        }
+                    } else {
+                        // Cria novo
+                        const { data, error } = await this.supabase
+                            .from('eventos')
+                            .insert([eventoData])
+                            .select()
+                            .single();
+                        
+                        if (error) {
+                            debug('Erro ao criar evento no Supabase:', error);
+                        } else if (data) {
+                            // Atualiza o ID local
+                            this.eventos[i].id = data.id;
+                        }
+                    }
+                }
+
+                // Sincroniza shows
+                for (let i = 0; i < this.shows.length; i++) {
+                    const show = this.shows[i];
+                    const showData = this.convertToSupabase(show);
+                    
+                    if (show.id) {
+                        // Atualiza existente
+                        const { error } = await this.supabase
+                            .from('shows')
+                            .update(showData)
+                            .eq('id', show.id);
+                        
+                        if (error) {
+                            debug('Erro ao atualizar show no Supabase:', error);
+                        }
+                    } else {
+                        // Cria novo
+                        const { data, error } = await this.supabase
+                            .from('shows')
+                            .insert([showData])
+                            .select()
+                            .single();
+                        
+                        if (error) {
+                            debug('Erro ao criar show no Supabase:', error);
+                        } else if (data) {
+                            // Atualiza o ID local
+                            this.shows[i].id = data.id;
+                        }
+                    }
+                }
+
+                debug('Dados salvos no Supabase');
+                
+                // Salva cache no localStorage
+                this.saveCache();
+                
+                // Dispara evento de sincronização
+                this.triggerSync();
+            } catch (error) {
+                debug('Erro ao salvar no Supabase:', error);
+                // Fallback para localStorage
+                this.saveToLocalStorage();
+            }
+        } else {
+            this.saveToLocalStorage();
+        }
+    }
+
+    // Salva cache no localStorage
+    saveCache() {
+        try {
+            const data = {
+                eventos: this.eventos,
+                shows: this.shows,
+                lastUpdate: Date.now()
+            };
+            localStorage.setItem('casal-mel-data', JSON.stringify(data));
+        } catch (error) {
+            debug('Erro ao salvar cache:', error);
+        }
+    }
+
+    // Salva dados no localStorage (fallback)
+    saveToLocalStorage() {
         try {
             const data = {
                 eventos: this.eventos,
@@ -93,26 +360,82 @@ class DataManager {
     // ========================================
 
     // Adiciona evento
-    addEvento(evento) {
-        const novoEvento = {
+    async addEvento(evento) {
+        let novoEvento = {
             ...evento,
-            id: this.getNextEventoId(),
+            id: this.useSupabase ? null : this.getNextEventoId(), // ID será gerado pelo Supabase
             ativo: true,
             criadoEm: new Date().toISOString()
         };
         
-        this.eventos.push(novoEvento);
-        this.saveData();
+        // Se usar Supabase, insere diretamente
+        if (this.useSupabase && this.supabase) {
+            try {
+                const eventoData = this.convertToSupabase(novoEvento);
+                const { data, error } = await this.supabase
+                    .from('eventos')
+                    .insert([eventoData])
+                    .select()
+                    .single();
+                
+                if (error) {
+                    debug('Erro ao adicionar evento no Supabase:', error);
+                    // Fallback para local
+                    novoEvento.id = this.getNextEventoId();
+                    this.eventos.push(novoEvento);
+                    await this.saveData();
+                } else {
+                    // Converte de volta para formato interno
+                    novoEvento = this.convertFromSupabase(data, 'evento');
+                    this.eventos.push(novoEvento);
+                    this.saveCache();
+                    this.triggerSync();
+                }
+            } catch (error) {
+                debug('Erro ao adicionar evento:', error);
+                novoEvento.id = this.getNextEventoId();
+                this.eventos.push(novoEvento);
+                await this.saveData();
+            }
+        } else {
+            this.eventos.push(novoEvento);
+            await this.saveData();
+        }
+        
         debug('Evento adicionado:', novoEvento);
         return novoEvento;
     }
 
     // Atualiza evento
-    updateEvento(id, updates) {
+    async updateEvento(id, updates) {
         const index = this.eventos.findIndex(e => e.id === id);
         if (index !== -1) {
             this.eventos[index] = { ...this.eventos[index], ...updates };
-            this.saveData();
+            
+            // Se usar Supabase, atualiza diretamente
+            if (this.useSupabase && this.supabase) {
+                try {
+                    const eventoData = this.convertToSupabase(this.eventos[index]);
+                    const { error } = await this.supabase
+                        .from('eventos')
+                        .update(eventoData)
+                        .eq('id', id);
+                    
+                    if (error) {
+                        debug('Erro ao atualizar evento no Supabase:', error);
+                        await this.saveData(); // Fallback
+                    } else {
+                        this.saveCache();
+                        this.triggerSync();
+                    }
+                } catch (error) {
+                    debug('Erro ao atualizar evento:', error);
+                    await this.saveData(); // Fallback
+                }
+            } else {
+                await this.saveData();
+            }
+            
             debug('Evento atualizado:', this.eventos[index]);
             return this.eventos[index];
         }
@@ -120,11 +443,39 @@ class DataManager {
     }
 
     // Remove evento
-    removeEvento(id) {
+    async removeEvento(id) {
         const index = this.eventos.findIndex(e => e.id === id);
         if (index !== -1) {
-            const evento = this.eventos.splice(index, 1)[0];
-            this.saveData();
+            const evento = this.eventos[index];
+            
+            // Se usar Supabase, remove diretamente
+            if (this.useSupabase && this.supabase) {
+                try {
+                    const { error } = await this.supabase
+                        .from('eventos')
+                        .delete()
+                        .eq('id', id);
+                    
+                    if (error) {
+                        debug('Erro ao remover evento do Supabase:', error);
+                        // Fallback para local
+                        this.eventos.splice(index, 1);
+                        await this.saveData();
+                    } else {
+                        this.eventos.splice(index, 1);
+                        this.saveCache();
+                        this.triggerSync();
+                    }
+                } catch (error) {
+                    debug('Erro ao remover evento:', error);
+                    this.eventos.splice(index, 1);
+                    await this.saveData();
+                }
+            } else {
+                this.eventos.splice(index, 1);
+                await this.saveData();
+            }
+            
             debug('Evento removido:', evento);
             return evento;
         }
@@ -146,26 +497,82 @@ class DataManager {
     // ========================================
 
     // Adiciona show
-    addShow(show) {
-        const novoShow = {
+    async addShow(show) {
+        let novoShow = {
             ...show,
-            id: this.getNextShowId(),
+            id: this.useSupabase ? null : this.getNextShowId(), // ID será gerado pelo Supabase
             ativo: true,
             criadoEm: new Date().toISOString()
         };
         
-        this.shows.push(novoShow);
-        this.saveData();
+        // Se usar Supabase, insere diretamente
+        if (this.useSupabase && this.supabase) {
+            try {
+                const showData = this.convertToSupabase(novoShow);
+                const { data, error } = await this.supabase
+                    .from('shows')
+                    .insert([showData])
+                    .select()
+                    .single();
+                
+                if (error) {
+                    debug('Erro ao adicionar show no Supabase:', error);
+                    // Fallback para local
+                    novoShow.id = this.getNextShowId();
+                    this.shows.push(novoShow);
+                    await this.saveData();
+                } else {
+                    // Converte de volta para formato interno
+                    novoShow = this.convertFromSupabase(data, 'show');
+                    this.shows.push(novoShow);
+                    this.saveCache();
+                    this.triggerSync();
+                }
+            } catch (error) {
+                debug('Erro ao adicionar show:', error);
+                novoShow.id = this.getNextShowId();
+                this.shows.push(novoShow);
+                await this.saveData();
+            }
+        } else {
+            this.shows.push(novoShow);
+            await this.saveData();
+        }
+        
         debug('Show adicionado:', novoShow);
         return novoShow;
     }
 
     // Atualiza show
-    updateShow(id, updates) {
+    async updateShow(id, updates) {
         const index = this.shows.findIndex(s => s.id === id);
         if (index !== -1) {
             this.shows[index] = { ...this.shows[index], ...updates };
-            this.saveData();
+            
+            // Se usar Supabase, atualiza diretamente
+            if (this.useSupabase && this.supabase) {
+                try {
+                    const showData = this.convertToSupabase(this.shows[index]);
+                    const { error } = await this.supabase
+                        .from('shows')
+                        .update(showData)
+                        .eq('id', id);
+                    
+                    if (error) {
+                        debug('Erro ao atualizar show no Supabase:', error);
+                        await this.saveData(); // Fallback
+                    } else {
+                        this.saveCache();
+                        this.triggerSync();
+                    }
+                } catch (error) {
+                    debug('Erro ao atualizar show:', error);
+                    await this.saveData(); // Fallback
+                }
+            } else {
+                await this.saveData();
+            }
+            
             debug('Show atualizado:', this.shows[index]);
             return this.shows[index];
         }
@@ -173,11 +580,39 @@ class DataManager {
     }
 
     // Remove show
-    removeShow(id) {
+    async removeShow(id) {
         const index = this.shows.findIndex(s => s.id === id);
         if (index !== -1) {
-            const show = this.shows.splice(index, 1)[0];
-            this.saveData();
+            const show = this.shows[index];
+            
+            // Se usar Supabase, remove diretamente
+            if (this.useSupabase && this.supabase) {
+                try {
+                    const { error } = await this.supabase
+                        .from('shows')
+                        .delete()
+                        .eq('id', id);
+                    
+                    if (error) {
+                        debug('Erro ao remover show do Supabase:', error);
+                        // Fallback para local
+                        this.shows.splice(index, 1);
+                        await this.saveData();
+                    } else {
+                        this.shows.splice(index, 1);
+                        this.saveCache();
+                        this.triggerSync();
+                    }
+                } catch (error) {
+                    debug('Erro ao remover show:', error);
+                    this.shows.splice(index, 1);
+                    await this.saveData();
+                }
+            } else {
+                this.shows.splice(index, 1);
+                await this.saveData();
+            }
+            
             debug('Show removido:', show);
             return show;
         }
